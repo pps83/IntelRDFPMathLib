@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\LIBRARY\float128\dpml_exception.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_four_over_pi.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_bessel.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_bid.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_cbrt.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_erf.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_exp.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_int.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_inv_hyper.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_inv_trig.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_lgamma.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_log.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_mod.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_ops.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_ops_64.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_pow.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_powi.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_sqrt.c" />
+    <ClCompile Include="..\LIBRARY\float128\dpml_ux_trig.c" />
+    <ClCompile Include="..\LIBRARY\float128\sqrt_tab_t.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_2_str_tables.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_acos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_acosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_add.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_asin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_asinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_atan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_atan2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_atanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_cbrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_compare.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_cos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_cosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_div.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_erf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_erfc.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_exp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_exp10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_exp2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_expm1.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_fdimd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_fma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_fmod.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_frexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_hypot.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_ldexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_lgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_llquantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_llrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_llround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_log.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_log10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_log1p.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_log2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_logb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_logbd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_lrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_lround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_minmax.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_modf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_mul.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_nearbyintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_next.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_nexttowardd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_noncomp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_pow.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_quantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_quantize.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_quantumd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_rem.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_round_integral.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_scalb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_scalbl.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_sin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_sinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_sqrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_string.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_tan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_tanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_tgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_int16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_int32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_int64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_int8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_uint16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_uint32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_uint64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid128_to_uint8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_acos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_acosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_add.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_asin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_asinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_atan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_atan2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_atanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_cbrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_compare.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_cos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_cosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_div.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_erf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_erfc.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_exp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_exp10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_exp2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_expm1.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_fdimd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_fma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_fmod.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_frexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_hypot.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_ldexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_lgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_llquantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_llrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_llround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_log.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_log10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_log1p.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_log2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_logb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_logbd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_lrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_lround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_minmax.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_modf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_mul.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_nearbyintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_next.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_nexttowardd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_noncomp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_pow.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_quantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_quantize.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_quantumd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_rem.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_round_integral.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_scalb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_scalbl.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_sin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_sinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_sqrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_string.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_sub.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_tan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_tanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_tgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_bid128.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_bid64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_int16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_int32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_int64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_int8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_uint16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_uint32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_uint64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid32_to_uint8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_acos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_acosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_add.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_asin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_asinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_atan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_atan2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_atanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_cbrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_compare.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_cos.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_cosh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_div.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_erf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_erfc.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_exp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_exp10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_exp2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_expm1.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_fdimd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_fma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_fmod.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_frexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_hypot.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_ldexp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_lgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_llquantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_llrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_llround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_log.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_log10.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_log1p.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_log2.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_logb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_logbd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_lrintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_lround.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_minmax.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_modf.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_mul.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_nearbyintd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_next.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_nexttowardd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_noncomp.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_pow.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_quantexpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_quantize.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_quantumd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_rem.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_round_integral.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_scalb.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_scalbl.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_sin.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_sinh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_sqrt.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_string.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_tan.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_tanh.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_tgamma.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_bid128.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_int16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_int32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_int64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_int8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_uint16.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_uint32.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_uint64.c" />
+    <ClCompile Include="..\LIBRARY\src\bid64_to_uint8.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_binarydecimal.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_convert_data.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_decimal_data.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_decimal_globals.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_dpd.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_feclearexcept.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_fegetexceptflag.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_feraiseexcept.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_fesetexceptflag.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_fetestexcept.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_flag_operations.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_from_int.c" />
+    <ClCompile Include="..\LIBRARY\src\bid_round.c" />
+    <ClCompile Include="..\LIBRARY\src\strtod128.c" />
+    <ClCompile Include="..\LIBRARY\src\strtod32.c" />
+    <ClCompile Include="..\LIBRARY\src\strtod64.c" />
+    <ClCompile Include="..\LIBRARY\src\wcstod128.c" />
+    <ClCompile Include="..\LIBRARY\src\wcstod32.c" />
+    <ClCompile Include="..\LIBRARY\src\wcstod64.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\LIBRARY\float128\architecture.h" />
+    <ClInclude Include="..\LIBRARY\float128\assert.h" />
+    <ClInclude Include="..\LIBRARY\float128\build.h" />
+    <ClInclude Include="..\LIBRARY\float128\compiler.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_acosh_t.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_bessel_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_bid_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_cons_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_error_codes.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_error_codes_enum.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_exception.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_function_info.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_int_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_inv_hyper_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_inv_trig_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_mod_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_names.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_pow.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_powi_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_pow_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_private.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_rdx_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_special_exp.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_sqrt_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_trig_x.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_ux.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_ux_32_64.h" />
+    <ClInclude Include="..\LIBRARY\float128\dpml_ux_alpha_macros.h" />
+    <ClInclude Include="..\LIBRARY\float128\endian.h" />
+    <ClInclude Include="..\LIBRARY\float128\f_format.h" />
+    <ClInclude Include="..\LIBRARY\float128\ix86_macros.h" />
+    <ClInclude Include="..\LIBRARY\float128\i_format.h" />
+    <ClInclude Include="..\LIBRARY\float128\mphoc_functions.h" />
+    <ClInclude Include="..\LIBRARY\float128\mphoc_macros.h" />
+    <ClInclude Include="..\LIBRARY\float128\mtc_macros.h" />
+    <ClInclude Include="..\LIBRARY\float128\op_system.h" />
+    <ClInclude Include="..\LIBRARY\float128\poly_macros.h" />
+    <ClInclude Include="..\LIBRARY\float128\sqrt_macros.h" />
+    <ClInclude Include="..\LIBRARY\src\bid128_2_str.h" />
+    <ClInclude Include="..\LIBRARY\src\bid128_2_str_macros.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_b2d.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_conf.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_div_macros.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_functions.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_gcc_intrinsics.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_inline_add.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_internal.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_sqrt_macros.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_strtod.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_trans.h" />
+    <ClInclude Include="..\LIBRARY\src\bid_wrap_names.h" />
+    <ClInclude Include="..\LIBRARY\src\dfp754.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{a7415ea6-8990-45f2-a2a4-9ad215bbe39b}</ProjectGuid>
+    <RootNamespace>IntelRDFPMathLib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Common.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Common.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Common.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Common.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>libbid</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>libbid</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>libbid</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>libbid</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DECIMAL_CALL_BY_REFERENCE=0;DECIMAL_GLOBAL_ROUNDING=0;DECIMAL_GLOBAL_EXCEPTION_FLAGS=0;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4267;4305;4334;4723;4756</DisableSpecificWarnings>
+      <AdditionalOptions>/w44146 /w44308 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'                                                       ">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="$(PlatformToolset.StartsWith('Intel')) And $(PlatformToolset.Contains('C++ Compiler'))">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation -Qlong-double -Qpc80 -Qoption,cpp,--extended_float_types %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DECIMAL_CALL_BY_REFERENCE=0;DECIMAL_GLOBAL_ROUNDING=0;DECIMAL_GLOBAL_EXCEPTION_FLAGS=0;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4267;4305;4334;4723;4756</DisableSpecificWarnings>
+      <AdditionalOptions>/w44146 /w44308 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'                                                       ">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="$(PlatformToolset.StartsWith('Intel')) And $(PlatformToolset.Contains('C++ Compiler'))">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation -Qlong-double -Qpc80 -Qoption,cpp,--extended_float_types %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DECIMAL_CALL_BY_REFERENCE=0;DECIMAL_GLOBAL_ROUNDING=0;DECIMAL_GLOBAL_EXCEPTION_FLAGS=0;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4267;4305;4334;4723;4756</DisableSpecificWarnings>
+      <AdditionalOptions>/w44146 /w44308 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'                                                       ">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="$(PlatformToolset.StartsWith('Intel')) And $(PlatformToolset.Contains('C++ Compiler'))">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation -Qlong-double -Qpc80 -Qoption,cpp,--extended_float_types %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DECIMAL_CALL_BY_REFERENCE=0;DECIMAL_GLOBAL_ROUNDING=0;DECIMAL_GLOBAL_EXCEPTION_FLAGS=0;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4018;4267;4305;4334;4723;4756</DisableSpecificWarnings>
+      <AdditionalOptions>/w44146 /w44308 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'                                                       ">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="$(PlatformToolset.StartsWith('Intel')) And $(PlatformToolset.Contains('C++ Compiler'))">-Wno-missing-braces -Wno-unused-but-set-variable -Wno-unused-variable -Wno-sometimes-uninitialized -Wno-misleading-indentation -Qlong-double -Qpc80 -Qoption,cpp,--extended_float_types %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
