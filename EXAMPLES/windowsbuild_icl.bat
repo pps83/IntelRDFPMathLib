@@ -3,9 +3,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 000 **************************"
 echo ""
 echo ""
-copy /Y main.c_000 main.c
-copy /Y decimal.h_000 decimal.h
-copy /Y ..\LIBRARY\icl000libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_000 main.c >nul
+copy /Y decimal.h_000 decimal.h >nul
+copy /Y ..\LIBRARY\icl000libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -13,9 +13,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 001 **************************"
 echo ""
 echo ""
-copy /Y main.c_001 main.c
-copy /Y decimal.h_001 decimal.h
-copy /Y ..\LIBRARY\icl001libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_001 main.c >nul
+copy /Y decimal.h_001 decimal.h >nul
+copy /Y ..\LIBRARY\icl001libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -23,9 +23,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 010 **************************"
 echo ""
 echo ""
-copy /Y main.c_010 main.c
-copy /Y decimal.h_010 decimal.h
-copy /Y ..\LIBRARY\icl010libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_010 main.c >nul
+copy /Y decimal.h_010 decimal.h >nul
+copy /Y ..\LIBRARY\icl010libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -33,9 +33,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 011 **************************"
 echo ""
 echo ""
-copy /Y main.c_011 main.c
-copy /Y decimal.h_011 decimal.h
-copy /Y ..\LIBRARY\icl011libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_011 main.c >nul
+copy /Y decimal.h_011 decimal.h >nul
+copy /Y ..\LIBRARY\icl011libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -43,9 +43,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 100 **************************"
 echo ""
 echo ""
-copy /Y main.c_100 main.c
-copy /Y decimal.h_100 decimal.h
-copy /Y ..\LIBRARY\icl100libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_100 main.c >nul
+copy /Y decimal.h_100 decimal.h >nul
+copy /Y ..\LIBRARY\icl100libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -53,9 +53,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 101 **************************"
 echo ""
 echo ""
-copy /Y main.c_101 main.c
-copy /Y decimal.h_101 decimal.h
-copy /Y ..\LIBRARY\icl101libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_101 main.c >nul
+copy /Y decimal.h_101 decimal.h >nul
+copy /Y ..\LIBRARY\icl101libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -63,9 +63,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 110 **************************"
 echo ""
 echo ""
-copy /Y main.c_110 main.c
-copy /Y decimal.h_110 decimal.h
-copy /Y ..\LIBRARY\icl110libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_110 main.c >nul
+copy /Y decimal.h_110 decimal.h >nul
+copy /Y ..\LIBRARY\icl110libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -73,9 +73,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 111 **************************"
 echo ""
 echo ""
-copy /Y main.c_111 main.c
-copy /Y decimal.h_111 decimal.h
-copy /Y ..\LIBRARY\icl111libbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_111 main.c >nul
+copy /Y decimal.h_111 decimal.h >nul
+copy /Y ..\LIBRARY\icl111libbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 del main.exe main.c decimal.h
@@ -88,9 +88,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 000b **************************"
 echo ""
 echo ""
-copy /Y main.c_000 main.c
-copy /Y decimal.h_000 decimal.h
-copy /Y ..\LIBRARY\icl000blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_000 main.c >nul
+copy /Y decimal.h_000 decimal.h >nul
+copy /Y ..\LIBRARY\icl000blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -98,9 +98,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 001b **************************"
 echo ""
 echo ""
-copy /Y main.c_001 main.c
-copy /Y decimal.h_001 decimal.h
-copy /Y ..\LIBRARY\icl001blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_001 main.c >nul
+copy /Y decimal.h_001 decimal.h >nul
+copy /Y ..\LIBRARY\icl001blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -108,9 +108,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 010b **************************"
 echo ""
 echo ""
-copy /Y main.c_010 main.c
-copy /Y decimal.h_010 decimal.h
-copy /Y ..\LIBRARY\icl010blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_010 main.c >nul
+copy /Y decimal.h_010 decimal.h >nul
+copy /Y ..\LIBRARY\icl010blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -118,9 +118,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 011b **************************"
 echo ""
 echo ""
-copy /Y main.c_011 main.c
-copy /Y decimal.h_011 decimal.h
-copy /Y ..\LIBRARY\icl011blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_011 main.c >nul
+copy /Y decimal.h_011 decimal.h >nul
+copy /Y ..\LIBRARY\icl011blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -128,9 +128,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 100b **************************"
 echo ""
 echo ""
-copy /Y main.c_100 main.c
-copy /Y decimal.h_100 decimal.h
-copy /Y ..\LIBRARY\icl100blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_100 main.c >nul
+copy /Y decimal.h_100 decimal.h >nul
+copy /Y ..\LIBRARY\icl100blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -138,9 +138,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 101b **************************"
 echo ""
 echo ""
-copy /Y main.c_101 main.c
-copy /Y decimal.h_101 decimal.h
-copy /Y ..\LIBRARY\icl101blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_101 main.c >nul
+copy /Y decimal.h_101 decimal.h >nul
+copy /Y ..\LIBRARY\icl101blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -148,9 +148,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 110b **************************"
 echo ""
 echo ""
-copy /Y main.c_110 main.c
-copy /Y decimal.h_110 decimal.h
-copy /Y ..\LIBRARY\icl110blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_110 main.c >nul
+copy /Y decimal.h_110 decimal.h >nul
+copy /Y ..\LIBRARY\icl110blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 echo ""
@@ -158,9 +158,9 @@ echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 111b **************************"
 echo ""
 echo ""
-copy /Y main.c_111 main.c
-copy /Y decimal.h_111 decimal.h
-copy /Y ..\LIBRARY\icl111blibbid.lib ..\LIBRARY\libbid.lib
+copy /Y main.c_111 main.c >nul
+copy /Y decimal.h_111 decimal.h >nul
+copy /Y ..\LIBRARY\icl111blibbid.lib ..\LIBRARY\libbid.lib >nul
 icl main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
 del main.exe main.c decimal.h
