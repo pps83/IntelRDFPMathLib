@@ -164,7 +164,7 @@ copy /Y decimal.h_111 decimal.h >nul
 copy /Y ..\LIBRARY\cl111libbid.lib ..\LIBRARY\libbid.lib >nul
 cl -nologo main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
-del main.exe main.c decimal.h
+del main.exe main.c decimal.h main.obj
 del ..\LIBRARY\libbid.lib
 
 
@@ -331,5 +331,5 @@ copy /Y decimal.h_111 decimal.h >nul
 copy /Y ..\LIBRARY\cl111blibbid.lib ..\LIBRARY\libbid.lib >nul
 cl -nologo main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
-del main.exe main.c decimal.h
+del main.exe main.c decimal.h main.obj
 del ..\LIBRARY\libbid.lib

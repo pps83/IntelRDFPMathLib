@@ -163,5 +163,5 @@ copy /Y decimal.h_111 decimal.h >nul
 copy /Y ..\LIBRARY\clang111blibbid.lib ..\LIBRARY\libbid.lib >nul
 clang -o main.exe main.c ..\LIBRARY\libbid.lib %1
 main.exe
-del main.exe main.c decimal.h
+del main.exe main.c decimal.h main.obj
 del ..\LIBRARY\libbid.lib
