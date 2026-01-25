@@ -97,5 +97,5 @@ clean:
 	$(RM) readtest$(EXE)
 
 readtest$(EXE): readtest$(OBJ) $(BID_LIB)
-	$(CC) $(LMOPT) readtest$(OBJ) $(BID_LIB)
+	$(CC) -nologo $(LMOPT) readtest$(OBJ) $(BID_LIB)
 
