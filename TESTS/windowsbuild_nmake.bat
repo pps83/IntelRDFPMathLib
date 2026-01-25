@@ -1,3 +1,8 @@
+REM Set 'HAVE_ICL' flag based on icl availability
+where icl >nul 2>nul && set "HAVE_ICL=YES" || set "HAVE_ICL=NO"
+
+
+if "%HAVE_ICL%"=="YES" (
 echo ""
 echo ""
 echo "****************** RUNNING TESTS FOR icl 000 ***************************"
@@ -70,6 +75,8 @@ del readtest.exe readtest.obj
 copy /Y  ..\LIBRARY\icl111libbid.lib ..\LIBRARY\libbid.lib
 nmake -nologo %1 CC=icl CALL_BY_REF=1 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=0
 readtest < readtest.in
+)
+
 echo ""
 echo ""
 echo "****************** RUNNING TESTS FOR cl 000 ***************************"
@@ -148,7 +155,7 @@ del ..\LIBRARY\libbid.lib
 
 
 
-
+if "%HAVE_ICL%"=="YES" (
 echo ""
 echo ""
 echo "****************** RUNNING TESTS FOR icl 000b ***************************"
@@ -221,6 +228,8 @@ del readtest.exe readtest.obj
 copy /Y  ..\LIBRARY\icl111blibbid.lib ..\LIBRARY\libbid.lib
 nmake -nologo %1 CC=icl CALL_BY_REF=1 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
 readtest < readtest.in
+)
+
 echo ""
 echo ""
 echo "****************** RUNNING TESTS FOR cl 000b ***************************"

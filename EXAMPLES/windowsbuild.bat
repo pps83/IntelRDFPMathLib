@@ -1,4 +1,8 @@
-echo ""
+REM Set 'HAVE_ICL' flag based on icl availability
+where icl >nul 2>nul && set "HAVE_ICL=YES" || set "HAVE_ICL=NO"
+
+
+if "%HAVE_ICL%"=="YES" (echo ""
 echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 000 **************************"
 echo ""
@@ -78,6 +82,8 @@ copy /Y decimal.h_111 decimal.h
 copy /Y ..\LIBRARY\icl111libbid.lib ..\LIBRARY\libbid.lib
 icl -nologo main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
+)
+
 echo ""
 echo ""
 echo "***************** RUNNING EXAMPLE FOR cl 000 **************************"
@@ -162,8 +168,7 @@ del main.exe main.c decimal.h
 del ..\LIBRARY\libbid.lib
 
 
-
-
+if "%HAVE_ICL%"=="YES" (
 echo ""
 echo ""
 echo "***************** RUNNING EXAMPLE FOR icl 000b **************************"
@@ -244,6 +249,8 @@ copy /Y decimal.h_111 decimal.h
 copy /Y ..\LIBRARY\icl111blibbid.lib ..\LIBRARY\libbid.lib
 icl -nologo main.c /DWINDOWS ..\LIBRARY\libbid.lib %1
 main.exe
+)
+
 echo ""
 echo ""
 echo "***************** RUNNING EXAMPLE FOR cl 000b **************************"
