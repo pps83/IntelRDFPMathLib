@@ -1,3 +1,4 @@
+@echo off
 echo "BEGIN BUILDING AND RUNNING EXAMPLES IN WINDOWS..."
 call windowsbuild_icx.bat
 echo "END BUILDING AND RUNNING EXAMPLES IN WINDOWS..."

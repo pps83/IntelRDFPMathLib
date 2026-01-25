@@ -1,3 +1,4 @@
+@echo off
 echo "BEGIN TESTS IN WINDOWS..."
 del readtest.exe readtest.obj ..\LIBRARY\libbid.lib
 call windowsbuild_icl.bat WIN_IA64

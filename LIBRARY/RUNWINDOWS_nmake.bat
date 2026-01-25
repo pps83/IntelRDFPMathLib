@@ -1,3 +1,4 @@
+@echo off
 echo "BEGIN BUILDING LIBRARY IN WINDOWS..."
 
 del *.lib 2>nul
