@@ -3,7 +3,7 @@ echo ""
 echo "****************** RUNNING TESTS FOR cl 000 ***************************"
 echo ""
 echo ""
-del readtest.exe readtest.obj
+del readtest.exe readtest.obj 2>nul
 copy /Y  ..\LIBRARY\cl000libbid.lib ..\LIBRARY\libbid.lib
 nmake -nologo %1 CC=cl CALL_BY_REF=0 GLOBAL_RND=0 GLOBAL_FLAGS=0 UNCHANGED_BINARY_FLAGS=0
 readtest < readtest.in
