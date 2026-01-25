@@ -1,6 +1,6 @@
 echo "BEGIN BUILDING LIBRARY IN WINDOWS..."
 
-del *.lib
+del *.lib 2>nul
 
 call windowsbuild_nmake.bat -fmakefile.mak
 

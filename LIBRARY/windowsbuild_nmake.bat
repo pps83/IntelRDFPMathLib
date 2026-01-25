@@ -1,4 +1,4 @@
-del *.obj *.lib
+del *.obj *.lib 2>nul
 
 nmake -nologo %1  CC=cl CALL_BY_REF=0 GLOBAL_RND=0 GLOBAL_FLAGS=0 UNCHANGED_BINARY_FLAGS=0
 
