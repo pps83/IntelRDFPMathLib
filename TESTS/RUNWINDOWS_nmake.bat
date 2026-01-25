@@ -1,3 +1,4 @@
+@echo off
 echo "BEGIN TESTS IN WINDOWS..."
 del readtest.exe readtest.obj ..\LIBRARY\libbid.lib 2>nul
 call windowsbuild_nmake.bat -fmakefile.mak
