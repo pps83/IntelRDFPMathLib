@@ -235,6 +235,6 @@ $(BID_LIB): $(BID_OBJS)
 !ENDIF
 
 clean :
-   del *.$(OBJ) libbid.lib
+   del *.$(OBJ) libbid.lib 2>nul
 
 

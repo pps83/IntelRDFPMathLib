@@ -93,8 +93,8 @@ readtest$(OBJ) : readtest.c readtest.h test_bid_conf.h test_bid_functions.h
 	$(CC) -c $(CFLAGS) readtest.c
 
 clean:
-	$(RM) *$(OBJ)
-	$(RM) readtest$(EXE)
+	$(RM) *$(OBJ) 2>nul
+	$(RM) readtest$(EXE) 2>nul
 
 readtest$(EXE): readtest$(OBJ) $(BID_LIB)
 	$(CC) -nologo $(LMOPT) readtest$(OBJ) $(BID_LIB)
