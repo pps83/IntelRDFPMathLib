@@ -129,10 +129,13 @@
  */
 
 extern int raise(int);
-#if !defined(DPML_SIGNAL) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER) && \
-    !defined(wnt)
+#if !defined(DPML_SIGNAL) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
 
-#   include <sys/signal.h>
+#   if !defined(wnt) && !defined(win64)
+#      include <sys/signal.h>
+#   else
+#      include <signal.h>
+#   endif
 #   define DPML_SIGNAL(p)	 raise(SIGFPE)
 
 #else
