@@ -876,7 +876,7 @@
 // set sizeof (long) here, for bid32_lrint(), bid64_lrint(), bid128_lrint(),
 // and for bid32_lround(), bid64_lround(), bid128_lround()
 #ifndef BID_SIZE_LONG
-#if defined(WINDOWS)
+#if defined(WINDOWS) || defined(_WIN32)
 #define BID_SIZE_LONG 4
 #else
 #if defined(__x86_64__) || defined (__ia64__)  || defined(HPUX_OS_64)
@@ -887,7 +887,7 @@
 #endif
 #endif
 
-#if !defined(WINDOWS) || defined(__INTEL_COMPILER)
+#if !(defined(WINDOWS) || defined(_WIN32)) || defined(__INTEL_COMPILER)
 // #define UNCHANGED_BINARY_STATUS_FLAGS
 #endif
 // #define HPUX_OS
