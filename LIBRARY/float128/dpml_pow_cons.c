@@ -37,7 +37,7 @@
 **
 **  Abstract:
 **
-** 	This file is used to generate common include files for the 
+** 	This file is used to generate common include files for the
 **      DPML functions that are related to the exp function.  Currently
 **	the generated file is shared by:
 **
@@ -79,7 +79,7 @@
 **
 **	NO_ACC		Don't generate values for the accurate routines.
 **
-**	ONE_TYPE	Only generate values for the specified type 
+**	ONE_TYPE	Only generate values for the specified type
 **
 **	USE_DIVIDE	Generate constant necessary for doing the log argument
 **			    reduction using division
@@ -88,7 +88,7 @@
 **
 **				     Default
 **				---------------------
-**		   Switch	Single  Double  Quad 
+**		   Switch	Single  Double  Quad
 **		-----------	---------------------
 **		NO_FAST		False	False	True
 **		NO_ACC		False	False	False
@@ -116,28 +116,28 @@
 #if defined(NO_FAST)
 #   undef   NO_FAST
 #   define  NO_FAST	1
-#else	
+#else
 #   define  NO_FAST	_X_FLT_DEF
 #endif
 
 #if defined(NO_ACC)
 #   undef   NO_ACC
 #   define  NO_ACC	1
-#else	
+#else
 #   define  NO_ACC	0
 #endif
 
 #if defined(ONE_TYPE)
 #   undef   ONE_TYPE
 #   define  ONE_TYPE	1
-#else	
+#else
 #   define  ONE_TYPE	_X_FLT_DEF
 #endif
 
 #if defined(USE_DIVIDE)
 #   undef   USE_DIVIDE
 #   define  USE_DIVIDE	1
-#else	
+#else
 #   define  USE_DIVIDE	_X_FLT_DEF
 #endif
 
@@ -169,7 +169,7 @@
 #endif
 
 #if defined(MAKE_COMMON)
-#   define POW_TABLE_NAME	F_POW_TABLE_NAME 
+#   define POW_TABLE_NAME	F_POW_TABLE_NAME
 #   define _BUILD_FILE_NAME	F_POW_BUILD_FILE_NAME
 #else
 #   define POW_TABLE_NAME	__F_TABLE_NAME(POW_TABLE_BASE_NAME)
@@ -261,7 +261,7 @@
     ** GENERATING POLYNOMIAL COEFFICIENTS:
     ** -----------------------------------
     **
-    ** All of the polynomial coefficients in this file are generated via the 
+    ** All of the polynomial coefficients in this file are generated via the
     ** Remes min/max error algorithm.  This algorithm takes as one of its input
     ** arguments, the function to be approximated, F(x).  For example, if we
     ** look at generating the exp and pow polynomials, F(x) can be one of e^x,
@@ -279,10 +279,10 @@
     ** coefficients, the invocation of genpoly that generates the evaluation
     ** macros is encoded as a macro definition at the time the coefficients
     ** are generated.  The macro is instantiated after the constant table is
-    ** generated. 
+    ** generated.
     **
     ** Lastly, each set of coefficients is generated into the array 'coefs', so
-    ** that it can be printed via a subroutine.  This requires that the 
+    ** that it can be printed via a subroutine.  This requires that the
     ** coefficients are printed immediately after they are generated.
     **/
 
@@ -348,7 +348,7 @@
     ** say 2^k.  Writing x*(lnb/ln2) as the sum of its integer, first k fraction
     ** bits and a reduced arguement we have:
     **
-    **		x(lnb/ln2) = I + j/2^k + w,	|w| < 2^(k+1) 
+    **		x(lnb/ln2) = I + j/2^k + w,	|w| < 2^(k+1)
     **
     ** Letting z = w*(ln2/lnb) = x - (I + j/2^k)*(ln2/lnb), the computation of
     ** e^x proceeds as:
@@ -361,20 +361,20 @@
     **
     ** In (1), the alignment shift between 1 and z*p(z) is at least k+1 bits,
     ** so if care is taken in computing 2^I*2^(j/2^k) high accuracy in the
-    ** final answer is possible.  Toward this end, we suppose the values of 
+    ** final answer is possible.  Toward this end, we suppose the values of
     ** 2^(j/2^k) are stored in a table in hi and lo pieces, T(j) and L(j).
     ** Then (1) can be re-written as:
     **
     **		b^x = 2^I * 2^(j/2^k) * [ 1 + z*p(z) ]
     **		    = 2^I * [ T(j) + L(j) ] * [ 1 + z*p(z) ]
     **		    = 2^I * { T(j) + L(j) + [ T(j) + L(j) ]*z*p(z) }
-    **		     
+    **
     ** There are various way to define T(j) and L(j) so that "extra"
     ** precision is obtained.  The definition we use here was chosen to
     ** optimize the performance of the fast exp and pow routines.  In
     ** particular:
     **
-    **			T(j) = bround( 2^(j/2^k), F_PRECISION) 
+    **			T(j) = bround( 2^(j/2^k), F_PRECISION)
     **			L(j) = 2^(j/2^k) - T(j)
     **
     ** With this definition, the term L(j)*z*p(z) is insignificant in the
@@ -388,7 +388,7 @@
     **
     **		b^x = 2^I * { T(j) + [ L(j) + T(j)*z*p(z) ] }
     **		    = 2^I * { T(j) + T(j)* [ R(j) + z*p(z) ] }
-    **		    = 2^I * T(j) + 2^I*T(j)* [ R(j) + z*p(z) ] 
+    **		    = 2^I * T(j) + 2^I*T(j)* [ R(j) + z*p(z) ]
     **		    = V(I,j) + V(I, j)* [ R(j) + z*p(z) ] 		(3)
     **
     ** where V(I,j) = 2^I * T(j).  Note that on pipelined architectures,
@@ -398,7 +398,7 @@
     ** point unit.
     */
 
-    /* 
+    /*
     ** POW2 TABLE
     ** ----------
     **
@@ -428,7 +428,7 @@
               "\n\t * Tj = 2^(j/2^POW2_K)"				\
               "\n\t *"							\
               "\n\t * offset                                   row"	\
-	      "\n\t"	
+	      "\n\t"
 
 #       define PRINT_POW2_TABLE_ACCESS_MACROS(disp)			\
         	PRINT_LOG_TABLE_DEF("GET_POW2(j)\t",   B_CHAR, disp)
@@ -481,7 +481,7 @@
         if ((VAX_FLOATING) || (ENDIANESS == big_endian))
             disp_lo = root_disp + (BITS_PER_F_TYPE - BITS_PER_WORD);
         else
-            root_disp += (BITS_PER_F_TYPE - BITS_PER_WORD);    
+            root_disp += (BITS_PER_F_TYPE - BITS_PER_WORD);
 
         /*
         ** If the word size is verfy small relative to the floating point
@@ -493,13 +493,13 @@
             {
             printf("#define IPOW2_LO(u,j)\t\tu.f = "
               "*((B_TYPE *) ((char *) " STR(MP_TABLE_NAME)
-               " + (j)))\n"); 
+               " + (j)))\n");
             }
         else
             {
             printf("#define IPOW2_LO(u,j)\t\tu.B_LO_WORD = "
               "*((WORD *) ((char *) " STR(MP_TABLE_NAME)
-               " + %i + (j)))\n", BYTES(disp_lo)); 
+               " + %i + (j)))\n", BYTES(disp_lo));
             }
         }
 
@@ -705,10 +705,10 @@
             PRINT_TBL_COM_VDEF_ITEM("2^-F_EXP_WIDTH/ln2",
                "SCALE_DOWN_OVER_LN2\t", c);
             }
-        else 
+        else
             {
             TABLE_COMMENT("2^-F_EXP_WIDTH/log(2) in full, hi, lo");
- 
+
             c_hi = bround(c, F_PRECISION - F_HI_HALF_PRECISION - 2*LOG2_K + 1);
             PRINT_TBL_VDEF_ITEM("SCALE_DOWN_OV_LN2",  c);
             PRINT_TBL_VDEF_ITEM("SCALE_DOWN_OV_LN2_HI", c_hi);
@@ -734,7 +734,7 @@
             }
         ENDIF
 
-        /* 
+        /*
         ** As noted above, the fast pow and exp routines scale there input
         ** argument down to avoid premature overflow and we need  to
         ** compensated for it in the polynomial coefficients.
@@ -786,7 +786,7 @@
     **
     **	   2^(F_MIN_BIN_EXP - F_PRECISION + 1) <= x < 2^F_MAX_BIN_EXP
     **
-    ** It follows that 
+    ** It follows that
     **
     **  (F_MIN_BIN_EXP - F_PRECISION + 1)*ln2 <= log2(x) < F_MAX_BIN_EXP*ln2
     **
@@ -882,7 +882,7 @@
     **
     ** As with accurate power, accurate exp screens it argument prior to
     ** to any floating point calculation, so it is un-neccessary to scale
-    ** the product x*(1/ln2).  This means that the value of BIG and the 
+    ** the product x*(1/ln2).  This means that the value of BIG and the
     ** polynomial coefficients also don't require any scaling
     */
 
@@ -1047,7 +1047,7 @@
     ** arguments (where a polynomial approximation is appropriate).
     **
     ** The bound for large positive arguments is the same as for exp.  For
-    ** large negative arguments, we want to know where expm1(x) = -1 to 
+    ** large negative arguments, we want to know where expm1(x) = -1 to
     ** machine precision.  Because the check is done on both positive and
     ** negative arguments on a sign/magnitude value, it is done in two
     ** parts, one for the positive arguments and one for the negative
@@ -1067,7 +1067,7 @@
       "EXPM1_POLY_CHECK_F", poly);
     PRINT_U_TBL_VDEF_ITEM("EXPM1_HI_CHECK_F",  hi);
     PRINT_U_TBL_VDEF_ITEM("EXPM1_LO_CHECK_F",  lo);
-      
+
 
     if (!ONE_TYPE)
         {
@@ -1205,10 +1205,10 @@
             while(1)
                 {
                 k += 2;
-                t = (t*z)/(k*k - k); 
+                t = (t*z)/(k*k - k);
                 if ((bexp(s) - bexp(t)) > bit_precision)
-                    break; 
-                s += t; 
+                    break;
+                s += t;
                 }
             }
         ENDIF
@@ -1298,7 +1298,7 @@
     ** must be passed on to the functions that use the generated table and
     ** also generates constants that are not assocaiated with any particular
     ** function.  Begin by recording the current build parameters.
-    */ 
+    */
 
     printf("#define LOG2_K\t\t\t%i\n",   LOG2_K);
     printf("#define POW2_K\t\t\t%i\n",   POW2_K);
@@ -1310,7 +1310,7 @@
     ** Generate a floating point 1.0 for use in expm1 and scaling the input
     ** argument in the power functions.  Also generate 1/ln2 for scaling the
     ** input argument in exp, expm1 and sinh/cosh and .5 for near
-    ** overflow/underflow fixup. 
+    ** overflow/underflow fixup.
     */
 
 
@@ -1329,7 +1329,7 @@
     ** -------------------------------------
     **
     ** This implementation computes the power x^y in three conceptual stages:
-    **   
+    **
     **     o  compute log2(x), with some extra bits of precision
     **     o  multiply  y * log2(x), maintaining the extra precision
     **     o  evaluate 2 ^ product.
@@ -1350,16 +1350,16 @@
     ** function of the log2 table size and the argument reduction scheme used.
     ** By way of explaination, consider calculating log2(f) for f in the
     ** interval [1,2).  Let the table size for the log2 evaluation be 2^LOG2_K
-    ** and let j the integer such that Fj = 1 + j/2^LOG2_K is closest to f. 
+    ** and let j the integer such that Fj = 1 + j/2^LOG2_K is closest to f.
     ** With the above definitions, we consider two possible argument reduction
     ** schemes:
     **
     **	With  :     z = (f - Fj)/(f + Fj)
     **	divide:	    log2(f) = log2(Fj) + (2/ln2)*[z + z^3/3 + z^5/5 + ...]
-    **		 
+    **
     **	Without:    w = (f - Fj)/Fj
     **   divide:    log2(f) = log2(Fj) + (1/ln2)*[w - w^2/2 + w^3/3 - ... ]
-    **		
+    **
     ** The worst case senario for accuracy is when f = 1 + 1/2^(LOG2_K + 1).
     ** This implies that log2(Fj) = 0 and that we can only get extended
     ** precision in the log2 computation by computing the first "few" terms
@@ -1404,7 +1404,7 @@
     ** 		NOTE: A more detailed discussion of the follow
     **		two sections is contained in dpml_pow.c
     **
-    ** 
+    **
     ** Reduction With Divides:
     ** -----------------------
     **
@@ -1537,10 +1537,10 @@
             while(1)
                 {
                 k += 2;
-                u = t/k; 
+                u = t/k;
                 if ((bexp(s) - bexp(u)) > bit_precision)
-                    break; 
-                s += u; 
+                    break;
+                s += u;
                 t *= z;
                 }
             }
@@ -1555,19 +1555,19 @@
     **
     ** For the accurate pow, we let v = w/ln2, and write the above as:
     **
-    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ... 
+    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ...
     **	                 = (v - v^2*ln2/2) + v^3*(ln2^2/3 - v*ln2^3/4  ...)
     **	                 = (v - v^2*ln2/2) + v^3*P(v)   ( if no backup prec )
     **
     ** For fast pow we write the power series as:
     **
-    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ... 
+    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ...
     **	                 = v + v^2*(-ln2/2 + v*ln2^2/3 - v^2*ln2^2/4 + ...)
     **	                 = v + v^2*P(v)   ( if no backup prec )
     **
     ** If backup precision is available we can write the series as
     **
-    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ... 
+    **        log2(F/Fj) = v - v^2*ln2/2 + v^3*ln2^2/3 ...
     **	                 = v*P(v)
     **
     ** Note that whether using the divide or non-divide form, the reduced
@@ -1587,10 +1587,10 @@
             t = z;
             while(1)
                 {
-                u = t/k; 
+                u = t/k;
                 if (bexp(s) - bexp(u) > bit_precision)
-                    break; 
-                s += u; 
+                    break;
+                s += u;
                 t *= z;
                 k++;
                 }
@@ -1751,7 +1751,7 @@
     **	acc pow  / no backup / divide	 | x |               |      x     x  |
     **	acc pow  / no backup / no divide | x | x             |      x     x  |
     **	---------------------------------+---+---------------+---------------+
-    ** 
+    **
     ** Based on the above table and the number of possible combinations
     ** for sharing of the table, the log table can have many different formats.
     ** In the interest of time and simplicity, only the two combination

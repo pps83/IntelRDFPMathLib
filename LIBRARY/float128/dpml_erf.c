@@ -32,12 +32,12 @@
 #   define _F_ENTRY_NAME	F_ERFC_NAME
 #   define SELECT(x,y)		y
 #   define IF_ERFC(x)		x
-#   define IF_ERF(x)	 
+#   define IF_ERF(x)
 #else
 #   define BASE_NAME		ERF_BASE_NAME
 #   define _F_ENTRY_NAME	F_ERF_NAME
 #   define SELECT(x,y)		x
-#   define IF_ERFC(x)	 
+#   define IF_ERFC(x)
 #   define IF_ERF(x)		x
 #endif
 
@@ -87,11 +87,11 @@
 
 /*
  *  This is a hack on Alpha VMS and NT for the function
- *  F_EXP_SPECIAL_ENTRY_NAME.  In particular, the return argument 
+ *  F_EXP_SPECIAL_ENTRY_NAME.  In particular, the return argument
  *  WORD *pow_of_two.  Since WORD is defined as int_32 on these two platforms
  *  and dpml_exp.c changes the WORD definition there to int_64, we need to make
  *  sure *pow_of_two is defined as int_64 (since that is what dpml_exp.c
- *  declared).  These #if defined can be removed as soon as those platforms 
+ *  declared).  These #if defined can be removed as soon as those platforms
  *  support 64 bits.
  */
 #if ((defined(ALPHA) || defined(alpha)) && (defined(wnt) || defined(vms)))
@@ -221,7 +221,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 #   else
 #      define NUM_INT_BITS	BITS_PER_F_TYPE
 #   endif
-    
+
     function purify()
         {
         _n = bexp($1) - NUM_INT_BITS;
@@ -320,7 +320,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
      *
      *		arc_erf(x) = z + (2/2!)*z^3 + (28/5!)*z^5 + ...
      *
-     * Since we are only interested in generating constants good to 
+     * Since we are only interested in generating constants good to
      * machine precision and since lambda < 1/2^F_PRECISION, we need only
      * take two terms in the series.
      */
@@ -329,7 +329,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
     smallest_erfc_poly_arg = lambda*(1 + lambda*lambda);
 
     smallest_erfc_poly_arg = purify(smallest_erfc_poly_arg);
-    
+
 
 /*
  * DENORM PROCESSING:
@@ -382,11 +382,11 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
  * The upshot of the above, is that if approximate erf(x) - x on the interval
  * [0, .617] then we can compute both erf(x) and erfc(x) using that
  * approximation and obtain (almost always) a 3 bit overhang on the last
- * add.  This should result in an error bound < 1 ulp on that interval for 
+ * add.  This should result in an error bound < 1 ulp on that interval for
  * both functions.
  *
  * Note that when computing 1 - x in the erfc case, the subtraction is not
- * exact so some care needs to be taken.  Specifically, let z = 1 - x and 
+ * exact so some care needs to be taken.  Specifically, let z = 1 - x and
  * y = x + (z - 1), then we can compute erfc as:
  *
  *		erfc(x) = (1 - x) + x*[R(x^2) - 1]
@@ -438,7 +438,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
  *		erf(t) = 1 - 1/2^(F_PRECISION + 1)
  *
  * Then if x >= t, erf(x) = 1 correctly rounded to machine precision.  Note
- * that the above equation is equivalent to 
+ * that the above equation is equivalent to
  *
  *		erfc(t) = 1/2^(F_PRECISION + 1)
  */
@@ -545,7 +545,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
  *		erfc(x) = exp(-x^2)*z*[.5 + p(z^2)] where z = 1/x	(5)
  *
  */
-    
+
 
     old_precision = precision;
     precision = ceil(2*F_PRECISION/MP_RADIX_BITS) + 4;
@@ -596,7 +596,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
  *	permit implementation of this scheme.  Instead we will use one
  *	expansion with n = 3.
  */
-    
+
 
     old_precision = precision;
     precision = ceil(2*F_PRECISION/MP_RADIX_BITS) + 4;
@@ -649,7 +649,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
  *	          = 2^I*{ fhi + [flo - f*lo*Q(lo)]}
  *	          = 2^I*{ fhi + V }
  *
- * Noting the computation of exp(-x^2), using expansion (3) to compute erfc(x) 
+ * Noting the computation of exp(-x^2), using expansion (3) to compute erfc(x)
  * results in a computation of the form:
  *
  *	erfc(x) = exp(-x^2)*z*[.5 + P(z^2)]			(5)
@@ -720,7 +720,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 
 #   undef  PRECISION_BACKUP_AVAILABLE
 #   define PRECISION_BACKUP_AVAILABLE	1
-        
+
 #   if !defined(X_SQR_TO_HI_LO)
 #	define X_SQR_TO_HI_LO(x, t, hi, lo) { \
 	    t = (B_TYPE) x; \
@@ -802,7 +802,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
     old_precision = precision;
     precision = ceil(2*F_PRECISION/MP_RADIX_BITS) + 8;
 
-    function exp_m1_ov_x() 
+    function exp_m1_ov_x()
         {
         if ($1 == 0)
             return 1;
@@ -858,7 +858,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
         printf("    extern const " STR(F_TYPE) " " STR(TABLE_NAME) "[];\n");
         printf("\n#endif\n\n");
         )
-    
+
     printf("#define ERF_POLY(t,z)\t\tPOLY_%i_ALL(t, ERF_POLY_COEFS, z)\n",
         erf_poly_degree);
 
@@ -878,7 +878,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
     /*
      * The following function returns an "integer" that has the same bit
      * pattern as the floating point value.  (NOTE: for VAX data types
-     * the floating point "bit pattern" is after a PDP_SHUFFLE.) 
+     * the floating point "bit pattern" is after a PDP_SHUFFLE.)
      */
 
 
@@ -1009,7 +1009,7 @@ F_TYPE F_ENTRY_NAME (F_TYPE x)
     z = x*z;
 
     /*
-     * Add in last term.  For erf, add in x, for erfc, carefully add in 
+     * Add in last term.  For erf, add in x, for erfc, carefully add in
      * 1 - x
      */
 
@@ -1033,7 +1033,7 @@ not_a_poly_argument:
        ) goto return_constant;
 
     /* If x is a large positive number, erfc will underflow */
-  
+
     IF_ERFC( if (exp_word > MIN_UNDERFLOW_ARG) goto underflow; )
 
     /*
@@ -1106,7 +1106,7 @@ needs_asymtotic:
     if (scale <= 0) goto denorm_or_underflow;
     z = _u_.f;
     return z;
-       
+
 denorm_or_underflow:
 
 #   if IEEE_FLOATING

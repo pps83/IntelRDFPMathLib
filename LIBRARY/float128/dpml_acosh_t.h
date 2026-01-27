@@ -36,7 +36,7 @@ static const TABLE_UNION max_asym_x[] = { DATA_1x2( 0xd1a81cd8, 0x41a46ac2 ) };
 
 #define EVALUATE_ASYM_RANGE_POLYNOMIAL(x,c,y) \
                          POLY_9(x,c,y)
-static const TABLE_UNION asym_range_coef[] = { 
+static const TABLE_UNION asym_range_coef[] = {
 	DATA_1x2( 0x00000000, 0x3fd00000 ),
 	DATA_1x2( 0xffffff07, 0x3fb7ffff ),
 	DATA_1x2( 0xaaaddfbf, 0x3faaaaaa ),
@@ -46,11 +46,11 @@ static const TABLE_UNION asym_range_coef[] = {
 	DATA_1x2( 0xa311158b, 0x3f8eb0ca ),
 	DATA_1x2( 0x0a8b1f0a, 0x3f88674b ),
 	DATA_1x2( 0x0da7b094, 0x3f8b082b ),
-}; 
+};
 
 static const TABLE_UNION half_huge_x[] = { DATA_1x2( 0xffffffff, 0x7fdfffff ) };
 
 static const TABLE_UNION log_2[] = {
-        DATA_1x2( 0xfefa39ef, 0x3fe62e42 ) 
+        DATA_1x2( 0xfefa39ef, 0x3fe62e42 )
 };
 

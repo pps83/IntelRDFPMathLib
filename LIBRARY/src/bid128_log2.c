@@ -96,7 +96,7 @@ BID128_FUNCTION_ARG1 (bid128_log2, x)
    { BID_UINT128 x_mod;
      BIDECIMAL_CALL2 (bid128_mul, x_mod, x, BID128_10POWN4464);
      BIDECIMAL_CALL1 (bid128_to_binary128, xq, x_mod);
-     __bid_f128_log2(rq, xq); 
+     __bid_f128_log2(rq, xq);
      __bid_f128_add(rq, rq, c_4464_log2_10.v);
      BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
      BID_RETURN (res);
@@ -122,7 +122,7 @@ BID128_FUNCTION_ARG1 (bid128_log2, x)
      BIDECIMAL_CALL1 (bid128_to_binary128, xq, x);
      __bid_f128_log2(rq, xq);
      __bid_f128_sub(e_bin, xq, c_one.v);
-     __bid_f128_fabs(rt, e_bin); 
+     __bid_f128_fabs(rt, e_bin);
      if (__bid_f128_lt(rt, c_half.v))
       { BID_F128_TYPE tmp_e_bin;
         BID_UINT128 e;

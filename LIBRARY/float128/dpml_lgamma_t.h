@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION __lgamma_t_table[] = { 
+    static const TABLE_UNION __lgamma_t_table[] = {
 
 	/* Miscelaneous constants */
 	/* 000 */ DATA_1x2( 0x278b51a7, 0x7f5754d9 ),

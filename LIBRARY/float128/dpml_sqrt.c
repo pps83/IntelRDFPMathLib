@@ -205,7 +205,7 @@ typedef struct {
 
 extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 
-
+
 /*
 **  SCALE_AND_DO_INDEXED_POLY_APPROX
 **
@@ -267,7 +267,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 	/* end of SCALE_AND_DO_INDEXED_POLY_APPROX */
 
 
-
+
 /*----------------------------------------------------------------------------*/
 /*                      Tuckerman's Rounding                                  */
 /*----------------------------------------------------------------------------*/
@@ -328,7 +328,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 ** produce a correctly-rounded 24-bit result, since (2^(1-24))^2/8 = 2^(1-50).
 ** After our Newton's iteration, we have nearly 53-bit accuracy.  All is well.
 */
-
+
 /*----------------------------------------------------------------------------*/
 /*			Computing 'x+' and 'x-'				      */
 /*----------------------------------------------------------------------------*/
@@ -371,7 +371,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 **	c = 5/8 lsb(1) = 5/8 2^(1-p) = 5/4 2^(-p)
 **
 ** FWIW: It's possibly to compute 'x-' by:	'x-' = {x * (1-lsb(1/2))},
-** but 'x+' isn't necessarily computed by:	'x+' = {x * (1+lsb(1))}. 
+** but 'x+' isn't necessarily computed by:	'x+' = {x * (1+lsb(1))}.
 */
 
 #if defined(SQRT)
@@ -389,7 +389,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 #endif
 
 
-
+
 /*----------------------------------------------------------------------------*/
 /*			Newton's Iteration     				      */
 /*----------------------------------------------------------------------------*/
@@ -411,7 +411,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 	y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb error
 	y' = scale/2 * x * y * ( 3 - x * y^2 )			gives about 8/4 lsb error
 
-    So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x). 
+    So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).
 */
 
 /*
@@ -448,12 +448,12 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 
 #else
 
-#       define NEWTONS_ITERATION 
+#       define NEWTONS_ITERATION
 
 #endif
 
 
-
+
 /*----------------------------------------------------------------------------*/
 /*			ITERATE_AND_MAYBE_CHECK_LAST_BIT		      */
 /*----------------------------------------------------------------------------*/
@@ -486,7 +486,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 	when we need to (if ever).  There is code in older versions of
 	sqrt that does a tuckermans rounding on single prec values.  */
 
-#	error "We need to worry about it now." 
+#	error "We need to worry about it now."
 
 #elif SQRT && (F_PRECISION <= 24) && (B_PRECISION >= 2*F_PRECISION)
 
@@ -566,7 +566,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 		F_MUL_CHOPPED(y, y_plus_1_ulp, b); \
 		RESTORE_ROUNDING_MODE(old_mode); \
 		y = ((a >= x) ? y_less_1_ulp : y); \
-		y = ((b <  x) ? y_plus_1_ulp : y);			
+		y = ((b <  x) ? y_plus_1_ulp : y);
 
 #	define RESULT y
 
@@ -585,7 +585,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 #endif
 
 
-
+
 /*----------------------------------------------------------------------------*/
 /*                      The Function Itself!                                  */
 /*----------------------------------------------------------------------------*/
@@ -611,8 +611,8 @@ F_TYPE F_ENTRY_NAME(F_TYPE x)
 	LS_INT_TYPE   exp, save_exp;
 	U_LS_INT_TYPE index;
 	U_LS_INT_TYPE lo_exp_bit_and_hi_frac;
-	U_LS_INT_TYPE hi_exp_mask = HI_EXP_BIT_MASK; 
-	U_LS_INT_TYPE exp_of_one_half = EXP_BITS_OF_ONE_HALF; 
+	U_LS_INT_TYPE hi_exp_mask = HI_EXP_BIT_MASK;
+	U_LS_INT_TYPE exp_of_one_half = EXP_BITS_OF_ONE_HALF;
 
 #if defined(HAS_SQRT_INSTRUCTION) && ( FAST_SQRT || SQRT ) && ( SINGLE_PRECISION || DOUBLE_PRECISION )
 	u.f = (B_TYPE)x;
@@ -625,7 +625,7 @@ F_TYPE F_ENTRY_NAME(F_TYPE x)
 
 	return RESULT;
 #else
-	SCALE_AND_DO_INDEXED_POLY_APPROX; 
+	SCALE_AND_DO_INDEXED_POLY_APPROX;
 
 	if INPUT_IS_ABNORMAL
 		goto abnormal_input;
@@ -633,9 +633,9 @@ F_TYPE F_ENTRY_NAME(F_TYPE x)
         NEWTONS_ITERATION;
         NEWTONS_ITERATION;
 
-	ITERATE_AND_MAYBE_CHECK_LAST_BIT; 
+	ITERATE_AND_MAYBE_CHECK_LAST_BIT;
 
-	return RESULT; 
+	return RESULT;
 #endif
 
 
@@ -654,11 +654,11 @@ abnormal_input:
 	} else {
 		GET_EXCEPTION_RESULT_1(SQRT_OF_NEGATIVE, x, RESULT);
 	}
-	return RESULT; 
+	return RESULT;
 
 
 #elif (IEEE_FLOATING)
- 
+
 	F_CLASSIFY(x, index);
 
 	switch (index) {
@@ -718,7 +718,7 @@ abnormal_input:
 
                 NEWTONS_ITERATION;
                 NEWTONS_ITERATION;
-	
+
 		ITERATE_AND_MAYBE_CHECK_LAST_BIT;
 #endif
 
@@ -735,7 +735,7 @@ abnormal_input:
 }  /* sqrt */
 
 
-
+
 /*----------------------------------------------------------------------------*/
 /*                      MPHOC code to generate the table                      */
 /*----------------------------------------------------------------------------*/
@@ -833,7 +833,7 @@ for (h = 1; h <= 2; h++) {
 	** maximum absolute error between the 'Remes' polynomial and the new
 	** polynomial (since the difference is a Chebyshev polynomial, which
 	** has the 'equal ripple' property).
-	** 
+	**
 	** Then we subtract (a multiple of) the 1st degree Chebyshev polynomial
 	** to produce a new polynomial with the desired (representable in single
 	** precision) 1st degree coefficient.  This minimizes the maximum
@@ -873,7 +873,7 @@ for (h = 1; h <= 2; h++) {
 	**	| t*( x - (1+1+2^-7)/2 ) | <= 0.5*lsb(1.24) * 2^-8 = 2^(-24 -8)
 	**
 	** which is only 0.0078125*s_lsb(1/sqrt(x)) -- a factor of 256 smaller
-	** than the corruption from simply rounding the x coefficient. 
+	** than the corruption from simply rounding the x coefficient.
 	**
 	** To minimize the (absolute value of the) maximum corruption, we add
 	** a multiple of a Chebyshev polynomial, for the particular range of x,
@@ -882,7 +882,7 @@ for (h = 1; h <= 2; h++) {
 	** For the range -1 <= w <= 1, the Chebyshev polynomials are:
 	**
 	**	1,  w,  2*w^2-1,  4*w^3-3*w,  ....
-	** 
+	**
 	** To convert these to polynomials in x for the range a <= x <= b,
 	** substitute (x-m)/r, with m = (b+a)/2, r = (b-a)/2, and z = m/r.
 	** The Chebyshev polynomials become:
@@ -908,7 +908,7 @@ for (h = 1; h <= 2; h++) {
 	** than 0.5*lsb(0.37)*2^-17 = 2^-43, or 2^-18*s_lsb(1/sqrt(x)).  This is
 	** far better than the the 1/2 lsb we got when we simply rounded the x^2
 	** coefficient.
-	** 
+	**
 	** Can this technique be applied to other polynomial coefficients?
 	** It is an invention of my own conception developed outside the term
 	** of my contract, and for which I've received no compensation.
@@ -944,7 +944,7 @@ for (h = 1; h <= 2; h++) {
 
 #endif  /* MAKE_INCLUDE */
 
-
+
 /*----------------------------------------------------------------------------*/
 /*                              Testing                                       */
 /*----------------------------------------------------------------------------*/
@@ -957,8 +957,8 @@ for (h = 1; h <= 2; h++) {
 
 build default = "sqrt.a";
 
-function SINGLE_SQRT      = F_CHAR F_SQRT_NAME(F_CHAR.v.r); 
-function FAST_SINGLE_SQRT = F_CHAR F_FAST_SQRT_NAME(F_CHAR.v.r); 
+function SINGLE_SQRT      = F_CHAR F_SQRT_NAME(F_CHAR.v.r);
+function FAST_SINGLE_SQRT = F_CHAR F_FAST_SQRT_NAME(F_CHAR.v.r);
 function DOUBLE_SQRT      = B_CHAR B_SQRT_NAME(B_CHAR.v.r);
 function FAST_DOUBLE_SQRT = B_CHAR B_FAST_SQRT_NAME(B_CHAR.v.r);
 function MP_SQRT          = void mp_sqrt(m.r.r, m.r.w);
@@ -1002,32 +1002,32 @@ domain FAST_DOUBLE_SQRT_KEYPOINTS =
 test sqrt_acc_sd =
 	type   = SQRT_ACCURACY;
 	domain = SINGLE_SQRT_ACCURACY;
-	function            = SINGLE_SQRT; 
+	function            = SINGLE_SQRT;
 	comparison_function = FAST_DOUBLE_SQRT;
-	output = 
+	output =
 		file = "sqrt_acc_sd.out";
 	;
-; 
+;
 
 test sqrt_denorm_acc_sd =
 	type   = SQRT_ACCURACY;
 	domain = SINGLE_SQRT_DENORMS;
-	function            = SINGLE_SQRT; 
+	function            = SINGLE_SQRT;
 	comparison_function = FAST_DOUBLE_SQRT;
-	output = 
+	output =
 		file = "sqrt_denorm_acc_sd.out";
 	;
-; 
+;
 
 test fast_sqrt_acc_sd =
 	type   = SQRT_ACCURACY;
 	domain = SINGLE_SQRT_ACCURACY;
-	function            = FAST_SINGLE_SQRT; 
+	function            = FAST_SINGLE_SQRT;
 	comparison_function = FAST_DOUBLE_SQRT;
-	output = 
+	output =
 		file = "fast_sqrt_acc_sd.out";
 	;
-; 
+;
 
 
 test sqrt_acc_dm =
@@ -1038,7 +1038,7 @@ test sqrt_acc_dm =
 	output =
 		file = "sqrt_acc_dm.out";
 	;
-; 
+;
 
 test sqrt_denorm_acc_dm =
 	type   = SQRT_ACCURACY;
@@ -1048,7 +1048,7 @@ test sqrt_denorm_acc_dm =
 	output =
 		file = "sqrt_denorm_acc_dm.out";
 	;
-; 
+;
 
 test fast_sqrt_acc_dm =
 	type   = SQRT_ACCURACY;
@@ -1058,12 +1058,12 @@ test fast_sqrt_acc_dm =
 	output =
 		file = "fast_sqrt_acc_dm.out";
 	;
-; 
+;
 
 
 test sqrt_key_sd =
-    type   = key_point; 
-    domain = SQRT_KEYPOINTS; 
+    type   = key_point;
+    domain = SQRT_KEYPOINTS;
     function            = SINGLE_SQRT;
     comparison_function = DOUBLE_SQRT;
     output =
@@ -1073,8 +1073,8 @@ test sqrt_key_sd =
 ;
 
 test sqrt_key_dm =
-    type   = key_point; 
-    domain = SQRT_KEYPOINTS; 
+    type   = key_point;
+    domain = SQRT_KEYPOINTS;
     function            = DOUBLE_SQRT;
     comparison_function = MP_SQRT;
     output =
@@ -1084,8 +1084,8 @@ test sqrt_key_dm =
 ;
 
 test fast_sqrt_key_sd =
-    type   = key_point; 
-    domain = FAST_SINGLE_SQRT_KEYPOINTS; 
+    type   = key_point;
+    domain = FAST_SINGLE_SQRT_KEYPOINTS;
     function            = FAST_SINGLE_SQRT;
     comparison_function = FAST_DOUBLE_SQRT;
     output =
@@ -1095,8 +1095,8 @@ test fast_sqrt_key_sd =
 ;
 
 test fast_sqrt_key_dm =
-    type   = key_point; 
-    domain = FAST_DOUBLE_SQRT_KEYPOINTS; 
+    type   = key_point;
+    domain = FAST_DOUBLE_SQRT_KEYPOINTS;
     function            = FAST_DOUBLE_SQRT;
     comparison_function = MP_SQRT;
     output =

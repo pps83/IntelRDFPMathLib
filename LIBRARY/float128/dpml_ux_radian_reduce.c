@@ -61,7 +61,7 @@
 #define DEFINES
 #include STR(FOUR_OVER_PI_BUILD_FILE_NAME)
 
-
+
 /*
 ** BASIC ALGORITHM:
 ** ----------------
@@ -117,7 +117,7 @@
 **              2^(n-P')*(4/pi) = J*8 + g
 **
 ** That is, J is an integer formed from the first n-P'-3 bits of 4/pi and
-** g is value formed by the remaining bits.  It follows that 
+** g is value formed by the remaining bits.  It follows that
 **
 **              x/(pi/4) = F*{2^(n-P')*(4/pi)}
 **                       = F*(J*8 + g)
@@ -133,7 +133,7 @@
 ** flavor:
 **
 **              (1) index into a precomputed bit string for 4/pi to
-**                  obtain g 
+**                  obtain g
 **              (2) compute w = F*g (mod 8)
 **              (3) w <-- integer part of w + octant (mod 8)
 **              (4) Q <-- nint(w)
@@ -144,7 +144,7 @@
 **			-----------
 **
 ** The following sections describe the implementation issues associated with
-** each of the steps in algorithm I as well as present the code for the 
+** each of the steps in algorithm I as well as present the code for the
 ** overall implementation.
 **
 **
@@ -166,7 +166,7 @@
 **	            00...001.01000101111.....
 **                          ^
 **                          |
-**		       binary point 
+**		       binary point
 **
 ** From the above discussion, we want to shift the binary point of the bit
 ** string n-P' bits to the right and extract g as some (as yet undetermined)
@@ -192,7 +192,7 @@
 ** we require the 4/pi table "digit" and a UX_FRACTION_DIGIT have the same
 ** length (which implies the digit length is either 32 or 64 bits).
 */
-   
+
 #if (BITS_PER_DIGIT != BITS_PER_UX_FRACTION_DIGIT_TYPE)
 #   error "Digit type mis-match"
 #endif
@@ -209,7 +209,7 @@
 #define DIV_REM_BY_L(n,q,r)	(q) = (n) >> __LOG2(BITS_PER_DIGIT); \
 				(r) = (n) & (BITS_PER_DIGIT - 1)
 
-
+
 /******************************************************************************/
 /*									      */
 /*		Generate code for multi-precision multiplication	      */
@@ -256,7 +256,7 @@
     ** argument will not have enough significant bits) then we can compute
     ** additional bits of w.
     **
-    ** In order to compute F*g to P + k + 3 bits, we must perform some form of 
+    ** In order to compute F*g to P + k + 3 bits, we must perform some form of
     ** extended precision arithmetic.  For the sake of uniformity across data
     ** types and architectures, the implementation described here computes F*g
     ** by expressing F and g as fixed point values in "arrays" of some basic
@@ -408,7 +408,7 @@
     **		            ever compaction took place, i.e. what the current
     **			    value of s is.)
     **              (11) y = z*(pi/4)
-    **		
+    **
     **				Algorithm II
     **				------------
     **
@@ -462,7 +462,7 @@
     **		    for (j = 0; j < num_F_digits; j++)
     **		        t = t + F[j]*g[i]*2^(j*L)
     **		    w[i] = t mod 2^L;
-    **		    t = (t >> L);            
+    **		    t = (t >> L);
     **		    }
     **
     **			      Example 1
@@ -474,16 +474,16 @@
     **
     ** If F contains n digits, then the sum in the above loops looks like:
     **
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **   t: |  t(n)  | ... | t(j+3) | t(j+2) | t(j+1) |  t(j)  | ... |  t(0)  |
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **	                                     +--------+--------+
     **	 +                                   |    F[j]*g[i]    |
     **	                                     +--------+--------+
     **     --------------------------------------------------------------------
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **   t: | t'(n)  | ... | t'(j+3)| t'(j+2)| t'(j+1)|  t'(j) | ... |  t(0)  |
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **
     ** Note that t(0) through t(j-1) are unaffected and that t(j+2) through
     ** t(n) are affected only by the carry out when computing t'(j+1).  It
@@ -492,9 +492,9 @@
     ** we denote the separate carry by c(j), the picture on the next iteration
     ** of the loop (i.e. replace j by j+1) looks like:
     **
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **   t: |  t(n)  | ... | t(j+3) | t(j+2) | t(j+1) |  t(j)  | ... |  t(0)  |
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **	                        +--------+--------+
     **	                        |    F(i)*g(j+1)  |
     **	                        +--------+--------+
@@ -502,9 +502,9 @@
     **	 +                      |  c(j)  |
     **	                        +--------+
     **     --------------------------------------------------------------------
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **  t': |  t(n)  | ... | t(j+3) | t'(j+2)| t'(j+1)|  t(j)  | ... |  t(0)  |
-    **	    +--------+     +--------+--------+--------+--------+     +--------+ 
+    **	    +--------+     +--------+--------+--------+--------+     +--------+
     **	                   +--------+
     **	 +                 | c(k+1) |
     **	                   +--------+
@@ -513,7 +513,7 @@
     **				--------
     **
     ** The above gives rise to the notion of a multiply/add primitive that has 5
-    ** inputs and 3 output: 
+    ** inputs and 3 output:
     **
     **	Inputs:		N, M	the most and least significant digits
     **				of t that are being added to
@@ -540,13 +540,13 @@
     **	2) i = 0, j < n-1	N = C = 0, C' = 0
     **	3) i = 0, j = n-1	N = C = 0, C' = 0 and N' not needed
     **
-    **	4) i > 0, j = 0		C = 0	
+    **	4) i > 0, j = 0		C = 0
     **	5) i > 0, j < n-1	general case
     **	6) i > 0, j = n-1	N = 0, C' not needed
     **
     **	7) i + j = n-2		C' not needed
     **	8) i + j = n-1		C, N, C' and N' not needed
-    **		
+    **
     ** Note that cases 3 and 7 are functionally identical.  For purposes of
     ** this discussion we will use the mnemonic XMUL to refer to producing a
     ** 2*L-bit product from 2 L-bit digits and XADD/XADDC to refer to the
@@ -615,7 +615,7 @@
     ** that num_f_digits has the same value as NUM_UX_FRACTION_DIGITS
     **
     ** PUT_W_DIGITS(x) stores the result digits into an UX_FLOAT fraction
-    ** field. 
+    ** field.
     */
 
     if (num_f_digits != NUM_UX_FRACTION_DIGITS)
@@ -778,22 +778,22 @@
                 if (msd_of_mul_add < num_w_digits) {
 
                     if (j == (num_f_digits - 1))
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADDC(g%i,F%i,c,t%i,c,t%i,t%i)",
                                        i,  j,   lo,   hi, lo);
                     else
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADDC_W_C_IN(g%i,F%i,t%i,t%i,c,c,t%i,t%i)",
                                               i,  j, hi, lo,    hi, lo);
 
                 } else if (msd_of_mul_add <= num_w_digits) {
 
                     if (j == (num_f_digits - 1))
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADD(g%i,F%i,c,t%i,t%i,t%i)",
                                       i,  j,   lo, hi, lo);
                     else
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADD_W_C_IN(g%i,F%i,t%i,t%i,c,t%i,t%i)",
                                              i,  j, hi, lo,   hi, lo);
 
@@ -982,7 +982,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
 
     MULTIPLY_F_AND_G_DIGITS( /* F_DIGITS, G_DIGITS, T_DIGITS, */ CARRY_DIGIT );
 
-    /* 
+    /*
     ** Add in the variable octant.
     */
 
@@ -1019,7 +1019,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
 
         /*
         ** Compress the current value of w and increment scale to reflect
-        ** the compression 
+        ** the compression
         */
 
 #       define OCTANT_MASK	MAKE_MASK(3, BITS_PER_DIGIT - 3)
@@ -1035,7 +1035,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
     /*
     ** "Sign extend" w and get the quadrant.  In the process, if the MSD_OF_W
     ** is "all" 0's or 1's, we need to shift up one digit in order to insure
-    ** the proper number of significant bits in the final result. 
+    ** the proper number of significant bits in the final result.
     */
 
     quadrant = MSD_OF_W;

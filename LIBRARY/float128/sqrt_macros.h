@@ -66,7 +66,7 @@ They all assume positive finite values.  */
 
 #else
 
-#       define IF_IEEE_FLOATING(x) 
+#       define IF_IEEE_FLOATING(x)
 
 #	define EXP_BITS_OF_ONE_HALF 0x4000
 #	define HI_EXP_BIT_MASK 0x7fe0
@@ -130,7 +130,7 @@ They all assume positive finite values.  */
 #else
 #       define NEWTONS_ITERATION_NO_SCALE(input)
 #endif
- 
+
 
 
 
@@ -213,7 +213,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[];
 			c = a * half_scale; \
 			b = three - b; \
 			f_type_y = (F_TYPE)(c * b)
-			
+
 #		define RESULT f_type_y
 
 
@@ -272,7 +272,7 @@ So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 			RESTORE_ORIGINAL_ROUNDING_MODE(orig_rounding_mode); \
 			y = ((a >= input) ? y_less_1_ulp : y); \
 			y = ((b <  input) ? y_plus_1_ulp : y); \
-			
+
 #		define RESULT y
 
 #endif

@@ -49,7 +49,7 @@
 #endif
 
 /*
-Arcsinh & Arccosh  
+Arcsinh & Arccosh
 --------------------------------------
 
 
@@ -64,9 +64,9 @@ Arcsinh & Arccosh
     create the indicated routine.
 
         Arcsinh :       ASINH
-            
+
         Arccosh :       ACOSH
-            
+
 
     To create each routine's 'include' file an initial compilation should be
     done using the following definition in addition to those above.
@@ -83,16 +83,16 @@ Arcsinh & Arccosh
     included in the individual routine documentation.
 */
 
-#define POLY_RANGE_OVERHANG    5 
-#define REDUCE_RANGE_OVERHANG  5 
-#define ASYM_RANGE_OVERHANG    7 
+#define POLY_RANGE_OVERHANG    5
+#define REDUCE_RANGE_OVERHANG  5
+#define ASYM_RANGE_OVERHANG    7
 #define LARGE_RANGE_OVERHANG   7
 
 
 
-
 
-#if !defined(MAKE_INCLUDE) 
+
+#if !defined(MAKE_INCLUDE)
 #include STR(BUILD_FILE_NAME)
 #endif
 
@@ -116,12 +116,12 @@ Arcsinh
     The overall domain of the Arcsinh function has been divided  up  into
     six regions or paths as follows:
 
-            (1)        (2)         (3)         (4)       (5)     (6) 
+            (1)        (2)         (3)         (4)       (5)     (6)
         |--------|------------|-----------|-----------|-------|----------|
-        0  small   polynomial   reduction   asymptotic  large    huge 
+        0  small   polynomial   reduction   asymptotic  large    huge
 
-    (Note:   Although  the  domain  of  Arcsinh  extends  from  -infinite to 
-    +infinite,  the  problem can be considered one of only positive arguments 
+    (Note:   Although  the  domain  of  Arcsinh  extends  from  -infinite to
+    +infinite,  the  problem can be considered one of only positive arguments
     through the application of the identity asinh(-x) = - asinh(x).  )
 
 
@@ -129,7 +129,7 @@ Arcsinh
     used.   Each is chosen for its error characteristics, efficiency and the
     range over which it can be applied.
 
-    1. Small region:      
+    1. Small region:
 
                 asinh(x) = x                         (x <= max_small)
 
@@ -139,20 +139,20 @@ Arcsinh
         storage  costs.   By limiting the magnitude of x the error bound can
         be limited to <= 1/2 lsb.
 
-    2. Polynomial region:     
+    2. Polynomial region:
 
         Within the "polynomial" region the function is approximated as
 
                 asinh(x) = x (1 + x^2 P(x))       (max_small_x <x <= max_poly_x)
 
         where P(x) is a minimax polynomial approximation to (asinh(x)/x -1)/x^2,
-        given by Remes' algorithm and max_poly_x is the upper bound of the 
-        polynomial region whose value satisfies: 
+        given by Remes' algorithm and max_poly_x is the upper bound of the
+        polynomial region whose value satisfies:
 
                 (asinh(x)-x)/asinh(x) <= 2^(-POLY_RANGE_OVERHANG)
 
 
-    3. Reduction region:   
+    3. Reduction region:
 
         In this region, asinh(x) is computed by
 
@@ -160,18 +160,18 @@ Arcsinh
 
                                 max_poly_x < x <= max_reduce_x
 
-        i.e. asinh(x) is computed as the sum of two quantities:   asinh(x0),  
+        i.e. asinh(x) is computed as the sum of two quantities:   asinh(x0),
         and a reduced value asinh(t), where
-                
+
                 t = x * sqrt(1+x0^2) - x0*sqrt(1+x^2).
 
-        This approach incurs the cost  of  calculating  t  and also an 
+        This approach incurs the cost  of  calculating  t  and also an
         lookup table. The values x0, asinh(x0) and sqrt(1+xo^2) are
         stored in the table to reduce the run time cost. Increased accuracy
-        and efficiency are gained by choosing the asinh(x0) table values such 
-        that  they  have  a predetermined number of trailing 0's or 1's beyond 
-        the extent of the floating point precision.  This reduces the error 
-        bound  and  avoids the need to perform an extended addition between 
+        and efficiency are gained by choosing the asinh(x0) table values such
+        that  they  have  a predetermined number of trailing 0's or 1's beyond
+        the extent of the floating point precision.  This reduces the error
+        bound  and  avoids the need to perform an extended addition between
         the two quantities.  The error bounds here can be established at a value
         close to 1/2 lsb.
 
@@ -205,7 +205,7 @@ Arcsinh
                 asinh(x) = ln(2) + log(x),       where HUGE/2 < x <= HUGE
 
 
-    Special cases:  
+    Special cases:
 
     Infinities and Nans passed as input result in an Infinities or
     Nans being returned.
@@ -215,8 +215,8 @@ Arcsinh
     Configuring the implementation:
 
     For polynomial, reduction, asymptotic, large and huge regions (paths 2, 3,
-    4, 5 and 6), the implementation has been set up so  that the builder can 
-    control the accuracy. This is accomplished by allowing the builder to 
+    4, 5 and 6), the implementation has been set up so  that the builder can
+    control the accuracy. This is accomplished by allowing the builder to
     specify a lower limit to the floating-point alignment shift of the operation
     which significantly affects round-off error in that range.  By establishing
     an alignment shift the builder  determines  the  relative  accuracy  of  the
@@ -236,16 +236,16 @@ Arcsinh
 
                 -1/6 + 3/40 x^2 + ....
 
-        Thus overhang is 
+        Thus overhang is
 
                 (asinh(x) - x) / asinh(x)
 
         or approximately x^2 P(x).
 
 
-    Reduced region: 
+    Reduced region:
 
-        In this region the result are computed by 
+        In this region the result are computed by
 
         asinh(x) = asinh(xi) + asinh(ti),
 
@@ -255,7 +255,7 @@ Arcsinh
 
                 (mx-mi)/mi.
 
-        The minimum alignment shift can be properly controlled by adjusting 
+        The minimum alignment shift can be properly controlled by adjusting
         the size of interval (m1 - m0) and m0.
 
     The builder of the Arcsinh routines can specify the  overhang  limits
@@ -333,7 +333,7 @@ function index()
     v = $1;
 
                                 /* get base 2 exponent of value */
-    n = BINARY_EXP(v);     
+    n = BINARY_EXP(v);
                                 /* get first K fraction bits of value (NOT
                                    including the hidden bit) as an integer */
     f = bextr(v, 2, K+1);
@@ -385,7 +385,7 @@ function make_accurate()
 
         Given the Taylor Series expansion to asinh(x)
 
-           asinh(x) = x - x^3 (1/6) + x^5 (3/40) + ...,  for x < 1.        
+           asinh(x) = x - x^3 (1/6) + x^5 (3/40) + ...,  for x < 1.
 
         we find that successive terms of  the  series  decrease  rapidly  in
         magnitude,  and  that  as x goes to 0, the relative distance between
@@ -397,9 +397,9 @@ function make_accurate()
 
         let,
             p = current floating point precision.
-        
+
             (1/6) * (x^3)/x  <  1/2^(p+1)   ==>
-        
+
                     x  <  sqrt( 6/2^(p+1) )
 
         So, when x  <  sqrt(  6/2^(p+1)  ),  asinh(x)  correctly  rounded  is
@@ -458,27 +458,27 @@ function make_accurate()
 
 
         The following code determines the polynomial range
-*/ 
-    
+*/
+
     rho = 2^-(POLY_RANGE_OVERHANG);
     c = (1 - rho);
     x = 0.5;
     error = 1;
     while (error > 2^-(2*F_PRECISION)) {
         f = asinh(x) - x * c;
-        f1 = (1/sqrt(1+x*x)) - c; 
+        f1 = (1/sqrt(1+x*x)) - c;
         next_x = x - f/f1;
         error = abs(f);
         x = next_x;
     }
-    max_poly_x = x; 
+    max_poly_x = x;
 
-    
-    
-        /* The following code determines the upper bound of the reduced range 
-        (or the lower bound of the asymptotic region.) In the asymptotic region, 
+
+
+        /* The following code determines the upper bound of the reduced range
+        (or the lower bound of the asymptotic region.) In the asymptotic region,
         asinh(x) is determined by the following formula:
-                                           
+
                 asinh(x) = ln(2x) + 1/4 x^-2 - 3/16 x^-4
 
                         + 5/96 x^-6 -...
@@ -487,7 +487,7 @@ function make_accurate()
         region) is determined by finding a minimal x such that
 
                 ((asinh(x) - ln(2x)) / asinh(x)) < 2^-(ASYM_RANGE_OVERHANG);
-        */ 
+        */
 
     rho = 2^-(ASYM_RANGE_OVERHANG);
     c = (1 - rho);
@@ -495,7 +495,7 @@ function make_accurate()
     error = 1;
     while (error > 2^-(2*F_PRECISION)) {
         f = c * asinh(x) - log(2*x);
-        f1 = c * (1/sqrt(1+x*x)) - 1/x ; 
+        f1 = c * (1/sqrt(1+x*x)) - 1/x ;
         next_x = x - f/f1;
         error = abs(f);
         x = next_x;
@@ -504,16 +504,16 @@ function make_accurate()
 
 
 
-        /* The following code determines the upperbound of the asymptotic 
+        /* The following code determines the upperbound of the asymptotic
 
-        region.  ( or the lower bound of the large region.) Within this region, 
+        region.  ( or the lower bound of the large region.) Within this region,
         asinh(x) is approximated by
 
                 sign(x) asinh(x) = ln(2|x|) + 1/4 x^-2 - 3/16 x^-4
 
                         + 5/96 x^-6 -...
 
-        The upperbound of the asymptotic region( or the lower bound of the large 
+        The upperbound of the asymptotic region( or the lower bound of the large
         region) is determined by finding a minimal x such that
 
         (asinh(x) - ln(2x))/asinh(x) < 2^-(F_PRECISION+LARGE_RANGE_OVERHANG+1)
@@ -526,7 +526,7 @@ function make_accurate()
     error = 1;
     while (error > 2^-(2*F_PRECISION)) {
         f = c * asinh(x) - log(2*x);
-        f1 = c * (1/sqrt(1+x*x)) - 1/x ; 
+        f1 = c * (1/sqrt(1+x*x)) - 1/x ;
         next_x = x - f/f1;
         error = abs(f);
         x = next_x;
@@ -575,10 +575,10 @@ function make_accurate()
 
 
 
-        /* The "reduction" region: Within the "reduction" region asinh(x) is 
-        approximated as  
+        /* The "reduction" region: Within the "reduction" region asinh(x) is
+        approximated as
 
-                asinh(x)  = asinh(m)  +  asinh(t), 
+                asinh(x)  = asinh(m)  +  asinh(t),
 
                         where t = x*sqrt(1+m*m) - m*sqrt(1+x*x).
 
@@ -587,7 +587,7 @@ function make_accurate()
         As in the "polynomial" regions the error bound  here  is
         roughly a function of:
 
-          - The overhang between the final addition  of  asinh(m)  and  
+          - The overhang between the final addition  of  asinh(m)  and
             asinh(t).
 
           - The accuracy of the dominating (larger) value, asinh(m).
@@ -611,20 +611,20 @@ function make_accurate()
 
         Determining the "m" and asinh(m) tables:
 
-        Ensuring  a  certain  overhang,  k,  between  asinh(m)   and  
+        Ensuring  a  certain  overhang,  k,  between  asinh(m)   and
         asinh(t):
 
         From the identity above, it is obvious that asinh(t) is the
         difference between asinh(x) and asinh(m). Thus, if we choose a
-        net of equal length subintervals in [asinh(max_poly_x), 
-        asihn(max_reduce_x)] such that the size of subinterval is sufficiently 
+        net of equal length subintervals in [asinh(max_poly_x),
+        asihn(max_reduce_x)] such that the size of subinterval is sufficiently
         small, we can ensure the alignment shift.
 
                 asinh(t)/asinh(m) = (ax - am)/am,
 
         where   ax = asinh(x) and am = asinh(m) and (ax-am) <= 1/2 of the
         subinterval size.
-  
+
 
         The generation of these "m",s and x's divides the  reduce  range  up
         into subintervals like the following:
@@ -713,7 +713,7 @@ function make_accurate()
            values in the 'reduce' range.
         2. compute the accurate table.
         */
-            
+
 
     rho = 2^-REDUCE_RANGE_OVERHANG;
     max_poly_ax = asinh(max_poly_x);
@@ -729,7 +729,7 @@ function make_accurate()
         delta_ax = rho * ax0;
         ax1 = ax0 + delta_ax;
         x1 = sinh(ax1);
-        if (ax1 > max_reduce_ax) { 
+        if (ax1 > max_reduce_ax) {
                 ax1 = max_reduce_ax;
                 delta_ax = max_reduce_ax - ax0;
                 axm = ax0 + delta_ax/2;
@@ -813,7 +813,7 @@ function make_accurate()
     while(ax0 < max_reduce_ax) {
         delta_ax = rho * ax0;
         ax1 = ax0 + delta_ax;
-        if (ax1 > max_reduce_ax) { 
+        if (ax1 > max_reduce_ax) {
                 ax1 = max_reduce_ax;
                 delta_ax = max_reduce_ax - ax0;
         }
@@ -905,7 +905,7 @@ function make_accurate()
         1. Direct region: In this region, ACOSH(x) is computed as
 
                 acosh(x) = log(x + sqrt((x-1)*(x+1)))
-                
+
                         where 1 < x <= max_direct_x.
 
 
@@ -921,30 +921,30 @@ function make_accurate()
 
                 acosh(x) = log(2x).
 
-                        where max_asym_x < x <= HUGE/2. 
+                        where max_asym_x < x <= HUGE/2.
 
 
         4. Huge region: In this region, ACOSH(x) is computed as
 
                 acosh(x) = ln(2) + log(x).
 
-                        where  HUGE/2 < x <= HUGE. 
+                        where  HUGE/2 < x <= HUGE.
         */
 
 
         /* The following code determines the upper bound of the direct region
         (or the lower bound of the asymptotic region). In the asymptotic region,
         asinh(x) is determined by the following formula:
-                                           
+
                 acosh(x) = ln(2x) - 1/4 x^-2 - 3/16 x^-4
 
                          - 5/96 x^-6 -...
 
-        The upper bound of the direct region region is determined by finding 
+        The upper bound of the direct region region is determined by finding
         the smallest x such that
 
                 ((ln(2x)-acosh(x)) / acosh(x)) < 2^-(ASYM_RANGE_OVERHANG);
-        */ 
+        */
 
     function root_func() {
        acosh_x = acosh($1);
@@ -960,13 +960,13 @@ function make_accurate()
 
 
 
-        /* The following code determines the the upper bound of the asymptotic 
+        /* The following code determines the the upper bound of the asymptotic
         region.(or the lower bound of the large region.) In the large region,
         acosh(x) is approximated by
 
                 acosh(x) = ln(2x).
 
-        Thus, the lower bound of the large region (or max_asym_x) is determined 
+        Thus, the lower bound of the large region (or max_asym_x) is determined
         by finding the smallest x such that
 
           -(ln(2x)-acosh(x))/acosh(x) < 2^(-F_PRECISION+LARGE_RANGE_OVER_HANG+1)
@@ -979,7 +979,7 @@ function make_accurate()
     error = 1;
     while (error > 2^-(2*F_PRECISION)) {
         f = log(2*x) - c * acosh(x);
-        f1 = 1/x - c * (1/sqrt(x*x-1)); 
+        f1 = 1/x - c * (1/sqrt(x*x-1));
         next_x = x - f/f1;
         error = abs(f);
         x = next_x;
@@ -993,8 +993,8 @@ function make_accurate()
         than the computation in the direct region if the number of the
         terms in the asymptotic expansion is kept reasonably small. The
         following procedure computes and prints the terms of the
-        asymptotic series. 
-        */ 
+        asymptotic series.
+        */
 
         /* Approximation to the function:  -[x^2(acosh(x) - ln(2x))] */
     function acosh_func()
@@ -1032,23 +1032,23 @@ function make_accurate()
 
         /* compute correctly rounded "high" and "low" parts of log(2) */
 
-    SET_MP_PREC(2 * working_prec);      
+    SET_MP_PREC(2 * working_prec);
     log_2 = log(2);
     printf("static const TABLE_UNION log_2[] = {\n");
     printf("        %#.4" STR(F_CHAR) " \n", log_2);
     printf("};\n\n");
 
-    SET_MP_PREC(working_prec);  
+    SET_MP_PREC(working_prec);
 
 
         /* the following values are defined for use in performing
         automated testing with MTC.
         */
 
-#ifdef MTC_DEFS  
+#ifdef MTC_DEFS
     huge_x = (MPHOC_F_POS_HUGE/10)*9;
     half_huge_x = MPHOC_F_POS_HUGE/2;
-#ifdef MAKE_ASINH  
+#ifdef MAKE_ASINH
     printf("#define MAX_SMALL_PT        m:%m\n", max_small_x );
     printf("#define MAX_POLY_PT         m:%m\n", max_poly_x );
     printf("#define MAX_REDUCE_PT       m:%m\n", max_reduce_x );
@@ -1073,7 +1073,7 @@ function make_accurate()
 #endif  /* MAKE_INCLUDE */
 
 
-
+
 
 typedef struct { F_TYPE x_value, asinh_value, cosh_asinh_value;} TABLE_ENTRY;
 
@@ -1112,7 +1112,7 @@ typedef struct { F_TYPE x_value, asinh_value, cosh_asinh_value;} TABLE_ENTRY;
                         (m) = (ASINH_TABLE(indx)).x_value; \
                         (sqrt_one_add_m2) = (ASINH_TABLE(indx)).cosh_asinh_value
 
-        
+
 
 #define ADD_ASINH_TABLE_VALUE(x, indx, y)   \
                                         (y) = (F_TYPE)((ASINH_TABLE(indx)).asinh_value + (x))
@@ -1133,7 +1133,7 @@ F_ENTRY_NAME (F_TYPE x)
     F_SAVE_SIGN_AND_GET_ABS(x, sign, z);
     GET_EXP_WORD(z, exp_word_z);
     exp_word_z = PDP_SHUFFLE(exp_word_z);
-    if (F_EXP_WORD_IS_INFINITE_OR_NAN(exp_word_z)) return(x); 
+    if (F_EXP_WORD_IS_INFINITE_OR_NAN(exp_word_z)) return(x);
 
     GET_INDEX(exp_word_z, indx);
     if (indx >= MAX_REDUCE_INDEX) goto asym_or_ln2x;
@@ -1143,11 +1143,11 @@ F_ENTRY_NAME (F_TYPE x)
     if (indx > MAX_POLY_INDEX) {
         GET_MID_POINT(indx, m, sqrt_one_add_m2);
         one_add_z2 = ((F_TYPE) 1.0 + z*z);
-        t = (z - m)*(z + m); 
+        t = (z - m)*(z + m);
         F_HW_OR_SW_SQRT(one_add_z2, sqrt_one_add_z2);
-        t = t/(z * sqrt_one_add_m2 + m * sqrt_one_add_z2); 
+        t = t/(z * sqrt_one_add_m2 + m * sqrt_one_add_z2);
         EVALUATE_REDUCE_RANGE_POLYNOMIAL(t, REDUCE_RANGE_COEF, z);
-        ADD_ASINH_TABLE_VALUE(z, indx, t); 
+        ADD_ASINH_TABLE_VALUE(z, indx, t);
         F_NEGATE_IF_SIGN_NEG(sign, t);
         return t;
     }
@@ -1163,7 +1163,7 @@ F_ENTRY_NAME (F_TYPE x)
         /* Small region */
 
     else return (x);
-        
+
 
 asym_or_ln2x:
 
@@ -1175,7 +1175,7 @@ asym_or_ln2x:
                 t += F_LN_NAME(2*z);
                 F_NEGATE_IF_SIGN_NEG(sign, t);
                 return(t);
-        } 
+        }
 
         /* Large region */
 
@@ -1183,7 +1183,7 @@ asym_or_ln2x:
                 t = F_LN_NAME(2*z);
                 F_NEGATE_IF_SIGN_NEG(sign, t);
                 return(t);
-        } 
+        }
 
         /* Huge region */
 
@@ -1243,7 +1243,7 @@ asym_or_ln2x:
 
                 t = F_LN_NAME(2*x);
                 return(t);
-        } 
+        }
         else {
                 /* Huge region */
 
@@ -1255,7 +1255,7 @@ asym_or_ln2x:
 out_of_range_or_one:
 
                 if (x != 1.0) goto invalid_argument;
-                return (F_TYPE) 0.0;       
+                return (F_TYPE) 0.0;
 
 #if IEEE_FLOATING
 
@@ -1276,7 +1276,7 @@ invalid_argument:
 
 #endif /* MAKE_ASINH */
 
-
+
 
 #ifdef MTC
 
@@ -1286,7 +1286,7 @@ invalid_argument:
 @divert > dpml_acosh.mtc
 #endif
 /*
-**  accuracy and key point tests for single 
+**  accuracy and key point tests for single
 **  and double precision asinh or acosh functions.
 */
 
@@ -1300,19 +1300,19 @@ invalid_argument:
     comparison_function asinh_backup = B_CHAR my_asinh( B_CHAR.v.r );
 
 #else
-    build asinh_build = STR(PASTE(F_ENTRY_NAME , .o)) "my_log.o" 
+    build asinh_build = STR(PASTE(F_ENTRY_NAME , .o)) "my_log.o"
 "dpml_globals.o" "dpml_exception.o" "dpml_sqrt_t_table.o";
     function asinh_func = F_CHAR F_ENTRY_NAME( F_CHAR.v.r );
     comparison_function asinh_backup = void mp_asinh(m.r.r, m.r.w);
 #endif
 
 domain asinh_accuracy =
-  { [ 0 , MAX_SMALL_PT ):uniform:1000 }  
+  { [ 0 , MAX_SMALL_PT ):uniform:1000 }
   { [ MAX_SMALL_PT, MAX_POLY_PT ):uniform:4000 }
-  { [ MAX_POLY_PT, MAX_REDUCE_PT):uniform:4000 }  
-  { [ MAX_REDUCE_PT, MAX_ASYM_PT):uniform:4000 }  
-  { ( MAX_ASYM_PT, HALF_HUGE_PT):uniform:4000 }  
-  { ( HALF_HUGE_PT, HUGE_PT):uniform:1000 }  
+  { [ MAX_POLY_PT, MAX_REDUCE_PT):uniform:4000 }
+  { [ MAX_REDUCE_PT, MAX_ASYM_PT):uniform:4000 }
+  { ( MAX_ASYM_PT, HALF_HUGE_PT):uniform:4000 }
+  { ( HALF_HUGE_PT, HUGE_PT):uniform:1000 }
 ;
 
 domain asinh_keypoint =
@@ -1323,13 +1323,13 @@ domain asinh_keypoint =
 
 
 test asinh_acc =
-    type = accuracy 
+    type = accuracy
         error = lsb;
         stats = max;
         points = 1024;
     ;
 
-    function = asinh_func; 
+    function = asinh_func;
 
     comparison_function = asinh_backup;
 
@@ -1340,17 +1340,17 @@ test asinh_acc =
     output =
         file = STR(PASTE(F_ENTRY_NAME , _acc.out));
     ;
-; 
+;
 
 
 test asinh_key =
-    type = key_point; 
+    type = key_point;
 
     function = asinh_func;
 
     comparison_function = asinh_backup;
 
-    domain = asinh_keypoint; 
+    domain = asinh_keypoint;
 
     build  = asinh_build;
     output =
@@ -1368,10 +1368,10 @@ test asinh_key =
     comparison_function acosh_backup = void mp_acosh(m.r.r, m.r.w);
 
 domain acosh_accuracy =
-  { [ 1.0, MAX_DIRECT_PT):uniform:4000 }  
-  { [ MAX_DIRECT_PT, MAX_ASYM_PT):uniform:4000 }  
-  { [ MAX_ASYM_PT, HALF_HUGE_PT):uniform:4000 }  
-  { [ HALF_HUGE_PT, HUGE_PT):uniform:4000 }  
+  { [ 1.0, MAX_DIRECT_PT):uniform:4000 }
+  { [ MAX_DIRECT_PT, MAX_ASYM_PT):uniform:4000 }
+  { [ MAX_ASYM_PT, HALF_HUGE_PT):uniform:4000 }
+  { [ HALF_HUGE_PT, HUGE_PT):uniform:4000 }
 ;
 
 domain acosh_keypoint =
@@ -1382,13 +1382,13 @@ domain acosh_keypoint =
 
 
 test acosh_acc =
-    type = accuracy 
+    type = accuracy
         error = lsb;
         stats = max;
         points = 1024;
     ;
 
-    function = acosh_func; 
+    function = acosh_func;
 
     comparison_function = acosh_backup;
 
@@ -1399,17 +1399,17 @@ test acosh_acc =
     output =
         file = STR(PASTE(F_ENTRY_NAME, _acc.out));
     ;
-; 
+;
 
 
 test acosh_key =
-    type = key_point; 
+    type = key_point;
 
     function = acosh_func;
 
     comparison_function = acosh_backup;
 
-    domain = acosh_keypoint; 
+    domain = acosh_keypoint;
 
     build  = acosh_build;
     output =

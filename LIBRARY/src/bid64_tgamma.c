@@ -98,7 +98,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_tgamma, BID_UINT64, x)
         BID_F80_ASSIGN( yd, c_1e2000);
      } else {
         __bid_f80_tgamma( yd, xd );
-     } 
+     }
      BIDECIMAL_CALL1(binary80_to_bid64,res,yd);
      BID_RETURN (res);
    }

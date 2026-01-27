@@ -2,16 +2,16 @@
   Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,7 +36,7 @@
 
 
 //#define RESTRICT restrict
-#define RESTRICT 
+#define RESTRICT
 
 #define set_str_end(e,p)   if(e) { *e=(char*)p;  }
 
@@ -73,7 +73,7 @@ char * ps0, *ps, *ptail;
    if((*ps == '+') || (*ps=='-')) { ps++; ptail++; }
 
    // Infinity?
-   if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' && 
+   if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' &&
 	tolower_macro (ps[2]) == 'f')) {
      if(tolower_macro (ps[3]) == 'i' &&
 	tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' &&
@@ -81,7 +81,7 @@ char * ps0, *ps, *ptail;
        { ps+=8;  ptail+=8;  set_str_end(endptr, ptail); }
      else { ps+=3; ptail+=3; set_str_end(endptr, ptail);}
    }
-   else if(tolower_macro (ps[0]) == 'n' && tolower_macro (ps[1]) == 'a' && 
+   else if(tolower_macro (ps[0]) == 'n' && tolower_macro (ps[1]) == 'a' &&
 	   tolower_macro (ps[2]) == 'n') {
      ps+=3; ptail+=3;
      while(isdigit_macro(*ps)) { ps++; ptail++; }
@@ -144,7 +144,7 @@ int i,k;
    k=1; if((*ps == L'+') || (*ps==L'-')) {ps++; ptail++; k++;}
 
    // Infinity?
-   if ((towlower_macro (ps[0]) == L'i' && towlower_macro (ps[1]) == L'n' && 
+   if ((towlower_macro (ps[0]) == L'i' && towlower_macro (ps[1]) == L'n' &&
         towlower_macro (ps[2]) == L'f')) {
      if(towlower_macro (ps[3]) == L'i' &&
         towlower_macro (ps[4]) == L'n' && towlower_macro (ps[5]) == L'i' &&
@@ -152,7 +152,7 @@ int i,k;
        { ps+=8; ptail+=8; set_wcs_end(endptr, ptail); k+=8; }
      else { ps+=3; ptail+=3; set_wcs_end(endptr, ptail); k+=3; }
    }
-   else if(towlower_macro (ps[0]) == L'n' && towlower_macro (ps[1]) == L'a' && 
+   else if(towlower_macro (ps[0]) == L'n' && towlower_macro (ps[1]) == L'a' &&
 	   towlower_macro (ps[2]) == L'n') {
      ps+=3; ptail+=3;
      while(iswdigit_macro(*ps)) {ps++; ptail++;}

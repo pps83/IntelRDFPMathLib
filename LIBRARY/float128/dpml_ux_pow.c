@@ -35,7 +35,7 @@
 #endif
 
 
-/* 
+/*
 ** The DPML supports two different varieties of the power function: one for
 ** which 0^0 and (-x)^integer are exceptions (fortran semantics) and one for
 ** which 0^0 is 1 and (-x)^integer is computed as if by successive
@@ -43,24 +43,24 @@
 ** interface routine which unpacks the unpacks the argument and performs any
 ** necessary argument screening.  The common interface routine then calls an
 ** evaluation routine to actually compute the function result.
-** 
-** 
+**
+**
 ** BASIC ALGORITHM
 ** ---------------
-** 
+**
 ** The power function x^y is computed as 2^[y*log2(x)].  The key point in the
 ** algorithm is to insure a sufficient number of accurate bits in the product
 ** y*log2(x) to guarantee the accuracy of the final result.  In particular,
 ** if we write:
-** 
+**
 ** 		y*log2(x) = I + h	|h| < 1/2		(1)
-** 
+**
 ** Then
-** 
+**
 ** 		x^y = 2^[y*log2(x)]
 ** 		    = 2^(I + h)
 ** 		    = (2^I)*(2^h)
-** 
+**
 ** Since the multiplication by 2^I can be done by incrementing the exponent
 ** field of 2^h, the basic design criteria is to insure a sufficient number
 ** of bits in h.  For this design, we would like h to have 7 guard bits.  That
@@ -69,7 +69,7 @@
 ** least 134 good bits.  This of course is a problem, because the unpacked
 ** format only has 128 fraction bits.  The approach we take is to represent
 ** log2(x) in high and low pieces.
-*/ 
+*/
 
 
 
@@ -92,10 +92,10 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     UX_FRACTION_DIGIT_TYPE _Z, LOG2_HI, tmp_digit, I, inc;
     UX_FLOAT tmp[3], log2_hi, log2_lo, z, z_lo, u, r, w, h;
 
-    /* 
+    /*
     ** COMPUTING LOG IN HI AND LOW PIECES
     ** -----------------------------------
-    ** 
+    **
     ** Given x = 2^n*g, where 1/sqrt(2) <= g < sqrt(2), we can compute log2(x)
     ** as:
     ** 		     2(g - 1)		     2
@@ -105,20 +105,20 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     ** 		                    __Inf [z*ln2/2)^2]
     ** 		log2(x) = n +   z   >     -------------
     ** 		                   /__k=0    (2k+1)
-    ** 
-    ** 		                    
-    ** 		log2(x) ~ n +  z + z^3*p(z^2) 
-    ** 
-    ** 
+    **
+    **
+    ** 		log2(x) ~ n +  z + z^3*p(z^2)
+    **
+    **
     ** Letting z = z_hi + z_lo, then we can write
-    ** 
-    ** 		log2(x) ~ n + (z_hi + z_lo) + z*w*p(w) 
+    **
+    ** 		log2(x) ~ n + (z_hi + z_lo) + z*w*p(w)
     ** 		        = (n + z_hi) + (z_lo + z*w*p(w))
     ** 		        = L_hi + L_lo.				(3)
-    ** 
+    **
     ** The trick here is to define z_hi, so that n + z_hi is exactly
     ** representable in one digit.  This involves computing z to extended
-    ** precision which is a fairly complicated process.  We begin by 
+    ** precision which is a fairly complicated process.  We begin by
     ** putting x in th form x = 2^n*g where 1/sqrt(2) < g <= sqrt(2)
     */
 
@@ -128,16 +128,16 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         exponent--;
     UX_DECR_EXPONENT(x, exponent);
 
-    /* 
+    /*
     ** In preporation for computing z_hi and z_lo, we compute z as
-    ** 
+    **
     ** 		t0 <-- g + 1
     ** 		t1 <-- g - 1
     ** 		r <-- 2/(t0*ln2)
     ** 		z <-- t1*r
     **
     ** At this point, we can also compute the polynomial, z^3*p(z^2)
-    */ 
+    */
 
     UX_COPY( UX_ONE, result);
     ADDSUB(x, result, ADD_SUB, tmp);
@@ -154,7 +154,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     **
     ** Get the necessary bits of z and compute n + high bits of z as the
     ** integer LOG2_HI
-    */ 
+    */
 
     _Z = G_UX_MSD(&z);
     if (exponent == 0)
@@ -176,7 +176,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
 
         if (cnt >= BITS_PER_WORD)
             _Z = 0;
-        else 
+        else
             {
             tmp_digit = (_Z >> cnt);
             _Z        = tmp_digit << cnt;
@@ -204,13 +204,13 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     ** If we denote the k most significant digit of ln2/2 as L (i.e.
     ** ln2/2 ~ L/(2*K)),
     ** then we can define
-    ** 
+    **
     ** 		LO(ln2/2) = ln2/2 - L/(2*K)
-    ** 
+    **
     ** Then we can obtain an approximation to z_lo by:
-    ** 
+    **
     ** 	z_lo = z - z_hi
-    ** 	     = t1/[t0*(ln2/2)] - z_hi 
+    ** 	     = t1/[t0*(ln2/2)] - z_hi
     ** 	     = (t1 - t0*(ln2/2)*z_hi)/[t0*(ln2/2)]
     ** 	     = { t1 - t0*[L/(2*K) + LO(ln2/2)]*z_hi }/[t0*(ln2/2)]
     ** 	     = { t1 - t0*[2^(i-1)*(L*Z)/K^2 + LO(ln2/2)*z_hi}/[t0*(ln2/2)]
@@ -219,14 +219,14 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     ** We now define
     **
     ** 		u = 2^(i-1)*(L*Z)/K^2
-    ** 
+    **
     ** So that z_lo can now be written as;
     **
     ** 	z_lo = { t1 - t0*[(2^i)*L*Z/K^2 + t0*z_hi*LO(ln2/2)] }/[t0*(ln2/2)]
     ** 	     = [ t1 - t0*( u + t0*z_hi*LO(ln2/2)) ]/[t0*(ln2/2)]
     ** 	     = [ (t1 - t0*u) - t0*z_hi*LO(ln2/2)]/[t0*(ln2/2)]
     ** 	     = (t1 - t0*u)/[t0*(ln2/2)] - t0*z_hi*LO(ln2/2)/[t0*(ln2/2)]
-    ** 	     = (t1 - t0*u)*r - z_hi*LO(ln2/2)/(ln2/2) 
+    ** 	     = (t1 - t0*u)*r - z_hi*LO(ln2/2)/(ln2/2)
     ** 	     = (t1 - t0*u)*r - z_hi*2*LO(ln2)/ln2
     **
     ** With some care taken to prevent a loss of significance when computing
@@ -249,7 +249,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         P_UX_FRACTION_DIGIT( &u, 1, tmp_digit);
 
         /*
-        ** Compute t1 - t0*u carefully by using the extended multiply 
+        ** Compute t1 - t0*u carefully by using the extended multiply
         **
         ** The value of z_lo is actually computed into the location
 	** z so we can handle the Z = 0 (i.e. z_lo = z) case in the
@@ -308,7 +308,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     /*
     ** Get I by multiplying the high digit of y with LOG2_HI and rounding
     ** to the nearest integer.  We compute y*log2_hi(x) here so it can be
-    ** shared with the code for I = 0 and I != 0 
+    ** shared with the code for I = 0 and I != 0
     */
 
     I = 0;
@@ -321,7 +321,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - exponent;
         inc = SET_BIT(cnt - 1);
         tmp_digit = I + inc;
-        inc += inc; 
+        inc += inc;
         if (tmp_digit >= I)
             I = tmp_digit & -inc;
         else
@@ -357,7 +357,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         &h,
         POW2_COEF_ARRAY,
 	POW2_COEF_ARRAY_DEGREE,
-	NUMERATOR_FLAGS(STANDARD), 
+	NUMERATOR_FLAGS(STANDARD),
         result);
 
     I >>= cnt;
@@ -380,10 +380,10 @@ overflow_underflow:
 ** input processing is the definition and accessing of the class-to-action
 ** array. However, there are two sets of exceptional cases that are not handled
 ** by the UNPACK routines.  They are:
-** 
+**
 ** 	(1) x is +/- Normal and y is +/- Infinity
 ** 	(2) x is -Normal or -Denormal and y is +/- Normal.
-** 
+**
 ** In the first case, we need to determine is |x| is less than, equal or
 ** greater than 1 and return 0, INVALID or Infinity respectively.  In the
 ** second case, we need to determine if y is an integer.  If not, signal
@@ -465,7 +465,7 @@ C_UX_POW(
         {
         index = UX_RND_TO_INT(&unpacked_y, RZ_BIT_VECTOR | FRACTION_RESULT,
           NOT_USED, &tmp);
- 
+
         if ((G_UX_MSD(&tmp) != 0) && (x_fp_class != F_C_NEG_INF) &&
             (x_fp_class != F_C_NEG_ZERO))
             {  /* y was not an integer */
@@ -483,9 +483,9 @@ C_UX_POW(
           ( SET_BIT(F_C_NEG_INF) | SET_BIT(F_C_NEG_ZERO) ))
             {
 
-            tmp_digit = (((sign) && (G_UX_MSD(&tmp) != 0)) ? 
+            tmp_digit = (((sign) && (G_UX_MSD(&tmp) != 0)) ?
               F_SIGN_BIT_MASK : 0);
-                          
+
 
 return_zero_or_inf:
 
@@ -564,10 +564,10 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 **
 ** First, screen for certain overflow and underflow (expon > F_EXP_WIDTH + 3)
 ** and for tiny x's where 2^x ~ 1 (exponent < -F_PRECISION).  Then, isolate
-** any integer part I of x (exponent will be > 0), convert it to UX and 
+** any integer part I of x (exponent will be > 0), convert it to UX and
 ** subtract from x.  Use the rational approx of 2^f from the pow code.
 ** Finally, add (signed) I to the exponent of the result.
-** 
+**
 */
 
 
@@ -589,23 +589,23 @@ UX_EXP2( UX_FLOAT * x, UX_FLOAT * result)
     cnt = 0;
 
     if ( (UX_UNSIGNED_EXPONENT_TYPE) (exponent + 114) > (18 + 114))
-      {   
-        if ( exponent  > 0) 
+      {
+        if ( exponent  > 0)
         {      /* exponent > 18 , definite overflow or underflow */
            UX_COPY(x, result);
            scale = sign ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT;
            P_UX_EXPONENT(result, scale);
 	 }
-        else 
+        else
         {    /* x is close to 0, just return 1 */
-           UX_COPY( UX_ONE, result);          
+           UX_COPY( UX_ONE, result);
         }
-        return;           
+        return;
         }
-   
+
     I = 0;
 
-    if (exponent >= 0) 
+    if (exponent >= 0)
      {
         I = G_UX_MSD(x);
         cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - exponent;
@@ -614,7 +614,7 @@ UX_EXP2( UX_FLOAT * x, UX_FLOAT * result)
         I <<= (cnt - 1);
 
         tmp_digit = I + inc;
-        inc += inc; 
+        inc += inc;
         if (tmp_digit >= I)
             I = tmp_digit & -inc;
         else
@@ -635,7 +635,7 @@ UX_EXP2( UX_FLOAT * x, UX_FLOAT * result)
         &h,
         POW2_COEF_ARRAY,
         POW2_COEF_ARRAY_DEGREE,
-        NUMERATOR_FLAGS(STANDARD), 
+        NUMERATOR_FLAGS(STANDARD),
         result);
 
     I >>= cnt;
@@ -711,7 +711,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
 	/* Index 1: Class to index map */
 
-    PRINT_64_TBL_ITEM( 
+    PRINT_64_TBL_ITEM(
           CLASS_TO_INDEX( F_C_SIG_NAN,      2) +
           CLASS_TO_INDEX( F_C_QUIET_NAN,    3) +
           CLASS_TO_INDEX( F_C_POS_INF,      4) +
@@ -863,7 +863,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
 	/* Index 0: for x */
 
-    PRINT_64_TBL_ITEM( 
+    PRINT_64_TBL_ITEM(
           CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
 	  CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
 

@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION __mod_x_table[] = { 
+    static const TABLE_UNION __mod_x_table[] = {
 
 	/* mod class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x00000408, 0x60000000 ),

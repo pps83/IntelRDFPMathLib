@@ -33,21 +33,21 @@
 void bid64_frexp (BID_UINT64 *pres, BID_UINT64 *px, int *exp) {
   BID_UINT64 x = *px;
 #else
-DFP_WRAPFN_DFP_OTHERTYPE(64, bid64_frexp, 64, int*)                 
+DFP_WRAPFN_DFP_OTHERTYPE(64, bid64_frexp, 64, int*)
 BID_UINT64 bid64_frexp (BID_UINT64 x, int *exp) {
 #endif
 
-/* 
+/*
   If x is not a floating-point number, the results are unspecified (this
-  implementation returns x and *exp = 0). Otherwise, the frexp function 
-  returns the value res, such that res has a magnitude in the interval 
-  [1/10, 1) or zero, and x = res*2^*exp. If x is zero, both parts of the 
+  implementation returns x and *exp = 0). Otherwise, the frexp function
+  returns the value res, such that res has a magnitude in the interval
+  [1/10, 1) or zero, and x = res*2^*exp. If x is zero, both parts of the
   result are zero
   frexp does not raise any exceptions
  */
 
   BID_UINT64 res;
-  BID_UINT64 sig_x; 
+  BID_UINT64 sig_x;
   unsigned int exp_x;
   BID_UI64DOUBLE tmp;
   int x_nr_bits, q;
@@ -57,13 +57,13 @@ BID_UINT64 bid64_frexp (BID_UINT64 x, int *exp) {
     *exp = 0;
     res = x;
     // the binary frexp quitetizes SNaNs, so do the same
-    if ((x & MASK_SNAN) == MASK_SNAN) { // x is SNAN 
+    if ((x & MASK_SNAN) == MASK_SNAN) { // x is SNAN
     //   // set invalid flag
     //   *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (x)
       res = x & 0xfdffffffffffffffull;
     }
-    BID_RETURN (res); 
+    BID_RETURN (res);
   } else {
     // x is 0, non-canonical, normal, or subnormal
     // unpack x
@@ -87,21 +87,21 @@ BID_UINT64 bid64_frexp (BID_UINT64 x, int *exp) {
     }
     // x is normal or subnormal, with exp_x=biased exponent & sig_x=coefficient
     // determine the number of decimal digits in sig_x, which fits in 54 bits
-    // q = nr. of decimal digits in sig_x (1 <= q <= 16) 
+    // q = nr. of decimal digits in sig_x (1 <= q <= 16)
     //  determine first the nr. of bits in sig_x
-    //  determine first the nr. of bits in x 
+    //  determine first the nr. of bits in x
     if (sig_x >= 0x0020000000000000ull) { // x >= 2^53
-      q = 16;  
+      q = 16;
     } else { // if x < 2^53
       tmp.d = (double) sig_x; // exact conversion
       x_nr_bits = 1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
-      q = bid_nr_digits[x_nr_bits - 1].digits; 
-      if (q == 0) { 
+      q = bid_nr_digits[x_nr_bits - 1].digits;
+      if (q == 0) {
         q = bid_nr_digits[x_nr_bits - 1].digits1;
         if (sig_x >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-          q++;  
-      }    
-    }  
+          q++;
+      }
+    }
     // Do not add trailing zeros if q < 16; leave sig_x with q digits
     *exp = exp_x - 398 + q;
     // assemble the result

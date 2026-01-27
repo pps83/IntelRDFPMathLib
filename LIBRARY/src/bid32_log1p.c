@@ -65,12 +65,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_log1p, BID_UINT32, x)
   if (sm)
    { BIDECIMAL_CALL2(bid32_add,y,x,BID32_1);
      if ((y & SIGNMASK32) == SIGNMASK32)
-      {                                               
-        #ifdef BID_SET_STATUS_FLAGS                                              
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);                     
-        #endif                                                              
-        BID_RETURN(BID32_NAN);                                           
-      }                                                           
+      {
+        #ifdef BID_SET_STATUS_FLAGS
+        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+        #endif
+        BID_RETURN(BID32_NAN);
+      }
      BIDECIMAL_CALL1(bid32_to_binary64,xd,y);
      yd = log(xd);
      BIDECIMAL_CALL1(binary64_to_bid32,res,yd);

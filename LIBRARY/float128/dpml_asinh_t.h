@@ -33,7 +33,7 @@
 #define NUM_ASYM_TERM               9
 #define EVALUATE_ASYM_RANGE_POLYNOMIAL(x,c,y) \
                          POLY_9(x,c,y)
-static const TABLE_UNION asym_range_coef[] = { 
+static const TABLE_UNION asym_range_coef[] = {
 	DATA_1x2( 0x00000000, 0x3fd00000 ),
 	DATA_1x2( 0xffffff22, 0xbfb7ffff ),
 	DATA_1x2( 0xaaa7ee0d, 0x3faaaaaa ),
@@ -43,9 +43,9 @@ static const TABLE_UNION asym_range_coef[] = {
 	DATA_1x2( 0x9bd2ab2a, 0x3f8e9b6b ),
 	DATA_1x2( 0x1f9ae66a, 0xbf8896b7 ),
 	DATA_1x2( 0xbb3092b8, 0x3f8074fb ),
-}; 
+};
 
-static const TABLE_UNION asinh_tab[] = { 
+static const TABLE_UNION asinh_tab[] = {
 	DATA_3x2( 0x6d3d527b, 0x3fdd6820, 0xa1f04407, 0x3fdc75a1, 0x5b923501, 0x3ff19bb0 ),
 	DATA_3x2( 0xd9e832cb, 0x3fde636b, 0xaeffc643, 0x3fdd594e, 0x34068fdc, 0x3ff1b647 ),
 	DATA_3x2( 0x90d5d4a4, 0x3fdf6824, 0x2477c478, 0x3fde4419, 0x8cbcb119, 0x3ff1d29d ),
@@ -97,29 +97,29 @@ static const TABLE_UNION asinh_tab[] = {
 	DATA_3x2( 0x0086b713, 0x400b7aaa, 0x95eb7345, 0x3fff29b1, 0xe962c171, 0x400c9eb7 ),
 	DATA_3x2( 0x0307617c, 0x400d45ea, 0x914d6772, 0x4000117f, 0x040b9ce4, 0x400e58b9 ),
 	DATA_3x2( 0x90439eff, 0x400ea898, 0x5dc3c4bb, 0x40006cff, 0xa64bf44b, 0x400faf65 ),
-}; 
+};
 
-#define TABLE_ENTRY_SIZE   51 
-#define K   4 
-#define OFFSET_IND   16348 
-#define MAX_SMALL_INDEX -394 
-#define MAX_POLY_INDEX 0 
-#define MAX_REDUCE_INDEX 51 
-#define MAX_ASYM_INDEX 456 
-#define HALF_HUGE_INDEX 16387 
-static const U_INT_8 asinh_index_table[] = { 
-	0,  1,  2,  3,  4,  6,  8,  9,  
-	11,  12,  13,  14,  16,  17,  18,  19,  
-	20,  21,  21,  22,  24,  25,  27,  28,  
-	29,  30,  31,  32,  33,  34,  35,  36,  
-	36,  37,  38,  38,  39,  41,  42,  43,  
-	43,  44,  45,  46,  46,  47,  48,  48,  
-	49,  49,  50,  0,  0,  0,  0,  0,  
-}; 
+#define TABLE_ENTRY_SIZE   51
+#define K   4
+#define OFFSET_IND   16348
+#define MAX_SMALL_INDEX -394
+#define MAX_POLY_INDEX 0
+#define MAX_REDUCE_INDEX 51
+#define MAX_ASYM_INDEX 456
+#define HALF_HUGE_INDEX 16387
+static const U_INT_8 asinh_index_table[] = {
+	0,  1,  2,  3,  4,  6,  8,  9,
+	11,  12,  13,  14,  16,  17,  18,  19,
+	20,  21,  21,  22,  24,  25,  27,  28,
+	29,  30,  31,  32,  33,  34,  35,  36,
+	36,  37,  38,  38,  39,  41,  42,  43,
+	43,  44,  45,  46,  46,  47,  48,  48,
+	49,  49,  50,  0,  0,  0,  0,  0,
+};
 
 #define EVALUATE_POLY_RANGE_POLYNOMIAL(x,c,y) \
                          ODD_POLY_25_U(x,c,y)
-static const TABLE_UNION poly_range_coef[] = { 
+static const TABLE_UNION poly_range_coef[] = {
 	DATA_1x2( 0x55555555, 0xbfc55555 ),
 	DATA_1x2( 0x333332b4, 0x3fb33333 ),
 	DATA_1x2( 0xb6da83f1, 0xbfa6db6d ),
@@ -132,20 +132,20 @@ static const TABLE_UNION poly_range_coef[] = {
 	DATA_1x2( 0xe54f617d, 0x3f802b59 ),
 	DATA_1x2( 0x92c741ae, 0xbf769f6d ),
 	DATA_1x2( 0x6f70f30f, 0x3f6318f8 ),
-}; 
+};
 
 #define EVALUATE_REDUCE_RANGE_POLYNOMIAL(x,c,y) \
                          ODD_POLY_13_U(x,c,y)
-static const TABLE_UNION reduce_range_coef[] = { 
+static const TABLE_UNION reduce_range_coef[] = {
 	DATA_1x2( 0x55555555, 0xbfc55555 ),
 	DATA_1x2( 0x33333317, 0x3fb33333 ),
 	DATA_1x2( 0xb6d8c295, 0xbfa6db6d ),
 	DATA_1x2( 0xafd69af5, 0x3f9f1c71 ),
 	DATA_1x2( 0x4a7f48fd, 0xbf96e88c ),
 	DATA_1x2( 0x7d131bd8, 0x3f919b2c ),
-}; 
+};
 
 static const TABLE_UNION log_2[] = {
-        DATA_1x2( 0xfefa39ef, 0x3fe62e42 ) 
+        DATA_1x2( 0xfefa39ef, 0x3fe62e42 )
 };
 

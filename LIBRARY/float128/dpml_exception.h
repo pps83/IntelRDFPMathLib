@@ -94,7 +94,7 @@
 /*  If IEEE data types are used, default to IEEE behavior.		    */
 /*									    */
 
-# if !defined IEEE_EXCEPTION_BEHAVIOR 
+# if !defined IEEE_EXCEPTION_BEHAVIOR
 #   if FLOAT_TYPES && IEEE_TYPES && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
 #      define IEEE_EXCEPTION_BEHAVIOR 1
 #   else
@@ -132,7 +132,7 @@ typedef struct {
     U_INT_8 ieee_err;
     U_INT_8 ieee_val;
     } DPML_EXCEPTION_RESPONSE;
-							    
+
 #define	GET_IEEE_VALUE(n)	RESPONSE_TABLE[n].ieee_val
 #define	GET_IEEE_ERROR(n)	RESPONSE_TABLE[n].ieee_err
 #define	GET_FAST_VALUE(n)	RESPONSE_TABLE[n].fast_val
@@ -242,8 +242,8 @@ typedef struct {
 #define NEG_OVERFLOW_ERR	NEG_ERR(DPML_OVERFLOW)
 #define POS_SINGULARITY		POS_ERR(DPML_SINGULARITY)
 #define NEG_SINGULARITY		NEG_ERR(DPML_SINGULARITY)
-#define INVALID_ARGUMENT	POS_ERR(DPML_INVALID)			
-#define LOSS_OF_SIGNIFICANCE	POS_ERR(DPML_LOST_SIGNIFICANCE)			
+#define INVALID_ARGUMENT	POS_ERR(DPML_INVALID)
+#define LOSS_OF_SIGNIFICANCE	POS_ERR(DPML_LOST_SIGNIFICANCE)
 
 # if COMPATIBILITY_MODE
 
@@ -315,7 +315,7 @@ typedef struct {
 #	include "alpha_linux_exception.h"
 #	define EXCEPTION_INTERFACE_SEND ( send_error_code   |	\
 					  send_return_value )
-#	define PLATFORM_SPECIFIC_HEADER_FILE "alpha_linux_exception.c"   
+#	define PLATFORM_SPECIFIC_HEADER_FILE "alpha_linux_exception.c"
 
 #   endif
 
@@ -339,7 +339,7 @@ typedef struct {
 #	define EXCEPTION_ARGUMENTS( error_code ) error_code
 //#	define PLATFORM_SPECIFIC_HEADER_FILE "intel_exception.c"
 
-#   elif ARCHITECTURE == merced 
+#   elif ARCHITECTURE == merced
 
 #     if OP_SYSTEM == linux
 //#	include "linux_exception.h"
@@ -347,7 +347,7 @@ typedef struct {
 					  send_return_value )*/
 #	define PROCESS_DENORMS 1
 #	define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME
-//#	define PLATFORM_SPECIFIC_HEADER_FILE "linux_exception.c"   
+//#	define PLATFORM_SPECIFIC_HEADER_FILE "linux_exception.c"
 
 #     elif OP_SYSTEM == vms
 #	include "ia64_vms_exception.h"
@@ -366,7 +366,7 @@ typedef struct {
 #       else
 #	   define PROCESS_DENORMS 0
 #       endif
-#       define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME 
+#       define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME
 #   endif
 
 # endif
@@ -419,10 +419,10 @@ typedef struct {
 #define P_EXCPT_REC_FUNC_ECODE(p,v)	p->func_error_code = (v)
 #define P_EXCPT_REC_PLTFRM_ECODE(p,v)	p->platform_specific_err_code = (v)
 #define P_EXCPT_REC_ENVIRONMENT(p,v)	p->environment = (v)
-#define P_EXCPT_REC_RET_VAL_PTR(p,v)	p->ret_val_ptr = (void *)(v) 
-#define P_EXCPT_REC_CONTEXT(p,v)	p->context = (void *)(v) 
-#define P_EXCPT_REC_NAME(p,v)		p->name = (v) 
-#define P_EXCPT_REC_DATA_TYPE(p,v)	p->data_type = (v) 
+#define P_EXCPT_REC_RET_VAL_PTR(p,v)	p->ret_val_ptr = (void *)(v)
+#define P_EXCPT_REC_CONTEXT(p,v)	p->context = (void *)(v)
+#define P_EXCPT_REC_NAME(p,v)		p->name = (v)
+#define P_EXCPT_REC_DATA_TYPE(p,v)	p->data_type = (v)
 #define P_EXCPT_REC_DPML_ECODE(p,v)	p->dpml_error = (v)
 #define P_EXCPT_REC_MODE(p,v)		p->mode = (v)
 #define P_EXCPT_REC_ARG(p,i,type,v)	p->PASTE_3(args[i], ., type) = (v)

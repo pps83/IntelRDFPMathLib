@@ -272,7 +272,7 @@ F_ENTRY_NAME( F_TYPE x )
     ** Screen out cases where expm1(x) = -1, or overflow as well as x = NaN
     ** or infinity.  We also need to screen out denorms and small argument
     ** (polynomial range).  In order to avoid code schedule issues, pre-compute
-    ** the check for the polynomial range. 
+    ** the check for the polynomial range.
     */
 
     j = (m <= POLY_CHECK);
@@ -410,7 +410,7 @@ poly_range:
 
 boundary_check:
 
-    /* 
+    /*
     ** Do the "final" multiple.  However, when no backup is available
     ** the final multiply might involve a NaN or dirty zero, so we need to
     ** do this scaling carefully
@@ -468,7 +468,7 @@ possible_problems:
     */
 
     IF_IEEE(
-        /* Screen out NaN's and Inf's */    
+        /* Screen out NaN's and Inf's */
         if (m >= F_EXP_MASK) goto NaN_or_Inf;
         )
 

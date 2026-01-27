@@ -43,9 +43,9 @@
 
 #if !DEFINE_SYMBOLIC_CONSTANTS
 
-    const unsigned int TABLE_NAME[] = { 
+    const unsigned int TABLE_NAME[] = {
 
-	/* 
+	/*
 	 * Tj = 2^(j/2^POW2_K) and Rj = [2^(j/2^POW2_K) - Tj]/Tj.
 	 *
 	 * offset                            row
@@ -774,7 +774,7 @@
 	/* 5096 */ DATA_1x2( 0x5bcb09e0, 0xbf9b4ebe ),
 	/* 5104 */ DATA_1x2( 0xeddab426, 0x3f90390f ),
 
-	/* 
+	/*
 	 * Fj, Rj = 1/(Fj*ln2) and Lj = log2(Fj).  Lj and Rj are
 	 * given in hi and low parts.  Fj and the hi part or Lj are
 	 * in reduced precision; Rj, lo(Rj) and lo(Lj) in standard
@@ -1302,21 +1302,21 @@
 
 #else
 
-    extern const double TABLE_NAME[1154]; 
+    extern const double TABLE_NAME[1154];
 
 #endif
 
 #define POW2_HI(j)		*((double *) ((char *) TABLE_NAME + 0 + (j)))
 #define POW2_LO_OV_POW2_HI(j)	*((double *) ((char *) TABLE_NAME + 8 + (j)))
 #define IPOW2(j)		*((signed __int64 *) ((char *) TABLE_NAME + 0 + (j)))
-#define POW2_INDEX_POS		4 
+#define POW2_INDEX_POS		4
 #define	POW2_LO_CHECK_F		*((unsigned __int64 *) ((char *) TABLE_NAME + 4096))
 #define	POW2_HI_CHECK_F		*((unsigned __int64 *) ((char *) TABLE_NAME + 4104))
 #define	POW2_MAX_SCALE_F		*((unsigned __int64 *) ((char *) TABLE_NAME + 4112))
 #define	POW2_LO_CHECK_R		*((unsigned __int64 *) ((char *) TABLE_NAME + 4120))
 #define	POW2_HI_CHECK_R		*((unsigned __int64 *) ((char *) TABLE_NAME + 4128))
 #define	POW2_MAX_SCALE_R		*((unsigned __int64 *) ((char *) TABLE_NAME + 4136))
-#define SCALE_DOWN_EXP	11 
+#define SCALE_DOWN_EXP	11
 #define	FAST_BIG		*((double *) ((char *) TABLE_NAME + 4144))
 #define	SCALE_DOWN_OV_LN2	*((double *) ((char *) TABLE_NAME + 4152))
 #define	SCALE_DOWN_OV_LN2_HI	*((double *) ((char *) TABLE_NAME + 4160))
@@ -1326,8 +1326,8 @@
 #define	FAST_POW2_F		((double *) ((char *) TABLE_NAME + 4192))
 #define	FAST_POW2_R		((double *) ((char *) TABLE_NAME + 4232))
 #define	SCALE_DOWN		*((double *) ((char *) TABLE_NAME + 4256))
-#define ACC_BIG_HI_32		0x42b80001 
-#define FAST_BIG_HI_32		0x42080001 
+#define ACC_BIG_HI_32		0x42b80001
+#define FAST_BIG_HI_32		0x42080001
 #define	LN2_HI			*((double *) ((char *) TABLE_NAME + 4264))
 #define	LN2_LO			*((double *) ((char *) TABLE_NAME + 4272))
 #define	LN2_OV_LN10_HI			*((double *) ((char *) TABLE_NAME + 4280))
@@ -1387,8 +1387,8 @@
 #define RECIP_F(j)		*((double *) ((char *) TABLE_NAME + 5120 + (j)))
 #define RECIP_F_LO(j)		*((double *) ((char *) TABLE_NAME + 5128 + (j)))
 #define LOG_F_LO(j)		*((double *) ((char *) TABLE_NAME + 5136 + (j)))
-#define LOG_INDEX_BASE_POS	5 
-#define LOG_INDEX_SCALE		1 
+#define LOG_INDEX_BASE_POS	5
+#define LOG_INDEX_SCALE		1
 
 # define FAST_POW2_POLY_F_M(x) (((FAST_POW2_F[0]+x*FAST_POW2_F[1])+(x*x)*FAST_POW2_F[2])+(x*(x*x))*(FAST_POW2_F[3] \
 	+x*FAST_POW2_F[4]))

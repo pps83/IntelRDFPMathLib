@@ -35,7 +35,7 @@ static BID_UINT128 BID128_10PM40 =
 
 // 1 for dummy canonizing operation
 
-static BID_UINT128 BID128_1 = 
+static BID_UINT128 BID128_1 =
   {{ 0x0000000000000001ull, 0x3040000000000000ull }};
 
 BID_F128_CONST_DEF( c_1em40, 3f7a16c262777579, c58c46475896767b); // 1e-40

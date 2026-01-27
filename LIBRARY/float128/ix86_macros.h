@@ -96,7 +96,7 @@
 
 #    define B_RINT_TO_FLOATING_AND_WORD_PRECISION_LIMIT (BITS_PER_WORD - 1)
 #    define B_RINT_TO_FLOATING_AND_WORD(x, flt_int_x, int_x) \
-	F_RINT_TO_FLOATING_AND_WORD(x, flt_int_x, int_x) 
+	F_RINT_TO_FLOATING_AND_WORD(x, flt_int_x, int_x)
 
 #endif
 
@@ -452,7 +452,7 @@ down will make the combination faster, go ahead and do it.  */
     ( high ) = ( p1 >> ( BITS_PER_DIGIT / 2 ) ) + ( p2 >> ( BITS_PER_DIGIT / 2 ) ) + p3 + \
 	( t >> ( BITS_PER_DIGIT / 2 ) ) ; \
     }
-    
+
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD -> low +		    */
 /*						    high * 2^BITS_PER_WORD  */
 #define XMUL_XADD( a, b, add_high, add_low, high, low ) { \

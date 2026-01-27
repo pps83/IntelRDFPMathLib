@@ -34,26 +34,26 @@
 #   include STR(BUILD_FILE_NAME)
 #endif
 
-/* 
+/*
 ** BASIC DESIGN
 ** ------------
-** 
+**
 ** The implementation of lgamma is based on the following identities:
-** 
+**
 ** 	lgamma(x) = log(Gamma(x))					(1)
 ** 	Gamma(x + 1) = x*Gamma(x)					(2)
 **	lgamma(1+x) = -ln(1+x) + x*(1 - g) + P(x)			(3)
 ** 	lgamma(x) ~ (x - .5)*ln(x) - x + .5*ln(2*pi) + x*phi(1/x)	(4)
 ** 	lgamma(-x) = -{ ln[x*sin(pi*x)] + lgamma(x) - ln(pi) }		(5)
-** 
+**
 ** where g is Euler's constant, and
-** 
+**
 ** 	P(x)   = sum { n = 2, ... | (-x)^n*[zeta(n) - 1]/n }
 ** 	phi(z) = sum { n = 1, ... | B(2n)*z^(2n)/[2n*(2n-1)] }
-** 
+**
 ** where zeta(n) is the Reimann zeta function and B(n) is the n-th Bernoulli
 ** number.
-** 
+**
 ** The first step in the design is to determine where the asymptotic
 ** approximation, (4), is applicable.  According to Hart et. al., the error in
 ** (4) is less than and of the same sign as the first neglected term in
@@ -62,42 +62,42 @@
 ** certain point, and then begin to increase.  So the trick is to truncate phi
 ** just before the last decreasing term.  With this in mind, consider the ratio
 ** of consecutive terms, r(n):
-** 
+**
 ** 	              B(2n+2)           2n*(2n-1)*x^(2n)
 ** 	r(n) = --------------------- * -----------------
 ** 	       (2n+2)*(2n+1)*x^(2n+2)       B(2n)
-** 
+**
 ** 	           B(2n+2)*n(2n-1)
 ** 	     = ----------------------				(6)
 ** 	       B(2n)*(n+1)*(2n+1)*x^2
-** 
+**
 ** Now the terms of phi will be decreasing in magnitude as long as |r(n)| < 1,
 ** which is equivalent to
-** 
+**
 ** 		      B(2n+2)    n(2n-1)
 ** 		x^2 > ------- * ----------		(7)
 ** 		       B(2n)    (n+1)(2n+1)
-** 
+**
 ** Taking the smallest value of x that satisfies (7) and looking at the (n+1)-st
 ** term of phi, we would like the magnitude of that term to be less than the
 ** permissible total error, which we take to be 1/2^124.  So we need to solve
-** 
+**
 ** 	   B(2n+2)    / B(2n+2)    n(2n-1)    \ -(n+1)   1
 ** 	------------*|  ------- * -----------  |     < -----	(8)
 ** 	(2n+2)(2n+1)  \  B(2n)    (n+1)(2n+1) /        2^124
-** 
+**
 ** We could at this point convert the B(2n) terms to expressions involving the
 ** zeta function and factorials, apply Sterlings approximation and take
 ** limits to simplify the problem.  However, its easier and more accurate to
 ** solve (8) numerically, giving n = 41 and the minimum x as 12.971.  In order
 ** to simplify the screening process we will take the minimum x as 16.
-** 
+**
 ** So the basic algorithm is to apply equation (5) when x <= -16 and equation
 ** (4) when x >= 16.  Otherwise we try to "reduce" the argument to the interval
 ** [ b, b+1 ) where b is any convenient positive value, and apply equation (3).
 ** The argument reduction scheme is based on equation (2).  In particular, for
 ** x < b - 1 and x > b the following reductions can be used:
-** 
+**
 ** 	t <-- 1				t <-- 1
 ** 	z <-- x				z <-- x
 ** 	while (z < b)			while (z > b + 1)
@@ -106,18 +106,18 @@
 ** 	    z <-- z + 1			    t <-- t*z
 ** 	    }				    }
 ** 	lgamma(x) <-- -ln(t) + P(z)	lgamma(x) <-- ln(t) + P(z)
-** 
-** 
+**
+**
 ** CHOSING b AND EVALUATING P(z)
 ** -----------------------------
-** 
+**
 ** From an algorithmic point of view, the choice of the reduced argument range,
 ** [b, b+1) is arbitrary.  However, from an implementation stand point, the
 ** choice of b has an impact on the "shape" of polynomial or rational
 ** expression used to evaluate the reduced argument.  This is particularly true
 ** for the unpacked x-float routines, because the evaluation is done in fixed
 ** point.
-** 
+**
 ** Because lgamma is rapidly increasing function, rational approximations are
 ** much more efficient that polynomial approximations.  So we will confine are
 ** remarks to the rational case.  All of the choices of b that were examined
@@ -125,7 +125,7 @@
 ** in both the numerator and denominator.  The choice of b controlled the
 ** length of the increasing sequence and the size of the ratio between the
 ** first term and the largest term.  For fixed point evaluations, it is most
-** desirable for all of the terms to be decreasing, however, we were unable to 
+** desirable for all of the terms to be decreasing, however, we were unable to
 ** find a value of b for which this was true.  What follows below is a
 ** description of the "best we could do".
 **
@@ -137,12 +137,12 @@
 **		s(k-1) = c(k-1) - x*s(k)		(9)
 **
 ** s(k-1) not be less than zero.
-** 
+**
 ** We note that gamma(n) = (n-1)! for any integer n, so that
-** 
+**
 ** 	lgamma(1) = log(gamma(1)) = log(0!) = log(1) = 0
 ** 	lgamma(2) = log(gamma(2)) = log(1!) = log(1) = 0
-** 
+**
 ** So that lgamma(x) has a zeros at x = 1 and x = 2.  Consequently, on the
 ** interval [1, 2) we can approximate lgamma(x) by an expression of the form
 ** (x - 1)*(x - 2)*R(x), where R(x) is a rational expression.  In order to
@@ -152,22 +152,22 @@
 ** algorithm to generate coefficients for U, we see that the first three
 ** numerator and first two denominator coefficients are increasing.  The
 ** initial sequence of binary exponents are:
-** 
+**
 ** 	coefficient	 0   1   2   3   4   5   6   7  ...
 ** 	-----------	--- --- --- --- --- --- --- ---
 ** 	numerator	-1   1   2   2   1   0  -1  -5
 ** 	denominator	 1   3   3   3   3   3   2   0
-** 
+**
 ** Now, except when the reduced argument, z, is exactly +/- 1/2, |2*z| < 1, so
 ** that we can still use the ration evaluation routine for 2*z.  In effect, we
 ** can scale down each of the coefficients by a appropriate power of two,
 ** giving binary exponents that look like:
-** 
+**
 ** 	coefficient	 0   1   2   3   4   5   6   7  ...
 ** 	-----------	--- --- --- --- --- --- --- ---
 ** 	numerator	-1   0   0  -1  -3  -5  -7  -12
 ** 	denominator	 1   2   1   0  -1  -2  -4  -7
-** 
+**
 ** So that except for the first two coefficients, all the other terms are
 ** decreasing.  This means that we need to handle the case of |z| = 1/2
 ** separately.  However, this is not a problem since when |z| = 1/2, we know
@@ -177,9 +177,9 @@
 ** rather than using REMES_FIND_RATIONAL_MODE, we use REMES_STATIC, with
 ** numerator/denominator degree = 13/14.  This yields an approximation good
 ** to slightly more that 126 bits.
-** 
+**
 ** With the above mind, the processing for |x| < 16 looks like:
-** 
+**
 ** 	t <-- 1				t <-- 1
 ** 	w <-- x				w <-- x
 ** 	while (w < 1)			while (z > 2)
@@ -192,19 +192,19 @@
 ** 	lgamma(x) <-- -ln(t) + z*V(y)	lgamma(x) <-- ln(t) + z*V(y)
 **
 ** where V(w) = U(y/2 + 3/2)/4.
-** 
-** 
+**
+**
 ** 	NOTE: The following limits are useful for determining the
 ** 	coefficients of U;
-** 
+**
 ** 		     lgamma(x)
 ** 		lim  --------- = - euler_gamma
 ** 		x->1  (x-1)
-** 
+**
 ** 		     lgamma(x)
 ** 		lim  --------- = euler_gamma - 1
 ** 		x->2   (x-2)
-** 
+**
 **
 ** LARGE ARGUMENTS:
 ** ----------------
@@ -233,11 +233,11 @@
 **
 ** So that negative and positive cases can share a significant portion of code.
 **
-*/ 
+*/
 
 
 /*
-** UX_LGAMMA is the common processing routine for computing the unpacked lgamma 
+** UX_LGAMMA is the common processing routine for computing the unpacked lgamma
 ** result from an unpacked input
 */
 
@@ -398,7 +398,7 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
             );
         // ADDSUB(unpacked_result, unpacked_argument, ADD, unpacked_result);
         ADDSUB(unpacked_result, &tmp[1], ADD, unpacked_result);
-        
+
         if (sign)
             {
             /*
@@ -420,7 +420,7 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
 ** C_UX_LGAMMA is the common processing routine for the 3 lgamma functions:
 ** lgamma, gamma and __lgamma.  Each of the lgamma routines calls into the
 ** C_LGAMMA routine, which unpacks the arguments, computes the results, and
-** processes exceptions. 
+** processes exceptions.
 */
 
 #if !defined(C_UX_LGAMMA)
@@ -458,7 +458,7 @@ C_UX_LGAMMA(_X_FLOAT * packed_argument, int * signgam,
     }
 
 /*
-** Currently, there are 3 flavors of the lgamma function: lgamma, gamma and 
+** Currently, there are 3 flavors of the lgamma function: lgamma, gamma and
 ** __lgamma.  For the unpacked library, each of these routines calls into the
 ** C_UX_LGAMMA routine, which unpacks the arguments, computes the results,
 ** and processes exceptions.
@@ -555,7 +555,7 @@ X_XIptr_PROTO(F_ENTRY_NAME, packed_result, packed_argument, signgam_ptr)
 ** C_UX_LGAMMA is the common processing routine for the 3 lgamma functions:
 ** lgamma, gamma and __lgamma.  Each of the lgamma routines calls into the
 ** C_LGAMMA routine, which unpacks the arguments, computes the results, and
-** processes exceptions. 
+** processes exceptions.
 */
 
 #undef  F_ENTRY_NAME
@@ -571,7 +571,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     UX_FLOAT unpacked_argument, unpacked_result, tmp;
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
- 
+
     INIT_EXCEPTION_INFO;
     fp_class  = UNPACK(
         PASS_ARG_X_FLOAT(packed_argument),
@@ -587,7 +587,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         }
 
     exponent = G_UX_EXPONENT( &unpacked_argument );
-    if ( G_UX_SIGN( &unpacked_argument ) == 0) 
+    if ( G_UX_SIGN( &unpacked_argument ) == 0)
         {
         // Input is positive. Check for sure overflow
         if ( exponent > 11 )
@@ -605,7 +605,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         mask = (((UX_FRACTION_DIGIT_TYPE) -1) >> (exponent & DIGIT_MOD_MASK));
         msd  = G_UX_FRACTION_DIGIT( &unpacked_argument, i);
         msd &= mask;
-        while ( ++i < NUM_UX_FRACTION_DIGITS ) 
+        while ( ++i < NUM_UX_FRACTION_DIGITS )
             msd |= G_UX_FRACTION_DIGIT( &unpacked_argument, i);
         if ( msd == 0 )
             { // This is a negative integer, force underflow condition
@@ -771,7 +771,7 @@ pack_it:
     function find_n_and_min_x(tol)
         {
         auto n, b_2n, b_2n_plus_2, common, x_sqr, tmp;
-    
+
         n = 4;
         b_2n = B[0];
         while (1)
@@ -792,7 +792,7 @@ pack_it:
         max_terms = n - 2;
         return sqrt(x_sqr);
         }
-   
+
     /*
     ** lgamma_phi computes the asymptotic approximation to lgamma(8*x)
     */

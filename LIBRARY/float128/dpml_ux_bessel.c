@@ -44,44 +44,44 @@
 #   define DYNAMIC	1
 #endif
 
-/* 
+/*
 ** This following is a discussion of the implementation of the unpacked x-float
 ** bessel functions.  The algorithmic aspects of these routines are virtually
 ** identical to the existing DPML x-float bessel function routines.
 ** Consequently, the primary focus of the comments in this file is the
 ** implementation details for the unpacked x-float case.  For details about the
 ** algorithms used, the reader should refer to the file dpml_bessel.c.
-** 
-** 
+**
+**
 ** 1.0 BACKGROUND AND BASICS
 ** -------------------------
-** 
+**
 ** This note discusses the bessel functions of the first and second kind, j(n,x)
 ** and y(n,x) respectively.  In this document, we use the notation C(n,x) to
 ** refer to j(n,x) and y(n,x) simultaneously.  Further, we distinguish between
 ** the first and second arguments to C(n,x) by the names 'order' and 'argument'
 ** respectively.
-** 
+**
 ** Broadly speaking, the existing DPML algorithm for C(n,x) is divided into
-** three ranges: 
-** 
+** three ranges:
+**
 ** 	(1) |n| >= 2
 ** 	(2) asymptotic approximations to C(0,x) and C(1,x)
 ** 	(3) polynomial approximations to C(0,x) and C(1,x)
-** 
-** 
+**
+**
 ** 2.0 IMPLEMENTATION DISCUSSION
 ** -----------------------------
-** 
+**
 ** In this section we present an overview of the organization of the unpacked
 ** x-float bessel function routines.  The following sections discuss the
 ** implementation details on each of the ranges specified in section 1.0.
-** 
+**
 ** Each of the six user level bessel functions call a common interface routine,
 ** C_BESSEL.  C_BESSEL unpacks the argument and determines s = 1 or
 ** -1 so that C(n,x) = s*C(|n|,|x|).  C(|n|,|x|) is computed in unpacked form
 ** by the routine UX_BESSEL, which may call out to UX_ASYMPTOTIC_BESSEL or
-** UX_LARGE_ORDER_BESSEL. 
+** UX_LARGE_ORDER_BESSEL.
 **
 ** C_BESSEL invokes UX_BESSEL to actually determine which of the three
 ** evaluation ranges to use and calls UX_ASYMPTOTIC_BESSEL and
@@ -89,35 +89,35 @@
 ** directly.  The reason this is not done directly by C_BESSEL is so that
 ** UX_BESSEL can be called recursively without having to unpack the arguments
 ** again.
-** 
-** 
+**
+**
 ** 2.1 ASYMPTOTIC RANGE FOR ORDER LESS THAN 2
 ** ------------------------------------------
-** 
+**
 ** The simplest evaluation region is when the order less than 2 and the
 ** arguments are large.  (See section 2.3.1 for a more precise definition of
 ** "large arguments".)  On this range C(n,x) is be approximated as:
-** 
+**
 ** 	j(n,x) = w(x)*{ P(n,z)*cos(X(n,x)) - Q(n,z)*sin(X(n,x)) } (1)
 ** 	y(n,x) = w(x)*{ P(n,z)*sin(X(n,x)) + Q(n,z)*cos(X(n,x)) }
-** 
+**
 ** where z = 1/x, w(x) = sqrt[2/(x*pi)],  X(n,x) = x - (2n+1)*(pi/4) and
 ** P(n,z) and Q(n,z) are rational expressions in z.
-** 
+**
 ** In order to make the processing of C(n,x) more uniform, we note that
 ** cos(x + pi/2) = -sin(x) and sin(x + pi/2) = cos(x), so that we can replace
 ** the cos and sin terms in (1) with sin(pi/2+X(n,x)) and cos(pi/2+X(n,x))
 ** respectively.  But pi/2 + X(n,x) = x - (pi/4)*(2n-1) = X(n-1,x) so that we
 ** have
-** 
+**
 ** 	j(n,x) = w(x)*{ P(n,z)*sin(X(n-1,x)) + Q(n,z)*cos(X(n-1,x)) }
 ** 	y(n,x) = w(x)*{ P(n,z)*sin(X(n,x))   + Q(n,z)*cos(X(n,x)) }
-** 
+**
 ** Since we are only dealing the cases n = 0 and 1, in order to ease the
 ** implementation, we pad the coefficients of P(0,z), Q(0,z), P(1,z) and Q(1,z)
 ** with zeros to insure they all have the same degree.  Further, we assume
 ** that the coefficients are laid out in memory in the order presented.
-*/ 
+*/
 
 #if !defined(UX_ASYMPTOTIC_BESSEL)
 #   define UX_ASYMPTOTIC_BESSEL		__INTERNAL_NAME(ux_asymptotic_bessel__)
@@ -194,34 +194,34 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     MULTIPLY(&tmp[0], &tmp[2], &tmp[0]);	/* tmp[0] = P*sin	*/
     MULTIPLY(&tmp[1], &tmp[3], &tmp[1]);	/* tmp[1] = +/-Q*cos	*/
     ADDSUB(&tmp[0], &tmp[1], order ? ADD : SUB, &tmp[0]);
-    
+
     /* Get sqrt and do final multiply */
 
     UX_SQRT(&tmp[4], &tmp[1]);
     MULTIPLY(&tmp[0], &tmp[1], unpacked_result);
     }
 
-/* 
+/*
 ** 2.2 LARGE ORDER RANGE
 ** ---------------------
-** 
+**
 ** The implementation of bessel functions of large order are based on the
 ** recurrence relations
-** 
+**
 ** 		           2n
 ** 		C(n+1,x) = --- C(n,x) - C(n-1,x)		(2)
 ** 			    x
-** 
+**
 ** For y(n,x), (2) is used by first computing y(0,x) and y(1,x) and iterating
 ** until y(n,x) is obtained.  This approach is referred as a "forward"
 ** recurrence.  The same approach can by used for j(n,x), if x > n.
-** 
+**
 ** When x <= n, the forward recurrence for j(n,x) is unstable, and a backward
 ** recurrence must be used.  This technique is a little more subtle.  It is
 ** based on the identity
-** 
+**
 ** 	1 = j(0,x) + 2*{ j(2,x) + j(4,x) + j(6,x) ... }		(3)
-** 
+**
 ** and the fact that j(n+1,x)/j(n,x) --> 0 as n gets large.
 **
 ** The process begins by chosing an integer, N, and two real values, t(N+1,x)
@@ -238,7 +238,7 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 **
 **		t(k,x) = A*j(k,x) + B*y(k,x)
 **
-** Ultimately, we want to find j(n,x) for a given n and x.  If we could 
+** Ultimately, we want to find j(n,x) for a given n and x.  If we could
 ** arrange it so that the term B*y(n,x) was insignificant to A*j(n,x), then
 ** to machine precision t(n,x) = A*j(n,x).  Further, if we could estimate
 ** A, then we could compute j(n,x) to machine precision as t(n,x)/A.
@@ -280,7 +280,7 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 ** t(k,x)'s to get
 **
 ** 	S = t(0,x) + 2*[ t(2,x) + t(4,x) + t(6,x) ... + t( 2N',x) ]
-** 	  = A*{ j(0,x) + 2*[ j(2,x) + j(4,x) + j(6,x) ... + j( 2N',x) ] } + 
+** 	  = A*{ j(0,x) + 2*[ j(2,x) + j(4,x) + j(6,x) ... + j( 2N',x) ] } +
 ** 	       B*{ y(0,x) + 2*[ y(2,x) + y(4,x) + y(6,x) ... + y( 2N',x) ] }
 ** 	  = A*J + B*Y
 **
@@ -308,7 +308,7 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 **	"The number of correct significant figures in the final
 **	 values [ i.e. j(n,x) ] is the same as the number of digits
 **	 in the respective trial values. [ i.e. t(n,x) ]"
-** 
+**
 ** Using the asymptotic estimates for j(n,x) and y(n,x) and noting that
 ** t(n,x) ~ A*j(n,x), we can try to find N such that
 **
@@ -318,66 +318,66 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 ** large.
 **
 ** Solving (6) for N is difficult and requires an iterative numerical approach.
-** 
-** 
+**
+**
 ** 2.2.1 ERROR CHECKING
 ** --------------------
-** 
+**
 ** For large orders and small arguments, y(n,x) can overflow and j(n,x) can
 ** underflow.  Using the relationships:
-** 
+**
 ** 	| y(n,x) | > (n-1)!*(2/x)^n	| j(n,x) | < (x/2)^n/n!
-** 
+**
 ** We can screen out guaranteed overflow and underflow conditions via the
 ** comparisons:
-** 
+**
 ** 	(n-1)!*(2/x)^n >= 2^EMAX	(x/2)^n/n! <= 2^EMIN
-** 
+**
 ** where EMAX = F_MAX_BIN_EXP + 1 and EMIN = F_MIN_BIN_EXP - F_PRECISION + 1.
 ** The above comparisons are equivalent to:
-** 
+**
 ** 	log2[(n-1)!] + n*[1 - log2(x)] >= EMAX
 ** 	    n*[log2(x) - 1] - log2(n!) <= EMIN
-** 
+**
 ** Noting that x = 2^k*f, f in [1/2, 1) and that log2(n!) = log2[(n-1)!] +
 ** log2(n), the two comparisons are equivalent to:
-** 
+**
 ** 	          log2[(n-1)!] + n*[1 - k - log2(f)] >= EMAX	(7)
 ** 	n*[k + log2(f) - 1] - log2[(n-1)!] - log2(n) <= EMIN	(8)
-** 
+**
 ** Now we need to estimate the value of log2[(n-1)!].  Since doing this
 ** precisely is equivalent to evaluating the lgamma function, we will use an
 ** upper and lower bound for log2[(n-1)!] in (7) and (8) to get comparisons
 ** that give less precise error range boundaries, but are easier to compute.
-** 
+**
 ** From Hart, we show that if n = 2^E*g, where g is in the interval [1/2, 1),
 ** then,
-** 
+**
 ** 	(n-.5)*bexp(n) - n*(1/ln2 + 1) + (1 + .5*log2(pi)) <= log2((n-1)!)
 ** 	log2((n-1)!) <= (n-.5)*E - n/ln2 + .5 + .5*log2(pi)
-** 
+**
 ** Noting that -1 <= log2(f) < 0, and using the bounds for log2[(n-1)!], we
 ** can transform (7) and (8) to:
-** 
+**
 ** 	    (n-.5)*E - n*(1/ln2+1) + 1 +.5*log2(pi) + n*(1-k) - EMAX >= 0  (9)
 ** 	n*(k-1) - (n-.5)*E + n/ln2 - .5 - .5*log2(pi) - (E-1) - EMIN <= 0  (10)
-** 
+**
 ** If we denote the left hand sides of (9) and (10) as A and B respectively,
 ** the we can define c = (A + B)/2 and d = (A - B)/2 and the above comparisons
 ** are equivalent to
-** 
+**
 ** 			c + d >= 0
 ** 			    c <= 0
-** 
-** where 
-** 
+**
+** where
+**
 ** 	c = .5*(3/2 - EMAX - EMIN) - .5*(n + E)
 ** 	d = n*[ E - k + (1/2 - 1/ln2) ] + [ 1/2 + log2(pi) - EMAX + EMIN ]/2
-** 
-** 
+**
+**
 ** 2.2.2 COMPUTING 2*N
 ** -------------------
-** 
+**
 ** For both the forward and backward recurrence, the computation of 2*k for
 ** k increasing or decreasing is required.  In the process of creating the
 ** unpacked representation for the initial value of 2*k, we can create an
@@ -387,7 +387,7 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 ** results in a carry out or borrow from the MSB of the fraction, then the
 ** exponent of the result and the unnormalized representation of two needs to
 ** be adjusted.
-*/ 
+*/
 
 #define	J_BESSEL	0
 #define	Y_BESSEL	2
@@ -414,7 +414,7 @@ static void UX_BESSEL( UX_FLOAT *, WORD, WORD, UX_FLOAT *);
 
 extern S_TYPE S_LOG2_NAME( S_TYPE );
 
-	
+
 static void
 UX_LARGE_ORDER_BESSEL(
   UX_FLOAT * unpacked_argument,
@@ -453,7 +453,7 @@ UX_LARGE_ORDER_BESSEL(
     d = ((double) order)*( (double) exp_diff + .942)
           -16437.924251;
 
-    /* 
+    /*
     ** if evaluating Y_BESSEL functions or if x >= n, use a
     ** forward recurrence.
     */
@@ -464,7 +464,7 @@ UX_LARGE_ORDER_BESSEL(
             {
             exponent = UX_OVERFLOW_EXPONENT;
             goto return_exception;
-            } 
+            }
         }
     else
         { /* J_BESSEL, check for underflow */
@@ -472,7 +472,7 @@ UX_LARGE_ORDER_BESSEL(
             {
             exponent = UX_UNDERFLOW_EXPONENT;
             goto return_exception;
-            } 
+            }
 
         /*
         ** if x < n use backward recurrence.  Use N as a temporary location
@@ -528,7 +528,7 @@ UX_LARGE_ORDER_BESSEL(
             }
         P_UX_MSD(&twice_n, f_hi);
         }
-    
+
     /* Copy result of iteration to unpacked result */
     UX_COPY(C2, unpacked_result);
     return;
@@ -608,7 +608,7 @@ backward_recurrence:
         }
 
     /*
-    ** Convert to integer and do one last check. 
+    ** Convert to integer and do one last check.
     */
 
     N = (UX_FRACTION_DIGIT_TYPE) (fN + 9.99999940395355224609375e-1);
@@ -634,7 +634,7 @@ backward_recurrence:
 
     (void) U_WORD_TO_UX( 2*N, &twice_n);
     incr = UX_MSB >> (G_UX_EXPONENT(&twice_n) - 2);
-        
+
     /* Now do the recursions */
 
     while(1)
@@ -677,7 +677,7 @@ backward_recurrence:
             }
         P_UX_MSD(&twice_n, f_hi);
         }
-   
+
     /*
     ** at this point sum = K*sum{ k=1,2,... | J(2k,x) }, and C2 points
     ** to K*J(0,x).  Compute K from the relation
@@ -697,30 +697,30 @@ return_exception:
         exponent,
         UX_MSB);
     }
-	    
-/* 
+
+/*
 ** 2.3 POLYNOMIAL RANGE FOR ORDER LESS THAN 2
 ** ------------------------------------------
-** 
+**
 ** C(n,x) oscillates much like an attenuated sin or cos curve, and consequently
 ** has infinite number of zeros.  The polynomial range is divided into
 ** intervals, each of which contains a zero of the function.  We then expand
 ** C(n,x) in a "polynomial" around that zero.
-** 
+**
 ** The primary issue in the polynomial range is determining the appropriate
 ** zero and corresponding set of polynomial coefficients for a given argument.
 ** Generally speaking, if e[i] and e[i+1] are i-th and i+1st extrema locations
 ** of C(n,x), and z[i] is the zero located between e[i] and e[i+1], then we
 ** approximate C(n,x) on [ e[i], e[i+1] ) in a polynomial around z[i].
-** 
+**
 ** 	NOTE: The above 'algorithm' requires some special case code when
 ** 	the function has a zero at x = 0 and for the first interval of
 **	y0 and y1.  See the comments in the MPHOC code below for details.
-** 
-** 
+**
+**
 ** 2.3.1 CONSTRUCTING THE ARRAYS
 ** -----------------------------
-** 
+**
 ** The first step in constructing the arrays is to establish the number of
 ** entries in the arrays.  As a side effect of this computation, we determine
 ** the range for the asymptotic evaluations.  It should be noted here, that
@@ -729,20 +729,20 @@ return_exception:
 ** decrease in magnitude, which is a problem for the unpacked rational
 ** evaluation routine.  Consequently, we need to force the lower limit of the
 ** asymptotic range to be at least 22.
-** 
+**
 ** For each of the four bessel functions, f = j0, j1, y0, and y1, denote intial
 ** local extrema by e(f,0) and recursively define e(f, i+1) to be the first
 ** extrema value of f after e(f,i).  Further, we define z(f,i) to be the zero
 ** of f between e(f,i) and e(f,i+1).  Lastly, define n(f) to be the smallest
 ** their local extrema by e(f,1), e(f,2) ... and define n(f) to be the
 ** integer such that e(f, n(f)) > 22.
-** 
+**
 ** The precise locations of the extrema points are not critical to the
 ** algorithm, so we need not store them in full precision.  In fact, all of
 ** the extrema points are less than 32, so we can store them in true fixed
 ** point format consisting of one integer word with the binary point after
 ** the 5-th most significant bit.
-** 
+**
 ** The values of the zeros on the other hand must be stored to twice the normal
 ** precision.  Toward this end, we represent the zeros using a 256 bit fraction.
 ** Since the input argument has 113 significant bits, if we compute the reduced
@@ -751,7 +751,7 @@ return_exception:
 ** zeros are all positive, and the exponents are small, we can conserve overall
 ** storage by encoding the exponent of the zeros in the low order 5 bits of the
 ** fraction field and construct the unpacked form of the zero at run-time.
-** 
+**
 ** The interval data is stored as:
 */
 
@@ -857,7 +857,7 @@ typedef struct {
 /*
 ** For the packed case, eval_data looks like;
 **
-**	         2 22  2 2     1 1     
+**	         2 22  2 2     1 1
 **	         4 32  1 0     4 3     7 6     0
 **	+-------+-+-+-+-+-------+-------+-------+
 **	|       |P|X|M|N|   D   |   W   |   B   |
@@ -915,7 +915,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 
     if ((exponent > MIN_ASYMPTOTIC_EXPONENT) ||
      ((exponent == MIN_ASYMPTOTIC_EXPONENT) &&
-      (f_hi > table_data_map->min_asymptotic_value))) 
+      (f_hi > table_data_map->min_asymptotic_value)))
         {
         UX_ASYMPTOTIC_BESSEL(unpacked_argument, order, kind, unpacked_result);
         return;
@@ -978,7 +978,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
             poly_argument,
             EXTR_BITS( DEGREE, eval_data),
             interval_data->coefficients,
-            MAKE_MASK( EXTR_BITS( EXP_WIDTH, eval_data), 0), 
+            MAKE_MASK( EXTR_BITS( EXP_WIDTH, eval_data), 0),
             EXTR_BITS( EXP_BIAS, eval_data),
             unpacked_result);
     else
@@ -1045,7 +1045,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     return;
     }
 
-    
+
 /*
 ** All of the bessel functions call a common routine C_BESSEL, to unpacked
 ** their argument and account for negative orders and arguments.  Some of the
@@ -1362,7 +1362,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** evaluation routine because of its performance characteristics.
     ** However, the unpacked polynomial evaluation routine requires that
     ** the polynomials be "well formed": i.e. the terms decrease in size
-    ** and either alternate in sign or have the same sign.  Most of the 
+    ** and either alternate in sign or have the same sign.  Most of the
     ** bessel polynomials do not meet this definition of "well formed".  The
     ** good news is that most of the bessel polynomials made into "well formed"
     ** polynomials by evaluating their even and odd terms separately.  There
@@ -1379,7 +1379,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** like:
     **
     **		o The form of the polynomial - packed vs. unpacked.
-    **		o pre/post processing information 
+    **		o pre/post processing information
     **		o The degree of the polynomial
     **		o The bias and exponent mask used for unpacking
     */
@@ -1411,7 +1411,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** __bessel_<func> that are used and indicates what they are used for.
     ** The forward definitions are required so that mphoc doesn't report
     ** syntax errors.
-    */ 
+    */
 
     function __bessel(x)       { return x; }	/* find zeros */
     function __bessel_prime(x) { return x; }	/* find extrema */
@@ -1551,7 +1551,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
 
     /*
     ** find_bessel_zero attempts to find a zero of jn or yn in the "interval"
-    ** [a,b) using an approximate Newton's method to precision p. 
+    ** [a,b) using an approximate Newton's method to precision p.
     **
     ** Since we are using the MPHOC find_root operator, a and b must bracket
     ** the root that is being searched for.
@@ -1587,7 +1587,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
 
         /*
         ** Since the difference of consecutive zeros of the bessel functions
-        ** asymptotically approach pi, take a and b to be z + pi/2 and 
+        ** asymptotically approach pi, take a and b to be z + pi/2 and
         ** z + 3*pi/2 respectively
         */
 
@@ -1691,14 +1691,14 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** polynomial as:
     **
     **		p(x) = e(x^2) + x*o(x^2)
-    ** 
+    **
     ** where e(x) and o(x) have alternating signs and decreasing terms even
     ** though p(x) does not have decreasing terms.  The function reform_coefs
     ** takes the the coefficients of p and attempts to rearranges them into
     ** a well formed set.  Failing that, it converts the coefficients to
     ** packed form.
     */
-        
+
 # define FLAGS_OFFSET		0
 # define NUM_DEGREE_OFFSET	1
 # define DEN_DEGREE_OFFSET	2
@@ -1738,7 +1738,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
                 s = 0;
                 flags = 0;
                 }
-            else 
+            else
                 {
                 s = t;
                 flags = POST_MULTIPLY;
@@ -1763,7 +1763,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
             ** These coefficients need to be split up into even and odd
             ** terms.
             **
-            ** if we are dividing out a zero of the function, we need to 
+            ** if we are dividing out a zero of the function, we need to
             ** post multiply.  Also, if the first two terms of the original
             ** series have different signs, then we need to subtract the
             ** even and odd terms rather than add them.
@@ -1844,14 +1844,14 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
             offset = 128*(degree + 1);
             flags = (flags & BESSEL_COMMON_FLAGS_MASK) + BESSEL_PACKED_POLY +
                 ((degree << BESSEL_DEGREE_POS) +
-                (packed_exponent_bias << BESSEL_EXP_BIAS_POS) + 
-                (packed_exponent_width << BESSEL_EXP_WIDTH_POS)); 
+                (packed_exponent_bias << BESSEL_EXP_BIAS_POS) +
+                (packed_exponent_width << BESSEL_EXP_WIDTH_POS));
             num_degree = degree;
             den_degree = 0;
             }
         offset = (offset + FIXED_BITS_PER_INTERVAL_DATA) / BITS_PER_CHAR;
         flags += (offset << OFFSET_POS);
-        
+
         ux_rational_coefs[index + FLAGS_OFFSET ]      = flags;
         ux_rational_coefs[index + NUM_DEGREE_OFFSET ] = num_degree;
         ux_rational_coefs[index + DEN_DEGREE_OFFSET ] = den_degree;
@@ -1956,7 +1956,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** get_coefficients computes the remes coefficients for "current" function
     ** on the interval [a,b] expanded around the point, z.  When z is zero,
     ** a square term polynomial approximation is assumed.
-    ** 
+    **
     ** get_coefficients invokes reform_coefs to see if then can be made into
     ** a well formed set of coefficients.  The following table lists the
     ** possible out comes of get_coefficients based on the result reform_coefs
@@ -2072,10 +2072,10 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     /*
     ** The function, get_neumann_coefficients generates the coefficients of
     ** the neumann function on the interval [a,b] expanded around z, where z
-    ** is a zero of the neumann function in the interval [a,b] if it exists 
+    ** is a zero of the neumann function in the interval [a,b] if it exists
     ** or .5*(a+b) if it doesn't.
     */
- 
+
     function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
       bessel_enum, tol)
         {
@@ -2231,9 +2231,9 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
 
 
         /*
-        ** Now loop through the remaining intervals 
+        ** Now loop through the remaining intervals
         */
- 
+
         flags = 0;
         while (a <= x)
             {
@@ -2262,7 +2262,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     ** z, where z is a zero of the neumann function in the interval [a,b]
     ** if it exists or .5*(a+b) if it doesn't
     */
- 
+
     function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
       bessel_enum, tol)
         {
@@ -2416,7 +2416,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     function __bessel_prime(x)  { return __jn_prime(x); }
 
     /*
-    ** Since the necessary value of "t" used in the each of the calls to 
+    ** Since the necessary value of "t" used in the each of the calls to
     ** find_interval_data is known prior to build time and the accuracy of the
     ** algorithm as a hole is not affected by it precision, we pre-compute
     ** t to save time.

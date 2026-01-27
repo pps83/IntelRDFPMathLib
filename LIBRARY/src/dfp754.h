@@ -33,12 +33,12 @@
 
 
 /****************************************************************************
- *  List of symbols not declared in mathimf.h 
- *  With the exception of strod/wcstod functions, these symbols 
+ *  List of symbols not declared in mathimf.h
+ *  With the exception of strod/wcstod functions, these symbols
  *  are not specified in the ISO/IEC decimal TR
  ****************************************************************************/
 
-#ifdef __STDC_WANT_DEC_FP__ 
+#ifdef __STDC_WANT_DEC_FP__
 
 /* Conversions to/from int */
 extern _Decimal32  int32_to_decimal32(int);
@@ -124,7 +124,7 @@ extern _Decimal128 wcstod128(const wchar_t* restrict, wchar_t** restrict);
 
 #endif
 
-#ifdef __STDC_WANT_DEC_FP__ 
+#ifdef __STDC_WANT_DEC_FP__
 extern _Decimal32   acosd32  (_Decimal32 __x);
 extern _Decimal64   acosd64  (_Decimal64 __x);
 extern _Decimal128  acosd128 (_Decimal128 __x);

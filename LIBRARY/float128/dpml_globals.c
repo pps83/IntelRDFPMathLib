@@ -101,7 +101,7 @@
  * In addition to the actual values, this routine also sets up a table
  * of address that allows type independent accessing of the values.
  * Values are generated only for those data types actually supported by
- * the platform.  The BIT_IS_SET macro is used to determine which 
+ * the platform.  The BIT_IS_SET macro is used to determine which
  * "bits" are set in the FLOAT_TYPES macro
  */
 
@@ -166,7 +166,7 @@
 
     @divert divertText
 
-    printf( "#if !defined(GLOBALS_TABLE)\n" 
+    printf( "#if !defined(GLOBALS_TABLE)\n"
             "#   define GLOBALS_TABLE	__INTERNAL_NAME(globals_table)\n"
             "#endif\n\n" );
 
@@ -233,48 +233,48 @@
 /* NaNs and reserved operands */
 
     if	(do_s)
-	PR_SINGLE(S_NAN_HI) 
-    if	(do_t)	
+	PR_SINGLE(S_NAN_HI)
+    if	(do_t)
 	PR_DOUBLE(T_NAN_HI, NAN_LO)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(X_NAN_HI, NAN_LO, NAN_LO, NAN_LO)
     if	(do_f)
-	PR_SINGLE(0x00008000) 
-    if	(do_g)	
+	PR_SINGLE(0x00008000)
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00008000)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00008000)
     PAD_TABLE ;
 
 /* POS ZERO */
 
     if	(do_s)
-	PR_SINGLE(0x00000000) 
-    if	(do_t)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
-    if	(do_x)	
+	PR_SINGLE(0x00000000)
+    if	(do_t)
+	PR_DOUBLE(0x00000000, 0x00000000)
+    if	(do_x)
 	PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00000000) 
-    if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
-    if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
+	PR_SINGLE(0x00000000)
+    if	(do_g)
+	PR_DOUBLE(0x00000000, 0x00000000)
+    if	(do_d)
+	PR_DOUBLE(0x00000000, 0x00000000)
     PAD_TABLE ;
 
 /* NEG ZERO */
 
     if	(do_s)
 	PR_SINGLE(0x80000000)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0x80000000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
 	PR_SINGLE(0x00000000)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00000000)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00000000)
     PAD_TABLE ;
 
@@ -282,15 +282,15 @@
 
     if	(do_s)
 	PR_SINGLE(0x00000001)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0x00000000, 0x00000001)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000001)
     if	(do_f)
 	PR_SINGLE(0x00000080)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00000010)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00000080)
     PAD_TABLE ;
 
@@ -298,15 +298,15 @@
 
     if	(do_s)
 	PR_SINGLE(0x80000001)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0x80000000, 0x00000001)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000001)
     if	(do_f)
 	PR_SINGLE(0x00008080)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00008010)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00008080)
     PAD_TABLE ;
 
@@ -314,31 +314,31 @@
 
     if	(do_s)
 	PR_SINGLE(0x7f7fffff)
-    if	(do_t)	
-	PR_DOUBLE(0x7fefffff, 0xffffffff) 
-    if	(do_x)	
+    if	(do_t)
+	PR_DOUBLE(0x7fefffff, 0xffffffff)
+    if	(do_x)
 	PR_QUAD(0x7ffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
     if	(do_f)
 	PR_SINGLE(0xffff7fff)
-    if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff) 
-    if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff) 
+    if	(do_g)
+	PR_DOUBLE(0xffffffff, 0xffff7fff)
+    if	(do_d)
+	PR_DOUBLE(0xffffffff, 0xffff7fff)
     PAD_TABLE ;
 
 /* NEG HUGE */
 
     if	(do_s)
 	PR_SINGLE(0xff7fffff)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0xffefffff, 0xffffffff)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0xfffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
     if	(do_f)
 	PR_SINGLE(0xffffffff)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0xffffffff, 0xffffffff)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0xffffffff, 0xffffffff)
     PAD_TABLE ;
 
@@ -346,15 +346,15 @@
 
     if	(do_s)
 	PR_SINGLE(0x7f800000)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0x7ff00000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x7fff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
 	PR_SINGLE(0xffff7fff)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0xffffffff, 0xffff7fff)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0xffffffff, 0xffff7fff)
     PAD_TABLE ;
 
@@ -362,47 +362,47 @@
 
     if	(do_s)
 	PR_SINGLE(0xff800000)
-    if	(do_t)	
-	PR_DOUBLE(0xfff00000, 0x00000000) 
-    if	(do_x)	
+    if	(do_t)
+	PR_DOUBLE(0xfff00000, 0x00000000)
+    if	(do_x)
 	PR_QUAD(0xffff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
 	PR_SINGLE(0xffffffff)
-    if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffffffff) 
-    if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffffffff) 
+    if	(do_g)
+	PR_DOUBLE(0xffffffff, 0xffffffff)
+    if	(do_d)
+	PR_DOUBLE(0xffffffff, 0xffffffff)
     PAD_TABLE ;
 
 /* POS ULP FACTOR */
 
     if	(do_s)
-	PR_SINGLE(0x34000000) 
-    if	(do_t)	
+	PR_SINGLE(0x34000000)
+    if	(do_t)
 	PR_DOUBLE(0x3cb00000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x3f8f0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00003500) 
-    if	(do_g)	
+	PR_SINGLE(0x00003500)
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00003cd0)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00002500)
     PAD_TABLE ;
 
 /* NEG ULP FACTOR */
 
     if	(do_s)
-	PR_SINGLE(0xb4000000) 
-    if	(do_t)	
+	PR_SINGLE(0xb4000000)
+    if	(do_t)
 	PR_DOUBLE(0xbcb00000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0xbf8f0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x0000b500) 
-    if	(do_g)	
+	PR_SINGLE(0x0000b500)
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x0000bcd0)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x0000a500)
     PAD_TABLE ;
 
@@ -410,15 +410,15 @@
 
     if	(do_s)
 	PR_SINGLE(0x3f800000)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0x3ff00000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0x3fff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
 	PR_SINGLE(0x00004080)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x00004010)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x00004080)
     PAD_TABLE ;
 
@@ -426,15 +426,15 @@
 
     if	(do_s)
 	PR_SINGLE(0xbf800000)
-    if	(do_t)	
+    if	(do_t)
 	PR_DOUBLE(0xbff00000, 0x00000000)
-    if	(do_x)	
+    if	(do_x)
 	PR_QUAD(0xbfff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
 	PR_SINGLE(0x0000c080)
-    if	(do_g)	
+    if	(do_g)
 	PR_DOUBLE(0x00000000, 0x0000c010)
-    if	(do_d)	
+    if	(do_d)
 	PR_DOUBLE(0x00000000, 0x0000c080)
     PAD_TABLE ;
 
@@ -448,7 +448,7 @@
 
     /*
      * Print out defines so that other routines can access the tables
-     * Specifically, for each generic value in the globals table  
+     * Specifically, for each generic value in the globals table
      * generate a type independent symbolic constant (these are only used
      * by dpml_error_codes.c).
      */

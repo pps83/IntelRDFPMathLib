@@ -143946,7 +143946,7 @@ bid32_to_binary32 (float *pres, BID_UINT32 * px
   BID_UINT32 x = *px;
 #else
 
-RES_WRAPFN_DFP(float, bid32_to_binary32, 32)                 
+RES_WRAPFN_DFP(float, bid32_to_binary32, 32)
 
 float
 bid32_to_binary32 (BID_UINT32 x
@@ -144081,7 +144081,7 @@ bid64_to_binary32 (float *pres, BID_UINT64 * px
                    _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
-RES_WRAPFN_DFP(float, bid64_to_binary32, 64)                 
+RES_WRAPFN_DFP(float, bid64_to_binary32, 64)
 float
 bid64_to_binary32 (BID_UINT64 x
                    _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144219,7 +144219,7 @@ bid128_to_binary32 (float *pres, BID_UINT128 * px
                     _EXC_INFO_PARAM) {
   BID_UINT128 x = *px;
 #else
-RES_WRAPFN_DFP(float, bid128_to_binary32, 128)                 
+RES_WRAPFN_DFP(float, bid128_to_binary32, 128)
 float
 bid128_to_binary32 (BID_UINT128 x
                     _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144354,7 +144354,7 @@ bid32_to_binary64 (double *pres, BID_UINT32 * px
   _IDEC_round rnd_mode = *prnd_mode;
 #endif
 #else
-RES_WRAPFN_DFP(double, bid32_to_binary64, 32)                 
+RES_WRAPFN_DFP(double, bid32_to_binary64, 32)
 double
 bid32_to_binary64 (BID_UINT32 x
                    _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144447,7 +144447,7 @@ bid64_to_binary64 (double *pres, BID_UINT64 * px
   _IDEC_round rnd_mode = *prnd_mode;
 #endif
 #else
-RES_WRAPFN_DFP(double, bid64_to_binary64, 64)                 
+RES_WRAPFN_DFP(double, bid64_to_binary64, 64)
 double
 bid64_to_binary64 (BID_UINT64 x
                    _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144586,7 +144586,7 @@ bid128_to_binary64 (double *pres, BID_UINT128 * px
   _IDEC_round rnd_mode = *prnd_mode;
 #endif
 #else
-RES_WRAPFN_DFP(double, bid128_to_binary64, 128)                 
+RES_WRAPFN_DFP(double, bid128_to_binary64, 128)
 double
 bid128_to_binary64 (BID_UINT128 x
                     _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144718,7 +144718,7 @@ bid32_to_binary80 (BINARY80 * pres, BID_UINT32 * px
                    _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY80, bid32_to_binary80, 32)                 
+RES_WRAPFN_DFP(BINARY80, bid32_to_binary80, 32)
 BINARY80
 bid32_to_binary80 (BID_UINT32 x
                    _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144813,7 +144813,7 @@ bid64_to_binary80 (BINARY80 * pres, BID_UINT64 * px
                    _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY80, bid64_to_binary80, 64)                 
+RES_WRAPFN_DFP(BINARY80, bid64_to_binary80, 64)
 BINARY80
 bid64_to_binary80 (BID_UINT64 x
                    _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -144912,7 +144912,7 @@ bid128_to_binary80 (BINARY80 * pres, BID_UINT128 * px
                     _EXC_INFO_PARAM) {
   BID_UINT128 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY80, bid128_to_binary80, 128)                 
+RES_WRAPFN_DFP(BINARY80, bid128_to_binary80, 128)
 BINARY80
 bid128_to_binary80 (BID_UINT128 x
                     _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -145053,7 +145053,7 @@ bid32_to_binary128 (BINARY128 * pres, BID_UINT32 * px
                     _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY128, bid32_to_binary128, 32)                 
+RES_WRAPFN_DFP(BINARY128, bid32_to_binary128, 32)
 BINARY128
 bid32_to_binary128 (BID_UINT32 x
                     _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -145163,7 +145163,7 @@ bid64_to_binary128 (BINARY128 * pres, BID_UINT64 * px
                     _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY128, bid64_to_binary128, 64)                 
+RES_WRAPFN_DFP(BINARY128, bid64_to_binary128, 64)
 BINARY128
 bid64_to_binary128 (BID_UINT64 x
                     _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
@@ -145270,7 +145270,7 @@ bid128_to_binary128 (BINARY128 * pres, BID_UINT128 * px
                      _EXC_INFO_PARAM) {
   BID_UINT128 x = *px;
 #else
-RES_WRAPFN_DFP(BINARY128, bid128_to_binary128, 128)                 
+RES_WRAPFN_DFP(BINARY128, bid128_to_binary128, 128)
 BINARY128
 bid128_to_binary128 (BID_UINT128 x
                      _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM

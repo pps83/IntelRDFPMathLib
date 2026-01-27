@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION TABLE_NAME[] = { 
+    static const TABLE_UNION TABLE_NAME[] = {
 
 	/* Square root class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x40e50408, 0x2410e40e ),

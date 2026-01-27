@@ -129,11 +129,11 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
     f_hi = ((double) (msd >> shift)) * D_RECIP_TWO_POW_24;
     f_lo *= D_RECIP_TWO_POW_77;
 
-    /* 
+    /*
     ** Now compute a polynomial in f to obtain an approximation to 1/sqrt(f'),
     ** call it g.
     **
-    ** Get index into the square root polynomial coefficient table as the 
+    ** Get index into the square root polynomial coefficient table as the
     ** low exponent bit and the high fraction bits and calculate g.
     **
     ** There is a little bit of a problem with using the DPML sqrt tables.
@@ -168,14 +168,14 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 
     /*
     ** Given g ~ 1/sqrt(f), we want to compute
-    ** 
+    **
     **		g_lo = (g/8)*(1 - f*g^2)*(7 - 3*f*g^2)
-    ** 
+    **
     ** However, computing g_lo is somewhat problematic, since there is
     ** a potential for a massive loss of significance when computing
     ** 1 - f*g^2.  To deal with this problem, we introduce the quantity, t,
     ** defined by:
-    ** 
+    **
     ** 		t <-- (double)((float) f*g)
     **
     ** and reduce g to only 24 significant bits
@@ -188,23 +188,23 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
     /*
     ** Note that f*g and t are essentially the same values up to about
     ** 24 bits.  Then we can write
-    ** 
+    **
     **		w = 1 - f*g^2
     **	 	  = 1 - (f*g)*g
     ** 		  = 1 - [t + (f*g - t)]*g
     **	 	  = (1 - t*g) - (f*g - t)*g
     **	 	  ~ (1 - t*g) - [(f_hi + f_lo)*g - t]*g
     **	 	  = (1 - t*g) - [(f_hi*g - t) + f_lo*g]*g
-    ** 
+    **
     ** Note that since g, t and f_hi have at most 24 significant bits,
     ** and since f*g ~ t, the products t*g and f_hi*g as well as the
     ** sums 1 - t*g and f_hi*g - t are all exact.  This basicly
     ** reduces the roundoff error in computing 1 - f*g^2 to a few lsbs.
     ** With the above in mind, we compute g_lo as
-    ** 
+    **
     **
     **		g_lo = {g*[(7/16) - ((3/16)*f)*(g*g)]} * w
-    */ 
+    */
 
     w    = D_GROUP(D_ONE - t*g) - D_GROUP(D_GROUP(f_hi*g - t) + f_lo*g)*g;
     g_lo =  (g*D_GROUP(D_SEVEN_EIGHTS - (D_THREE_EIGHTS*f)*(g*g)))*w;
@@ -231,7 +231,7 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 
 #   else
 
-#       error "Sqrt not NYI for 32 bit integers"        
+#       error "Sqrt not NYI for 32 bit integers"
 
 #   endif
 
@@ -255,7 +255,7 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 
     MULTIPLY(y, (evaluation_type == EVALUATE_SQRT) ? &ux_tmp : &s, y);
     UX_DECR_EXPONENT(y, 1);
-    
+
     return;
     }
 
@@ -271,7 +271,7 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 static void
 C_UX_SQRT(_X_FLOAT * packed_argument, WORD evaluation_code,
   _X_FLOAT * packed_result OPT_EXCEPTION_INFO_DECLARATION )
-    {    
+    {
     WORD      fp_class;
     UX_FRACTION_DIGIT_TYPE lsd, tmp_digit;
     UX_FLOAT unpacked_argument, unpacked_result, diff, hi, lo;
@@ -293,7 +293,7 @@ C_UX_SQRT(_X_FLOAT * packed_argument, WORD evaluation_code,
         {
         /*
         ** Now we have to fool around with the low digit of the result to
-        ** insure that correct rounding takes place.  If the result is 
+        ** insure that correct rounding takes place.  If the result is
         ** sufficiently far away from the half way case, the PACK routine will
         ** do the correct rounding.  However, "too close to call", we need
         ** to force the low bits of the result to insure PACK does the right
@@ -314,7 +314,7 @@ C_UX_SQRT(_X_FLOAT * packed_argument, WORD evaluation_code,
             ADDSUB(&diff, &lo, SUB, &diff);
             lsd = G_UX_SIGN(&diff) ? lsd : tmp_digit;
             P_UX_LSD(&unpacked_result, lsd);
-            } 
+            }
         }
 
     PACK(
@@ -328,7 +328,7 @@ C_UX_SQRT(_X_FLOAT * packed_argument, WORD evaluation_code,
 /*
 ** The following two routines implement the user level functions sqrtl and
 ** rsqrtl calling C_UX_SQRT
-*/ 
+*/
 
 #if !defined(F_ENTRY_NAME)
 #   define F_ENTRY_NAME		F_SQRT_NAME
@@ -443,7 +443,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
     TABLE_COMMENT("Square root class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "SQRT_CLASS_TO_ACTION_MAP");
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
 	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
@@ -457,7 +457,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
     TABLE_COMMENT("Reciprocal square root class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "RSQRT_CLASS_TO_ACTION_MAP");
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
               CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     4) +
@@ -481,13 +481,13 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 	  /* Index 0: mapping for x */
 
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
 	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
 	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
 
 	  /* Index 1: class-to-index mapping */
 
-    PRINT_64_TBL_ITEM( 
+    PRINT_64_TBL_ITEM(
 	      CLASS_TO_INDEX( F_C_POS_ZERO,   2) +
 	      CLASS_TO_INDEX( F_C_NEG_ZERO ,  2) +
 	      CLASS_TO_INDEX( F_C_POS_DENORM, 3) +
@@ -499,7 +499,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 	  /* Index 2: y class-to-index mapping for x = +/- zero */
 
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
 	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  1) +
 	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  1) +
 	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  1) +
@@ -513,7 +513,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 	  /* Index 3: y class-to-index mapping for x = +/- norm or denorm */
 
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
 	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
 	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
 	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_UNPACKED,  1) +
@@ -527,7 +527,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 	  /* Index 4: y class-to-index mapping for x = +/- Inf */
 
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
 	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
 	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
 	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  0) +

@@ -220,7 +220,7 @@ BID128_FUNCTION_ARG1 (bid128_lgamma, x)
 // while if 0 <= x <= 1/2 then |1 - x| >= 1/2 >= |x|
 // so in either case the low part is still proportionally small.
 // and we can then just add up the tails.
-  
+
   __bid_f128_sub(xd_tmp, c_one.v, xd_hi);
 
   if (__bid_f128_le(xd_hi, c_minus_one.v))

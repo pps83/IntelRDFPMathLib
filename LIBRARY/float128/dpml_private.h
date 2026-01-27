@@ -378,7 +378,7 @@ specific macro definitions included above.  */
 #endif
 
 
-#if (VAX_FLOATING) 
+#if (VAX_FLOATING)
 
 #ifndef F_EXP_WORD_IS_ABNORMAL
 #define F_EXP_WORD_IS_ABNORMAL(exp_word) (!((exp_word) & F_EXP_MASK))
@@ -706,7 +706,7 @@ specific macros were defined, assume there are no rounding modes. */
 #define BYTES_PER_Q_TYPE    (BITS_PER_Q_TYPE/BITS_PER_CHAR)
 #define BYTES_PER_B_TYPE    (BITS_PER_B_TYPE/BITS_PER_CHAR)
 #define BYTES_PER_R_TYPE    (BITS_PER_R_TYPE/BITS_PER_CHAR)
-  
+
 
 
 /* Make_float primitives */
@@ -2018,16 +2018,16 @@ These do not yet have generic definitions:
 #    define C_C_PROTO(n)          C_s_PROTO(n)
 #    define COMPLEX_QUAD_DECL(n)  F_COMPLEX n
 #    define COMPLEX_ARGS_INIT(x)  F_TYPE PASTE(r,x)=x.r, PASTE(i,x)=x.i
-#    define COMPLEX_ARGS(x)       F_COMPLEX x 
-#    define PASS_CMPLX(a,b,p)     (p.r = a, p.i = b, p) 
-#    define COMPLEX_PROTOTYPE     F_COMPLEX 
-#    define COMPLEX_B_PROTOTYPE   B_COMPLEX 
+#    define COMPLEX_ARGS(x)       F_COMPLEX x
+#    define PASS_CMPLX(a,b,p)     (p.r = a, p.i = b, p)
+#    define COMPLEX_PROTOTYPE     F_COMPLEX
+#    define COMPLEX_B_PROTOTYPE   B_COMPLEX
 #else
 #    define C_C_PROTO(n)          C_FF_PROTO(n)
 #    define COMPLEX_QUAD_DECL(n)
 #    define COMPLEX_ARGS_INIT(x)
-#    define COMPLEX_ARGS(x)       F_TYPE PASTE(r,x), F_TYPE PASTE(i,x) 
-#    define PASS_CMPLX(a,b,p)     (F_TYPE) a, (F_TYPE) b 
+#    define COMPLEX_ARGS(x)       F_TYPE PASTE(r,x), F_TYPE PASTE(i,x)
+#    define PASS_CMPLX(a,b,p)     (F_TYPE) a, (F_TYPE) b
 #    define COMPLEX_PROTOTYPE     F_TYPE, F_TYPE
 #    define COMPLEX_B_PROTOTYPE   B_TYPE, B_TYPE
 #endif
@@ -2099,13 +2099,13 @@ These do not yet have generic definitions:
 /*
  * The following macros are use to scale denormalized values to normalized
  * results.  All scaling is done by an implicit multiplication by a power
- * of two.  The power of two used to scale the denormalized values is 
+ * of two.  The power of two used to scale the denormalized values is
  * defined by the macro __LOG2_DENORM_SCALE, which defaults to F_PRECISION.
- * Based on __LOG2_DENORM_SCALE, three other constants are specified for 
+ * Based on __LOG2_DENORM_SCALE, three other constants are specified for
  * convienence:
  *
  *	__DENORM_SCALE			   2^__LOG2_DENORM_SCALE
- *	__DENORM_SCALE_BIASED_EXP	   the aligned, biased and unbiased 
+ *	__DENORM_SCALE_BIASED_EXP	   the aligned, biased and unbiased
  *	__DENORM_SCALE_UNBIASED_EXP	     exponent field of __DENORM_SCALE
  *	__LOG2_DENORM_SCALE_ALIGNED_W_EXP  __LOG2_DENORM_SCALE aligned with
  *					     exponent field
@@ -2308,7 +2308,7 @@ These do not yet have generic definitions:
 		}
 
 #   define MUL_ADD(F, g, w_lo, z_lo)	z_lo = F*g + w_lo
-    
+
 #   define XMUL(F, g, z_hi, z_lo) \
 		{ \
 		U_WORD prod; \
@@ -2390,7 +2390,7 @@ These do not yet have generic definitions:
 
 /* F_HW_OR_SW_PRECISE_SQRT is defined for hypot to use
 ** F_PRECISE_SQRT which is defined in sqrt_macros.h.
-** Both F_PRECISE_SQRT and F_HW_OR_SW_PRECISE_SQRT are 
+** Both F_PRECISE_SQRT and F_HW_OR_SW_PRECISE_SQRT are
 ** used only in dpml_hypot.c
 */
 
@@ -2400,13 +2400,13 @@ These do not yet have generic definitions:
 #   define F_HW_OR_SW_PRECISE_SQRT F_PRECISE_SQRT
 # endif
 
-#if defined GROUP 
-#   define D_GROUP(x)   GROUP(x) 
-#else        
+#if defined GROUP
+#   define D_GROUP(x)   GROUP(x)
+#else
 #   define D_GROUP_NAME         PASTE_2(__INTERNAL_NAME(group),_d)
     extern double D_GROUP_NAME( double );
 #   define D_GROUP(x)   D_GROUP_NAME(x)
-#endif 
+#endif
 
 #endif  /* DPML_PRIVATE_H */
 

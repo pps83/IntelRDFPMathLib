@@ -39,12 +39,12 @@
 #   define F_ENTRY_NAME      F_TGAMMA_NAME
 #endif
 
-#if USE_BACKUP 
+#if USE_BACKUP
 #   define LO_PART_DECL
 #else
-#   define LO_PART           pow2_low 
-#   define LO_PART_DECL      , F_TYPE *LO_PART 
-#endif 
+#   define LO_PART           pow2_low
+#   define LO_PART_DECL      , F_TYPE *LO_PART
+#endif
 
 extern F_TYPE F_RT_LGAMMA_NAME(F_TYPE , int *);
 extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME ( F_TYPE , WORD *  LO_PART_DECL );
@@ -70,7 +70,7 @@ F_ENTRY_NAME(F_TYPE x) {
     j = u.F_HI_WORD;
     if ( j & F_SIGN_BIT_MASK) {
         // In put is negative
-        if ( (j & F_EXP_MASK) >= 
+        if ( (j & F_EXP_MASK) >=
                 (((WORD) (F_EXP_BIAS + F_PRECISION)) << F_EXP_POS)) {
             // Argument is a negitive integer
             return INF;

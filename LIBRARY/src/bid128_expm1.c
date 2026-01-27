@@ -71,17 +71,17 @@ BID128_FUNCTION_ARG1 (bid128_expm1, x)
 // we do weakly just to make sure all the directed roundings are OK.
 // Treat zero specially to copy its sign
 
-  __bid_f128_fabs(abs_xd, xd); 
+  __bid_f128_fabs(abs_xd, xd);
   if (__bid_f128_le(abs_xd, c_1em40.v))
    { int zf;
-     BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero,zf,x);              
-     if (zf)         
+     BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero,zf,x);
+     if (zf)
       { BIDECIMAL_CALL2(bid128_mul,res,x,BID128_1);
       }
-     else                       
+     else
       { BIDECIMAL_CALL3(bid128_fma,res,x,x,x);
-      }                                               
-     BID_RETURN(res);                              
+      }
+     BID_RETURN(res);
      BID_RETURN(res);
    }
 

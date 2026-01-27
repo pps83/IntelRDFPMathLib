@@ -34,7 +34,7 @@
 #endif
 
 #if !defined(TMP_FILE)
-#   define TMP_FILE             ADD_EXTENSION(BUILD_FILE_NAME,tmp) 
+#   define TMP_FILE             ADD_EXTENSION(BUILD_FILE_NAME,tmp)
 #endif
 
 #define NEW_DPML_MACROS 1
@@ -51,7 +51,7 @@
 #if !defined( BASE_NAME)
 #   define BASE_NAME  CBRT_BASE_NAME
 #endif
- 
+
 #if !defined(CBRT_BUILD_FILE_NAME)
 #   define CBRT_BUILD_FILE_NAME  __D_TABLE_FILE_NAME(CBRT_BASE_NAME)
 #endif
@@ -65,8 +65,8 @@
  *  The algorithms used for the cbrt function are detailed in the X_FLOAT_NOTES
  *  file (notes 18.*).
  *
- *  The basic approach is to factor the input x into f * 2^n, where 
- *  1 <= f < 2  and  n = 3*m + i, where i = 0, 1, or 2.  Then 
+ *  The basic approach is to factor the input x into f * 2^n, where
+ *  1 <= f < 2  and  n = 3*m + i, where i = 0, 1, or 2.  Then
  *
  *    cbrt(x) = cbrt(2^n * f)
  *            = cbrt(2^(3*m+i) * f)
@@ -87,22 +87,22 @@
  *  add (sign + m) to its sign/exponent field;  and then move
  *  it to a floating point register.  On pipelined machines, this integer
  *  manipulation is done in parallel with the polynomial and/or Newton's
- *  iteration, so has "zero cost".  On sequential machines, these steps 
+ *  iteration, so has "zero cost".  On sequential machines, these steps
  *  have to be done at some point in time anyway.
  *
  *
  *  Single precision is implemented by computing a 9th degree double precision
  *  poly approx of cbrt(f).  The poly is good to about 30 bits, so we don't
- *  need any Newton's iterations.  We fetch the full-precision double 
- *  precision floating point number 2^(i/3) from the table, put it in an 
+ *  need any Newton's iterations.  We fetch the full-precision double
+ *  precision floating point number 2^(i/3) from the table, put it in an
  *  integer variable, adjust its exponent and sign, move it to a floating
  *  point variable, multiply times the poly approx, and round back to
  *  single precision.
  *
  *
- *  Double and quad precision need to do Newton's iteration(s) after the 
+ *  Double and quad precision need to do Newton's iteration(s) after the
  *  poly approx.  There are many choices of Newton's iterations for cbrt,
- *  with varying convergence.  Three interesting candidates with cubic 
+ *  with varying convergence.  Three interesting candidates with cubic
  *  convergence are:
  *
  *  A:   y' =  y  -  (y/2) * (y^3 - f)            where y = P(f) ~ f^(1/3)
@@ -119,10 +119,10 @@
  *
  *           where y  ~ f^(1/3)  and  z ~ f^(-2/3)  as above.
  *
- *  
+ *
  *  The first Newton's iteration (A) comes from  y' =  y -  f(y)/f'(y),
  *  where f(y) = y^2 - x/y  maps out the curve   y^3 = x.  It has cubic
- *  convergence: the number of "good" bits in y' is 3*n, where 
+ *  convergence: the number of "good" bits in y' is 3*n, where
  *  n = number of "good" bits we started with.  The initial approximation
  *  y = P(f)  approximates  f^(1/3).  The numerator  y^3 - f  can suffer
  *  massive cancellation error;  we'd have to compute it in extra precision.
@@ -132,7 +132,7 @@
  *  to be cubic  (replace y with y*(1 + eps);  the rapidity of convergence
  *  depends on which powers of eps drop out).  In this case the number of
  *  "good" bits in y' is 3*n - 2.  This form of Newton's iteration needs two
- *  initial approximations:  y = P(f)  approximating f^(1/3)  and 
+ *  initial approximations:  y = P(f)  approximating f^(1/3)  and
  *  z = Q(f) approximating f^(-2/3)  -  but we can get y from z by multiplying
  *  z * f.
  *
@@ -140,7 +140,7 @@
  *  convergence.  It has no divide, and also has no "residual".  The error
  *  is not small enough to use for double precision, but it is sufficient for
  *  a quick (40 bit) approximation for quad precision.
- *  
+ *
  *
  *  All three Newton's iterations have to be scaled by 2^(i/3).  We compute
  *  the residual y^3 - f in A and B very carefully to avoid cancellation:
@@ -160,7 +160,7 @@
  *  fastest but least accurate.
  *
  *
- *  For double precision code, we use the second Newton's iteration, slightly 
+ *  For double precision code, we use the second Newton's iteration, slightly
  *  altered to maximize pipelining and to minimize cancellation; thus avoiding
  *  double precision floating divide.
  *
@@ -169,10 +169,10 @@
  *  low 32 bits  (n = 21).  Then split y into y_hi and y_lo, by masking out
  *  the low bits in the shortened y.
  *
- *  Let t = y * y.  t is exact and has NUM_Y_HI_BITS trailing zeros.  
+ *  Let t = y * y.  t is exact and has NUM_Y_HI_BITS trailing zeros.
  *  Then y^3 = t * y_hi  +  t * y_lo  is an extended precision quantity
  *  with NUM_Y_HI_BITS extra bits.  The first term has no roundoff error.
- *  We compute the residual as the sum of the exact first part and a 
+ *  We compute the residual as the sum of the exact first part and a
  *  second part which is not exact but is small:
  *
  *      y^3 - f    =   (t * y_hi - f) + t * y_lo
@@ -182,25 +182,25 @@
  *  We definitely want 3*n - 2 to be larger than F_PRECISION.  But the shorter
  *  y is, the more bits we can get in y_hi, and the more extra precision we
  *  get.  We definitely want n < F_PRECISION/2.  Another consideration is
- *  the accuracy of the initial approximation, which gives us the n "good" 
+ *  the accuracy of the initial approximation, which gives us the n "good"
  *  bits to begin with:  z had only 23 bits, so y really has only 22.
  *
- *  Let n = NUM_Y_BITS = 21.  y_hi has D_PRECISION - 2 * n = 11 bits.  
+ *  Let n = NUM_Y_BITS = 21.  y_hi has D_PRECISION - 2 * n = 11 bits.
  *  The Newton's iteration gives 3*n - 2 = 61 bits, which gives us a double
  *  precision cbrt with excellent error characteristics.
  *
  *  We have to scale up the Newton's iteration by 2^m * 2^(i/3).
- *  To do the scaling, let c_full and c_lo be the full precision and the lo 
+ *  To do the scaling, let c_full and c_lo be the full precision and the lo
  *  parts of 2^(i/3).  c_hi is computed = c_full - c_lo; c_lo is chosen so
  *  that c_hi is short and y * c_hi is exact.  Then the Newton's iteration
  *  including scaling is computed as
  *
- *    y'  =  y * (c_full - c_lo) +  
+ *    y'  =  y * (c_full - c_lo) +
  *
- *            ( y * c_lo  + 
+ *            ( y * c_lo  +
  *
  *                ((f - t*y_hi) - t*y_lo) *
- *                    ( (c_full * (7/9 * (f*z)*(z*z)))  * 
+ *                    ( (c_full * (7/9 * (f*z)*(z*z)))  *
  *                                 (1/7 * (z*f) +  y + (z*z)*(5/7 * f)*t)) )
  *
  *  The Newton's iteration takes about 8 chimes after z (poly) is finished.
@@ -210,14 +210,14 @@
  *  To do quad precision, since each X_FLOAT floating point operation is so
  *  slow, we do an initial approximation in double precision, convert the
  *  results to quad, and then do a quad precision Newton's iteration.
- *  We postpone adding m to the exponent until the last quad precision 
+ *  We postpone adding m to the exponent until the last quad precision
  *  operation; this simplifies the earlier steps.
  *
- *  Rather than actually calling double precision cbrt(), we cast f to 
- *  double precision df and compute a simplified double precision cbrt 
- *  approximation in-line.  We know 1 <= df < 2, so no need to normalize df 
+ *  Rather than actually calling double precision cbrt(), we cast f to
+ *  double precision df and compute a simplified double precision cbrt
+ *  approximation in-line.  We know 1 <= df < 2, so no need to normalize df
  *  or process the exponent.  We start with a poly, then do the third
- *  Newton's iteration (C).  We scale times 2^(i/3) by loading the full 
+ *  Newton's iteration (C).  We scale times 2^(i/3) by loading the full
  *  precision c_full into a double precision floating point register and doing
  *  a floating multiply.  Then split the double precision result dy into
  *  dy_hi and dy_lo, and convert all three to quad.
@@ -226,7 +226,7 @@
  *  one quad precision floating point operation.
  *
  *  After dy, dy_hi and dy_lo have been converted to y, y_hi, and y_lo, we
- *  need to do a Newton's iteration.  Each quad precision floating point 
+ *  need to do a Newton's iteration.  Each quad precision floating point
  *  operation is costly, but a divide is relatively less than for double
  *  precision.  Therefore we use the first proposed Newton iteration, in
  *  the following decomposition:   t = y * y
@@ -235,8 +235,8 @@
  *                      ----------------------------
  *                        (t*y + t*y) + f
  *
- *  This requires 5 multiplies, 5 adds and 1 divide. We have to scale f 
- *  by 2^i, by adding i to the exponent.  Finally, add (sign + m) to the 
+ *  This requires 5 multiplies, 5 adds and 1 divide. We have to scale f
+ *  by 2^i, by adding i to the exponent.  Finally, add (sign + m) to the
  *  sign/exponent field.
  *
  *
@@ -251,7 +251,7 @@
 #define NUM_Y_BITS     21
 
 
-/* 
+/*
  *  MPHOC code to do the polynomials and the table of cbrts: 2^(i/3),
  *  double precision floating point.
  *
@@ -285,7 +285,7 @@
 
    function
     recip_cbrt(z)
-{  
+{
    auto t;
 
     t = cbrt(z);
@@ -331,9 +331,9 @@
 /*
  *  Make sure that both hi and lo words of 2^(i/3) are non-negative, to
  *  simplify the sign/exponent manipulation in the code.  If the lo word
- *  is 0 (i.e. 2^0), put in a tiny number instead, so that we can add 
+ *  is 0 (i.e. 2^0), put in a tiny number instead, so that we can add
  *  (sign + exp) to it.
- */ 
+ */
 
    procedure
     generate_root_table()
@@ -412,7 +412,7 @@
 
        generate_root_table();
 
- 
+
        TABLE_COMMENT("Numerical constants");
 
 
@@ -460,12 +460,12 @@
 
        printf("\n#else\n");
        printf("\n extern const TABLE_UNION "STR(CBRT_TABLE_NAME)"[%i]; \n",
-          offset/BITS_PER_TABLE_WORD); 
+          offset/BITS_PER_TABLE_WORD);
        printf("\n#endif\n");
 
 
        printf("\n\n");
-       
+
 @end_divert
 
 @eval my $outText = MphocEval( GetStream( "divertText" ) ); 		\
@@ -476,13 +476,13 @@
       my $headerText = GetHeaderText( STR(BUILD_FILE_NAME),		\
                        "Definitions and constants for " .		\
                        STR(F_ENTRY_NAME),  __FILE__);			\
-         print "$headerText\n\n$tableText\n\n$defineText\n\n$polyText";	
+         print "$headerText\n\n$tableText\n\n$defineText\n\n$polyText";
 
 
 /*
  * if not MAKE_INCLUDE
  */
-#else          
+#else
 
 
 
@@ -494,7 +494,7 @@
 
 
 
-#define TABLE_IS_EXTERNAL 1 
+#define TABLE_IS_EXTERNAL 1
 
 #include STR(BUILD_FILE_NAME)
 
@@ -509,7 +509,7 @@
 
 #if QUAD_PRECISION
 
-#   define ONE_CONST  (B_TYPE)1.0 
+#   define ONE_CONST  (B_TYPE)1.0
 
 #else
 
@@ -620,12 +620,12 @@
 
 /*
  *  Macros to fetch the full precision words and possibly also the lo words
- *  of 2^(i/3) from the table, either as D_HI_WORD in an integer register, 
+ *  of 2^(i/3) from the table, either as D_HI_WORD in an integer register,
  *  or as a double precision floating point number.
  *
  *  The table items are double precision (64-bits).  If BITS_PER_WORD is 32,
  *  fetch the lo 32 bits into the D_LO_WORD of a D_UNION (thus hiding the
- *  endianness). 
+ *  endianness).
  *
  *  Single precision code fetches only the full precision root, as integer.
  *  Quad precision code also fetches only the full precision root, as double.
@@ -709,13 +709,13 @@ F_ENTRY_NAME(F_TYPE x)
 
 /*
  *  First, reduce x to f, where 1 <= f < 2.  f will be the variable for
- *  the poly.   Get the hi word of x and isolate the (biased) exponent 
+ *  the poly.   Get the hi word of x and isolate the (biased) exponent
  *  and the sign.
  *
  *  Screen out x = 0 and the IEEE denorms, infinities and NaNs.
  *
  *  The variable sign holds either F_SIGN_BIT_MASK (sign extended) or 0.
- *  For single and double precision, it will be convenient for sign to be 
+ *  For single and double precision, it will be convenient for sign to be
  *  D_SIGN_BIT_MASK instead - modify the single precision variable shortly.
  */
 
@@ -725,14 +725,14 @@ F_ENTRY_NAME(F_TYPE x)
 
      work_u.f = x;
 
-     j = work_u.F_SIGNED_HI_WORD; 
+     j = work_u.F_SIGNED_HI_WORD;
 
      sign = (j & SIGN_MASK_EXT);
 
 
 #if IEEE_FLOATING
 
-     i = MAKE_MASK( (F_EXP_WIDTH - 1), (F_EXP_POS + 1) ); 
+     i = MAKE_MASK( (F_EXP_WIDTH - 1), (F_EXP_POS + 1) );
 
      if ( (WORD)( (j + LSB_OF_EXPON) & i ) == 0 )
 
@@ -740,7 +740,7 @@ F_ENTRY_NAME(F_TYPE x)
 
 #else
 
-     i = F_EXP_MASK; 
+     i = F_EXP_MASK;
 
      if ((j & i) == 0)
 
@@ -757,7 +757,7 @@ F_ENTRY_NAME(F_TYPE x)
  * But in the meantime, add the constant to the exponent field, fix its sign,
  * and prepare to start the "division"  expon * 1/3.
  *
- * Single precision replaces the 'sign' variable with 
+ * Single precision replaces the 'sign' variable with
  *     sign << (D_EXP_POS - F_EXP_POS).
  * Double precision case follows the poly with a Newton's iteration.
  * Quad precision casts f to double and does the poly and one Newton's
@@ -773,13 +773,13 @@ F_ENTRY_NAME(F_TYPE x)
 
 #if SINGLE_PRECISION
 
-     z = CBRT_POLY(f);  
+     z = CBRT_POLY(f);
 
      sign = ((sign) ? D_SIGN_BIT_MASK : 0);
 
 #elif DOUBLE_PRECISION
 
-     z = RECIP_CBRT_POLY(f);  
+     z = RECIP_CBRT_POLY(f);
 
      w = f * z;
 
@@ -806,7 +806,7 @@ F_ENTRY_NAME(F_TYPE x)
 
      dw = df * dz;
 
-     dt = dw * dw;      
+     dt = dw * dw;
 
      dr = dz * dz;
 
@@ -829,7 +829,7 @@ F_ENTRY_NAME(F_TYPE x)
  *
  *  The true exponent = 3*m + i, where i = 0, 1 or 2.
  *
- *  Later, the final cbrt approx will be multiplied by 2^(i/3), 
+ *  Later, the final cbrt approx will be multiplied by 2^(i/3),
  *  and (sign + m) will be added to the final exponent.
  */
 
@@ -869,13 +869,13 @@ F_ENTRY_NAME(F_TYPE x)
  *  added the sign; we add this to T(i) and move T(i) to a floating register.
  *
  *  Single precision requires only the full root T(i), in double precision.
- *  Double precision requires full T(i) as well as a short hi part and a 
+ *  Double precision requires full T(i) as well as a short hi part and a
  *  lo part.  The algorithm requires the "hi" part quite late, so plenty of
  *  time to compute it from full - lo.  We need to add (sign + m) to the
- *  sign/exponent field of both T(i)_full and T(i)_lo.  Note that both 
+ *  sign/exponent field of both T(i)_full and T(i)_lo.  Note that both
  *  T(i)_full and T(i)_lo are positive, so that adding (sign + exp) works.
  *
- *  For quad precision, we'll fix up m and the sign much later.  Just fetch 
+ *  For quad precision, we'll fix up m and the sign much later.  Just fetch
  *  T(i) in full precision, as a floating point number.
  *
  *  If only the hi 32 bits of T(i) fit into an integer register (IF_SMALL_WORD)
@@ -895,13 +895,13 @@ F_ENTRY_NAME(F_TYPE x)
 
 #elif DOUBLE_PRECISION
 
-     GET_ROOT(i, stk_tmp_u, full, j); 
+     GET_ROOT(i, stk_tmp_u, full, j);
 
      GET_ROOT(i, stk_tmp_v, lo, k);
 
      j += m;
 
-     k += m; 
+     k += m;
 
      ROOT_TO_FLOAT(j,stk_tmp_u,c_hi);
 
@@ -925,7 +925,7 @@ F_ENTRY_NAME(F_TYPE x)
  *  double precision Newton's iteration parts together with the double
  *  precision T(i).  Then split the double precision result dy into hi and
  *  lo parts, dy_hi and dy_lo.  Convert the three double precision numbers
- *  to quad precision and do another Newton's iteration.  
+ *  to quad precision and do another Newton's iteration.
  *  Add m to the result's exponent and correct the sign.
  */
 
@@ -961,12 +961,12 @@ F_ENTRY_NAME(F_TYPE x)
      y_lo = (F_TYPE) dy_lo;
 
 
-     t = y * y;     
+     t = y * y;
 
 
      ADD_TO_EXP_FIELD(f, i);
 
-     z = ((t * y_hi) - f) + t * y_lo; 
+     z = ((t * y_hi) - f) + t * y_lo;
 
 
      w = t * y;
@@ -1002,7 +1002,7 @@ F_ENTRY_NAME(F_TYPE x)
 /*
  *  Processing of IEEE special cases: zeros, denorms, infinities, NaNs.
  *
- *    j =    hi word of x; 
+ *    j =    hi word of x;
  *    one =  (B_TYPE) 1.0;
  *    f =    "fraction field" of x - denorms have a spurious hidden bit set.
  *
@@ -1012,8 +1012,8 @@ F_ENTRY_NAME(F_TYPE x)
  *  Otherwise, x is zero or denormalized.  f is x's fraction with hidden bit
  *  presumed to be set and with exponent of 1.0.  Subtract f - 1, fetch the
  *  hi word.  If x was really zero, f is now 1, and the exponent of f - 1
- *  is zero.  Otherwise, the difference represents the number of bits to 
- *  shift the original denormalized number.  Subtract it from x's old 
+ *  is zero.  Otherwise, the difference represents the number of bits to
+ *  shift the original denormalized number.  Subtract it from x's old
  *  exponent - it will be negative, but we'll add the ADD_ADJUST to make it
  *  positive and we'll subtract out the (propagated) negative sign.
  *

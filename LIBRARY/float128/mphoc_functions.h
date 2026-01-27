@@ -65,7 +65,7 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode)
         t = ceil(t);
     else
         t = rint(t);
-            
+
     t = bldexp(sign_bit + biased_exp_minus_1, num_bits) + t;
     return t;
     }

@@ -31,7 +31,7 @@
 #define ARCHITECTURE_H
 
 /*
-** for historic reasons, map ia64 architecture to merced and ct architecture to amd64 
+** for historic reasons, map ia64 architecture to merced and ct architecture to amd64
 */
 
 #if (defined(ia64) || defined(__ia64) || defined(__ia64__))  && !defined(HPUX_OS)
@@ -328,7 +328,7 @@
 #	define U_INT_32 unsigned int
 #	undef  U_INT_128
 
-#	if ((OP_SYSTEM == osf) || (OP_SYSTEM == linux)) 
+#	if ((OP_SYSTEM == osf) || (OP_SYSTEM == linux))
 
 #		define INT_64 signed long
 #		define U_INT_64 unsigned long
@@ -479,11 +479,11 @@
 #       define U_INT_32 unsigned int
 #       undef  U_INT_128
 
-#	if ( COMPILER == gnu_cc ) 
+#	if ( COMPILER == gnu_cc )
 #           define   INT_64   signed long
 #           define U_INT_64 unsigned long
 #       else
-#           define   INT_64   signed __int64 
+#           define   INT_64   signed __int64
 #           define U_INT_64 unsigned __int64
 #       endif
 
@@ -533,7 +533,7 @@
 #	define BITS_PER_LONG_DOUBLE 128
 #       define LONG_DOUBLE_128_TYPE	_Quad
 
-#	if ( COMPILER == gnu_cc ) 
+#	if ( COMPILER == gnu_cc )
 #	    define __INT_64 long long
 #       else
 #	    define __INT_64 __int64
@@ -617,7 +617,7 @@
 #	define BITS_PER_LONG_DOUBLE 128
 #       define LONG_DOUBLE_128_TYPE	_Quad
 
-#	if ( COMPILER == gnu_cc ) 
+#	if ( COMPILER == gnu_cc )
 #	    define __INT_64 long long
 #       else
 #	    define __INT_64 __int64

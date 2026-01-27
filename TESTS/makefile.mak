@@ -25,7 +25,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
-#***************************************************************************** 
+#*****************************************************************************
 
 # Makefile for the readtest program - tests for the Intel(r)
 # Decimal Floating-Point Math Library
@@ -38,7 +38,7 @@ COPT1 = -DDECIMAL_CALL_BY_REFERENCE=0
 !ENDIF
 !ENDIF
 
-!IFDEF GLOBAL_RND 
+!IFDEF GLOBAL_RND
 !IF ($(GLOBAL_RND)==1)
 COPT2 = -DDECIMAL_GLOBAL_ROUNDING=1
 !ELSE
@@ -46,7 +46,7 @@ COPT2 = -DDECIMAL_GLOBAL_ROUNDING=0
 !ENDIF
 !ENDIF
 
-!IFDEF GLOBAL_FLAGS 
+!IFDEF GLOBAL_FLAGS
 !IF ($(GLOBAL_FLAGS)==1)
 COPT3 = -DDECIMAL_GLOBAL_EXCEPTION_FLAGS=1
 !ELSE
@@ -61,14 +61,14 @@ COPT4 = -DBID_BIG_ENDIAN=1
 COPT4 = -UBID_BIG_ENDIAN
 !ENDIF
 !ENDIF
- 
+
 COPT5 =
 
 !IFDEF UNCHANGED_BINARY_FLAGS
 !IF ($(UNCHANGED_BINARY_FLAGS)==1)
-COPT6 = -DUNCHANGED_BINARY_STATUS_FLAGS 
+COPT6 = -DUNCHANGED_BINARY_STATUS_FLAGS
 !ELSE
-COPT6 = 
+COPT6 =
 !ENDIF
 !ENDIF
 
@@ -76,10 +76,10 @@ COPT6 =
 COPT = -D_CRT_SECURE_NO_DEPRECATE -Qlong_double -Qoption,cpp,--extended_float_types -Qpc80
 LMOPT = -oreadtest$(EXE)
 !ELSE
-COPT = -D_CRT_SECURE_NO_DEPRECATE -DBID_MS_FLAGS 
+COPT = -D_CRT_SECURE_NO_DEPRECATE -DBID_MS_FLAGS
 LMOPT = /Fereadtest$(EXE)
 !ENDIF
-CFLAGS = -Od -I./ -D__intptr_t_defined -DWINDOWS /nologo $(COPT) $(COPT1) $(COPT2) $(COPT3) $(COPT4) $(COPT6) 
+CFLAGS = -Od -I./ -D__intptr_t_defined -DWINDOWS /nologo $(COPT) $(COPT1) $(COPT2) $(COPT3) $(COPT4) $(COPT6)
 EXE = .exe
 OBJ = .obj
 LIBEXT = .lib
@@ -97,5 +97,5 @@ clean:
 	$(RM) readtest$(EXE)
 
 readtest$(EXE): readtest$(OBJ) $(BID_LIB)
-	$(CC) $(LMOPT) readtest$(OBJ) $(BID_LIB) 
+	$(CC) $(LMOPT) readtest$(OBJ) $(BID_LIB)
 

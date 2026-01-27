@@ -25,7 +25,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
-#***************************************************************************** 
+#*****************************************************************************
 
 # Makefile for the readtest program - tests for the Intel(r)
 # Decimal Floating-Point Math Library
@@ -57,16 +57,16 @@ COPT4 = -UBID_BIG_ENDIAN
 endif
 
 ifeq ($(UNCHANGED_BINARY_FLAGS),1)
-COPT6 = -DUNCHANGED_BINARY_STATUS_FLAGS 
+COPT6 = -DUNCHANGED_BINARY_STATUS_FLAGS
 else
-COPT6 = 
+COPT6 =
 endif
 
 NO_BINARY80 = 0
 ifeq ($(NO_BINARY80),1)
 COPT6 = -D__NO_BINARY80__
 else
-COPT6 = 
+COPT6 =
 endif
 
 ifeq ($(OS_TYPE),LINUX)
@@ -86,11 +86,11 @@ endif
 endif
 
 CFLAGS = -O0 -D__intptr_t_defined -DLINUX $(COPT) $(COPT1) $(COPT2) $(COPT3) $(COPT4) $(COPT5) $(COPT6) $(COPT_ADD) $(DEFINES)
-EXE = 
+EXE =
 OBJ = .o
 LIBEXT = .a
 RM = rm -f
-LMOPT = -lm 
+LMOPT = -lm
 
 else
 
@@ -112,7 +112,7 @@ else
 ifeq ($(CC),clang)
 CC = clang
 ifeq ($(CC),clang)
-COPT = -D_CRT_SECURE_NO_DEPRECATE 
+COPT = -D_CRT_SECURE_NO_DEPRECATE
 LMOPT =
 else
 COPT = -D_CRT_SECURE_NO_DEPRECATE -DBID_MS_FLAGS

@@ -50,7 +50,7 @@ static BID_UINT128 BID128_SHIFTER =
 
 // +Infinity
 
-static BID_UINT128 BID128_INF = 
+static BID_UINT128 BID128_INF =
   {BID128_LH_INIT( 0x0000000000000000ull, 0x7800000000000000ull )};
 
 BID_F128_CONST_DEF( c_1em40, 3f7a16c262777579, c58c46475896767b); // 1e-40
@@ -93,7 +93,7 @@ BID128_FUNCTION_ARG1 (bid128_cosh, x)
   if ((x.w[BID_HIGH_128W] & INFINITY_MASK64) == INFINITY_MASK64)
    { BID_RETURN(BID128_INF);
    }
-  
+
 // Convert to binary
 
   BIDECIMAL_CALL1(bid128_to_binary128,xd,x);
@@ -115,7 +115,7 @@ BID128_FUNCTION_ARG1 (bid128_cosh, x)
      BIDECIMAL_CALL1(binary128_to_bid128,res,yd);
      BID_RETURN(res);
    }
-  
+
 // Otherwise, unless the input is totally huge, just "using the formula"
 // cosh(x) = (e^x + e^-x) / 2 is OK, but we need to to it directly in
 // decimal so that we don't hit ill-conditioning. Also use an FMA to try
@@ -140,7 +140,7 @@ BID128_FUNCTION_ARG1 (bid128_cosh, x)
       }
      BID_RETURN (res);
    }
-  
+
 // For huge arguments, it's effectively exp |x| / 2.
 // We need to copy and tweak the exp code rather than call it
 // in order to avoid cases where e^x/2 < MAXNUM < e^x.
@@ -167,7 +167,7 @@ BID128_FUNCTION_ARG1 (bid128_cosh, x)
       { __bid_f128_exp(rt, nd);
         __bid_f128_mul(rd, c_half.v, rt);
         __bid_f128_exp(rt, md);
-       __bid_f128_mul(rd, rd, rt); 
+       __bid_f128_mul(rd, rd, rt);
         BIDECIMAL_CALL1 (binary128_to_bid128, res, rd);
       }
      BID_RETURN (res);

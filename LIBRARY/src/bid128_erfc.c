@@ -37,16 +37,16 @@ BID_EXTERN_C void bid128_to_binary128_2part(BID_F128_TYPE *,BID_F128_TYPE *,BID_
 static BID_UINT128 BID128_10POWN6000 =
  {BID128_LH_INIT( 0x0000000000000001ull, 0x0160000000000000ull )};
 
-static BID_UINT128 BID128_1 = 
+static BID_UINT128 BID128_1 =
  {BID128_LH_INIT( 0x0000000000000001ull, 0x3040000000000000ull )};
- 
-// Miscellaneous constants  
+
+// Miscellaneous constants
 BID_F128_CONST_DEF( c_2_ov_sqrt_pi, 3fff20dd750429b6, d11ae3a914fed7fe); // 2/sqrt(pi)
 BID_F128_CONST_DEF( c_1_ov_sqrt_pi, 3ffe20dd750429b6, d11ae3a914fed7fe); // 1/sqrt(pi)
 BID_F128_CONST_DEF( c_one,          3fff000000000000, 0000000000000000); // 1.0
 BID_F128_CONST_DEF( c_105,          4005a40000000000, 0000000000000000); // 105
 BID_F128_CONST_DEF( c_120,          4005e00000000000, 0000000000000000); // 120
-BID_F128_CONST_DEF( c_1em40,        3f7a16c262777579, c58c46475896767b); // 1E-40 
+BID_F128_CONST_DEF( c_1em40,        3f7a16c262777579, c58c46475896767b); // 1E-40
 
 // Polynomial constants
 BID_F128_CONST_DEF(c12, 401926841857e3ff, fff920c8098a1091);	// 77205601.3732910156Q
@@ -97,7 +97,7 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
   BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isZero,cmp_res,x);
   if (cmp_res)
    { res = BID128_1;
-     BID_RETURN(res);                                                
+     BID_RETURN(res);
    }
 
 // Convert now, for more convenience
@@ -109,8 +109,8 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
    __bid_f128_fabs(abs_xd, xd);
   if (__bid_f128_lt(abs_xd, c_1em40.v))
    { BIDECIMAL_CALL2(bid128_sub,res,BID128_1,x);
-     BID_RETURN(res);                                                
-   }        
+     BID_RETURN(res);
+   }
 
 // Check if the input is negative. If it is, then the operation is
 // wellconditioned and we can do it naively.
@@ -126,7 +126,7 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
 // However, it's badly conditioned near the top so we always correct it
 // using a derivative approximation erfc'(x) = [-2/sqrt(pi)] * exp(-x^2).
 
-  
+
   if (__bid_f128_lt(xd, c_105.v))
    { BID_F128_TYPE rt, rd;
      bid128_to_binary128_2part(&xd,&ed,x);
@@ -136,7 +136,7 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
      __bid_f128_mul(rt, c_2_ov_sqrt_pi.v, rt);
      __bid_f128_mul(rt, rt, ed);
      __bid_f128_erfc(rd, xd);
-     __bid_f128_sub(yd, rd, rt); 
+     __bid_f128_sub(yd, rd, rt);
      BIDECIMAL_CALL1(binary128_to_bid128,res,yd);
      BID_RETURN(res);
    }

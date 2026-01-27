@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION TABLE_NAME[] = { 
+    static const TABLE_UNION TABLE_NAME[] = {
 
 	/* floor class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x00410408, 0x44106910 ),

@@ -77,7 +77,7 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
             }
         return scale;
         }
-                
+
     /*
     ** Given an input argument of the form x = 2^n*f, we want to compute
     ** lnb*x = scale*ln2 + z, |z| <= ln2/2.  Or equivalently, scale =
@@ -284,7 +284,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         ** exp(x) - 1, could result in a serve loss of significance,
         ** so use a direct polynomial evaluation instead.  We use the
 	** low EXP_COEF_ARRAY_DEGREE - 1 terms of the exp polynomial.
-	** This has the side effect that the exponent field of the 
+	** This has the side effect that the exponent field of the
 	** result is 1 to small.
         */
         EVALUATE_RATIONAL(
@@ -295,7 +295,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
             &unpacked_result);
         UX_INCR_EXPONENT(&unpacked_result, 1);
         }
-    else 
+    else
         {
 	/*
 	** Compute expm1(x) = exp(x) - 1.  Since |scale| >= 1,
@@ -314,7 +314,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
            UX_ONE,
            SUB | NO_NORMALIZATION | MAGNITUDE_ONLY,
            &unpacked_result
-           ); 
+           );
         }
 
     PACK(
@@ -428,7 +428,7 @@ UX_HYPERBOLIC( UX_FLOAT * unpacked_argument, WORD evaluation_flags,
     /*
     ** if scale == 0, then abs(x) < ln2/2 ==> sinh(x) or tanh(x) may have
     ** a loss of significance if computed via the definition, so compute
-    ** by polynomial instead.  Otherwise, we compute exp(z) and 
+    ** by polynomial instead.  Otherwise, we compute exp(z) and
     ** exp(-z) as cosh(z) + sinh(z) and cosh(z) - sinh(z) respectively.
     ** So, if scale == 0, used the passed in evaluation flags, otherwise
     ** Force a SINHCOSH evaluation.
@@ -519,7 +519,7 @@ C_UX_HYPERBOLIC( _X_FLOAT * packed_result, _X_FLOAT * packed_argument,
 
     UX_HYPERBOLIC(
         &unpacked_argument,
-        evaluation_flags, 
+        evaluation_flags,
         &unpacked_result[0]);
 
     PACK(
@@ -601,7 +601,7 @@ RR_X_PROTO(F_ENTRY_NAME, packed_result0, packed_result1, packed_argument)
         packed_result, /*PASS_RET_X_FLOAT(packed_result)*/
         PASS_ARG_X_FLOAT(packed_argument),
         SINH_CLASS_TO_ACTION_MAP,
-        EVAL_FLAGS( SINHCOSH, SINHCOSH_EVAL, SUB_ADD), 
+        EVAL_FLAGS( SINHCOSH, SINHCOSH_EVAL, SUB_ADD),
         PACKED_ARG_IS_NEG(packed_argument) ? SINH_NEG_OVERFLOW : SINH_OVERFLOW
         OPT_EXCEPTION_INFO );
 
@@ -622,7 +622,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         PASS_RET_X_FLOAT(packed_result),
         PASS_ARG_X_FLOAT(packed_argument),
         TANH_CLASS_TO_ACTION_MAP,
-        EVAL_FLAGS( TANH, TANH_EVAL, SUB_ADD), 
+        EVAL_FLAGS( TANH, TANH_EVAL, SUB_ADD),
         NOT_USED
         OPT_EXCEPTION_INFO );
     RETURN_X_FLOAT(packed_result);
@@ -706,7 +706,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
     /*
     ** Create the "table" of exp constants. The table includes the constants
-    ** for the argument reduction, the degree of the polynomial and the 
+    ** for the argument reduction, the degree of the polynomial and the
     ** polynomial coefficients.
     */
 

@@ -34,10 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // The testID is simply a string used to help identify which tail may be failing.
 // The function name is generally one of the BID library function names.  Up to 3
-// operands follow the function name, and then the expected result and expected 
+// operands follow the function name, and then the expected result and expected
 // status value.
 //
-// Each test is read, the appropriate function is called, and the results are 
+// Each test is read, the appropriate function is called, and the results are
 // compared with the expected results.  The operands, and results can appear as
 // decimal numbers (e.g. 6.25), or as hexadecimal representations surrounded by
 // square brackets (e.g. [31c0000000012345]).  The status value is a hexadecimal
@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ctype.h>
 #include <wchar.h>
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
-#include <fenv.h>	
+#include <fenv.h>
 #endif
 
 #include "test_bid_conf.h"
@@ -193,7 +193,7 @@ int check_pollution_workaround(void);
         } else { \
             BIDECIMAL_CALL1_NORND_RESREF(bid64_to_string, str, bid); \
         } \
-      } 
+      }
 
 #define getop32i(bid, op, str) \
       if (*op == '[') { \
@@ -363,7 +363,7 @@ int tmpi; \
 			if (((*(px+4) & 0x7fff) == 0x7fff) && ((*(px+3) & 0x8000) == 0x8000) && ((*(px+3) & 0x3fff) || (*(px+2) & 0xffff) || (*(px+1) & 0xffff) || (*(px+0) & 0xffff)) && !(*(px+3) & 0x4000)) arg80_snan = 1; \
 			if (((*(px+4) & 0x7fff) == 0x0000) && ((*(px+3) & 0x8000) != 0x8000) && ((*(px+3) & 0x3fff) || (*(px+2) & 0xffff) || (*(px+1) & 0xffff) || (*(px+0) & 0xffff))) arg80_den = 1; \
 		} \
-     sprintf(str, "%27.17e", (double)ldbl1); 
+     sprintf(str, "%27.17e", (double)ldbl1);
 #endif
 
 #define getopdbl(dbl1, dbl2, op, str) \
@@ -698,12 +698,12 @@ check128_rel(BID_UINT128 a, BID_UINT128 b)
    //if (bid128_isNaN(a)||bid128_isNaN(b) || bid128_isInf(a)||bid128_isInf(b)) {
    if (t1 || t2 || t3 || t4) {
 		if (a.w[BID_LOW_128W] == b.w[BID_LOW_128W] && a.w[BID_HIGH_128W] == b.w[BID_HIGH_128W]) return 0;
-		else { 
-			if(t3) { 
-				a.w[BID_HIGH_128W] = (a.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
+		else {
+			if(t3) {
+				a.w[BID_HIGH_128W] = (a.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;
 				a.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
 			} else if(t4) {
-				b.w[BID_HIGH_128W] = (b.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
+				b.w[BID_HIGH_128W] = (b.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;
 				b.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
 			}
 			else return 1;
@@ -746,9 +746,9 @@ check128_rel(BID_UINT128 a, BID_UINT128 b)
 		return 1;
 	}
 
-	ulp = m1.w[BID_LOW_128W] > m2.w[BID_LOW_128W] ? 
+	ulp = m1.w[BID_LOW_128W] > m2.w[BID_LOW_128W] ?
             m1.w[BID_LOW_128W] - m2.w[BID_LOW_128W] : m2.w[BID_LOW_128W]- m1.w[BID_LOW_128W];
-        //TODO HIGH part difference 
+        //TODO HIGH part difference
    	BIDECIMAL_CALL2_NORND (bid128_quiet_less, less, a, b);
 	if (less) ulp *= -1.0;
 //printf("ulp %f +add %f max %f\n", ulp, ulp+ulp_add, mre_max[rnd_mode]);
@@ -766,14 +766,14 @@ check64_rel(BID_UINT64 a, BID_UINT64 b)
 	BID_UINT64 e1, e2, m1, m2;
 	int sign, less;
         int t1, t2, t3, t4;
- 
+
         BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t1, a);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t2, b);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t3, a);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t4, b);
- 
+
    //if (bid64_isNaN(a) || bid64_isNaN(b) || bid64_isInf(a) || bid64_isInf(b)) {
-   if (t1 || t2 || t3 || t4) { 
+   if (t1 || t2 || t3 || t4) {
        if (a == b) return 0;
 		else return 1;
 	}
@@ -832,18 +832,18 @@ check32_rel(BID_UINT32 a32, BID_UINT32 b32)
 	int sign, less;
 	int aexp, bexp, amant, bmant;
         int t1, t2, t3, t4;
- 
+
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t1, a32);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t2, b32);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t3, a32);
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t4, b32);
- 
+
    //if (bid32_isNaN(a32)||bid32_isNaN(b32)||bid32_isInf(a32)||bid32_isInf(b32)) {
    if (t1 || t2 || t3 || t4) {
 
        if (a32 == b32) return 0;
 		else return 1;
-		
+
 	}
 
 	if ((a32 & 0x80000000) != (b32 & 0x80000000)) {
@@ -983,7 +983,7 @@ get_ops (void) {
   case OP_BID_UINT32:	//  Skip because converted with sscanf
     getop32u (BUI32, op2, istr2);
     break;
-  case OP_LINT:	
+  case OP_LINT:
     if (li_size_run == 64) {
 	    getop64i (*(BID_SINT64*)&BLI, op2, istr2);
 	} else {
@@ -1038,7 +1038,7 @@ get_test (void) {
 	u1_8 = u2_8 = 0;
 	i1_8 = i2_8 = 0;
 	Qi64 = qi64 = 0;
-	
+
   get_ops ();
 
   switch (restype) {
@@ -1090,7 +1090,7 @@ get_test (void) {
   case OP_BIN32:
     getopflt (Rtflt, Rtflt, res, rstr);
     break;
-  case OP_LINT:	
+  case OP_LINT:
     if (li_size_run == 64) {
 	    getop64i (*(BID_SINT64*)&li1, res, rstr);
 	} else {
@@ -1120,7 +1120,7 @@ print_mismatch (enum _CMPTYPE cmp) {
 
     case OP_STRING:
 printf("STRING result is not implemented\n");
-		break;	
+		break;
     case OP_DEC128:
     case OP_DPD128:
       printf ("[" BID_FMT_LLX16 "" BID_FMT_LLX16 "] %02x\n", Q.w[BID_HIGH_128W],
@@ -1154,7 +1154,7 @@ printf("STRING result is not implemented\n");
       break;
 
     case OP_LINT:
-      if (li_size_run == 64)	
+      if (li_size_run == 64)
 	      printf (BID_FMT_LLD16 " %02x\n", *(BID_SINT64*)&li2, *pfpsf);
       else
 	      printf ("%d %02x\n", *(BID_SINT32*)&li2, *pfpsf);
@@ -1243,7 +1243,7 @@ printf("STRING result is not implemented\n");
 	    "\n", Qi64, qi64);
     break;
   case OP_LINT:
-      if (li_size_run == 64)	
+      if (li_size_run == 64)
 	    printf ("// BID result: " BID_FMT_LLD16 ", Expected result: " BID_FMT_LLD16
 	    "\n",*(BID_SINT64*)&li2, *(BID_SINT64*)&li1);
       else
@@ -1293,7 +1293,7 @@ printf("STRING result is not implemented\n");
   if (!strcmp(func, "bid32_frexp") || !strcmp(func, "bid64_frexp") || !strcmp(func, "bid128_frexp") ) {
     printf ("// BID second result: %d, Expected result: %d\n", i2, i1);
   }
-	
+
   // Print statuses
   printf ("// BID status : %03x, Expected status: %03x (PUOZDI Bits)\n",
 	  *pfpsf, expected_status);
@@ -1405,7 +1405,7 @@ void
 check_results (enum _CMPTYPE cmp) {
   char *p;
   tests++;
-	
+
 //printf("frexp i1 i2 %d %d \n", i1, i2);
 
 //printf("arg dbl %08X \n", *((int*)&Adbl+BID_HIGH_128W));
@@ -1641,7 +1641,7 @@ int check_skip(char *func)
 			!strcmp(func, "bid128_exp") || !strcmp(func, "bid128_expm1") ||
 			!strcmp(func, "bid128_log") || !strcmp(func, "bid128_log10") || !strcmp(func, "bid128_log1p") ||
 			!strcmp(func, "bid128_atan2") || !strcmp(func, "bid128_hypot") || !strcmp(func, "bid128_pow") ||
-			!strcmp(func, "bid128_cbrt") 
+			!strcmp(func, "bid128_cbrt")
 		) return 1;
 	}
 	if (no64trans) {
@@ -1652,7 +1652,7 @@ int check_skip(char *func)
 			!strcmp(func, "bid64_exp") || !strcmp(func, "bid64_expm1") ||
 			!strcmp(func, "bid64_log") || !strcmp(func, "bid64_log10") || !strcmp(func, "bid64_log1p") ||
 			!strcmp(func, "bid64_atan2") || !strcmp(func, "bid64_hypot") || !strcmp(func, "bid64_pow") ||
-			!strcmp(func, "bid64_cbrt") 
+			!strcmp(func, "bid64_cbrt")
 		) return 1;
 	}
 	if (li_size_run != li_size_test) return 1;
@@ -1686,7 +1686,7 @@ void check_snan_passing80(long double x)
 void check_den_passing32(float x)
 {
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
-	fexcept_t ff; 
+	fexcept_t ff;
 	fegetexceptflag(&ff, FE_ALL_EXCEPT);
 	if (ff & FE_DENORMAL) Den_passed_incorrectly32 = 1;
 #endif
@@ -1694,7 +1694,7 @@ void check_den_passing32(float x)
 void check_den_passing64(double x)
 {
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
-	fexcept_t ff; 
+	fexcept_t ff;
 	fegetexceptflag(&ff, FE_ALL_EXCEPT);
 	if (ff & FE_DENORMAL) Den_passed_incorrectly64 = 1;
 #endif
@@ -1702,7 +1702,7 @@ void check_den_passing64(double x)
 void check_den_passing80(long double x)
 {
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
-	fexcept_t ff; 
+	fexcept_t ff;
 	fegetexceptflag(&ff, FE_ALL_EXCEPT);
 	if (ff & FE_DENORMAL) Den_passed_incorrectly80 = 1;
 #endif
@@ -1719,12 +1719,12 @@ main (int argc, char *argv[]) {
   strcpy (rounding, "half_even");
 
   if (sizeof(long int) == 8) {
-	li_size_test = 64; 
-	li_size_run = 64; 
+	li_size_test = 64;
+	li_size_run = 64;
   } else {
-	li_size_test = 32; 
-	li_size_run = 32; 
-  }	
+	li_size_test = 32;
+	li_size_run = 32;
+  }
 
   arg = argv + 1;	// point to first command-line parameter
   while (*arg && **arg == '-') {	// Process all options
@@ -1760,7 +1760,7 @@ main (int argc, char *argv[]) {
   }
 
   if (underflow_before_opt && underflow_after_opt) {
-    printf("Both underflow before and after rounding checking mode set, please specify just one.\n");	
+    printf("Both underflow before and after rounding checking mode set, please specify just one.\n");
     printf ("Usage: runtests [-d]\n");
     exit (0);
   } else if (!underflow_before_opt && !underflow_after_opt) underflow_before_opt = 1;
@@ -1883,8 +1883,8 @@ main (int argc, char *argv[]) {
     }
 
 //printf();
-    if (end_of_args != (char*)-1) {	
-	    *end_of_args = 0;	
+    if (end_of_args != (char*)-1) {
+	    *end_of_args = 0;
    	 strRemoveTrailingSpaces(line);
    	 end_of_args = (char*)-1;
     }
@@ -1949,7 +1949,7 @@ main (int argc, char *argv[]) {
 
       strcpy (rounding, roundstr_bid[rnd]);
 
-      //clean expected underflow if it is for before rounding mode and we are checking after rounidng 
+      //clean expected underflow if it is for before rounding mode and we are checking after rounidng
 		if ((expected_status & 0x10) && Underflow_Before && underflow_after_opt) expected_status &= ~0x00000010;
 
 #include "readtest.h"
@@ -2037,12 +2037,12 @@ int check_pollution_workaround(void)
        (p = strstr (func, "hypot")) ||
        (p = strstr (func, "pow")) ||
        (p = strstr (func, "cbrt")) ||
-       (p = strstr (func, "gamma")) 
+       (p = strstr (func, "gamma"))
 	) {
 		return 1;
 	} else {
 		return 0;
 	}
-	
+
 }
 

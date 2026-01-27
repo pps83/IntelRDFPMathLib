@@ -50,13 +50,13 @@ divided into three disjoint fields defined by the following mnemonics:
 Ignoring denormalized numbers, NANs and infinities, the values of these
 fields are defined as follows:
 
-    Sign bit:   = 0 if x >= 0 
+    Sign bit:   = 0 if x >= 0
                 = 1 if x < 0
 
-    Exponent:   = 0 if x = 0 
+    Exponent:   = 0 if x = 0
                 = (e + EXP_BIAS) otherwise
 
-    Mantissa:   = 0 if x = 0 
+    Mantissa:   = 0 if x = 0
                 = rnd(f) - 2^NORM otherwise
                 (rnd(f) is f limited to PRECISION bits)
 
@@ -175,8 +175,8 @@ fields are defined as follows:
 #define BITS_PER_Q_TYPE BITS_PER_LONG_DOUBLE
 
 /*
- * round up to next quad word boundrary where appropriate - Intel 
- * to get the alignment bits 
+ * round up to next quad word boundrary where appropriate - Intel
+ * to get the alignment bits
  */
 #define ALIGNED_BITS_PER_Q_TYPE  ((BITS_PER_Q_TYPE - 1 + 32)/32)*32
 
@@ -202,16 +202,16 @@ fields are defined as follows:
 
 
 
-typedef struct { 
-    S_TYPE r, i; 
+typedef struct {
+    S_TYPE r, i;
 } S_COMPLEX;
 
-typedef struct { 
-    D_TYPE r, i; 
+typedef struct {
+    D_TYPE r, i;
 } D_COMPLEX;
 
-typedef struct { 
-    Q_TYPE r, i; 
+typedef struct {
+    Q_TYPE r, i;
 } Q_COMPLEX;
 
 #define F_COMPLEX_RETURN return
@@ -290,12 +290,12 @@ typedef union {
     U_WORD    uw[ WORDS_PER_Q_TYPE ];
 #endif
 } Q_UNION;
- 
- 
+
+
 #if (!defined(TABLE_WORD) || !defined(TABLE_WORDS_PER_Q_TYPE))
 #   define BITS_PER_TABLE_WORD		32
 #   define TABLE_WORD    		U_INT_32
-#   define TABLE_WORDS_PER_Q_TYPE	I32S_PER_Q_TYPE 
+#   define TABLE_WORDS_PER_Q_TYPE	I32S_PER_Q_TYPE
 #endif
 
 typedef union {
@@ -1364,7 +1364,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #if (PRECISION_BACKUP_AVAILABLE)
 #   define DECLARE_PREC_BACKUP(x) B_TYPE x
 #else
-#   define DECLARE_PREC_BACKUP(x) F_TYPE HI(x), LO(x) 
+#   define DECLARE_PREC_BACKUP(x) F_TYPE HI(x), LO(x)
 #endif
 
 #if USE_BACKUP
@@ -1380,7 +1380,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #   define IF_NO_BACKUP(x)
 #   define BACKUP_SELECT(x,y)	x
 #else
-#   define IF_BACKUP(x)	 
+#   define IF_BACKUP(x)
 #   define IF_NO_BACKUP(x)	x
 #   define BACKUP_SELECT(x,y)	y
 #endif
@@ -1422,7 +1422,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #   define PDP_SHUFFLE(i) (i)
 #endif
 
-    /*  In most cases a SIGN_EXTENDED_PDP_SHUFFLE and a PDP_SHUFFLE are the 
+    /*  In most cases a SIGN_EXTENDED_PDP_SHUFFLE and a PDP_SHUFFLE are the
      *  same.  So if SIGN_EXTENDED_PDP_SHUFFLE is not defined above define
      *  it to be PDP_SHUFFLE.
      */
@@ -1448,7 +1448,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #    define AND_LOW_BITS_CLEAR(u)   && (_F_WORD(u,1) == 0)
 #    define CLEAR_LOW_BITS(u)       (_F_WORD(u,1) = 0)
 #elif (_WORDS_PER_F_TYPE == 3)
-#    define OR_LOW_BITS_SET(u)      | _F_WORD(u,1) | _F_WORD(u,2) 
+#    define OR_LOW_BITS_SET(u)      | _F_WORD(u,1) | _F_WORD(u,2)
 #    define AND_LOW_BITS_CLEAR(u)   && ((_F_WORD(u,1) | _F_WORD(u,2)  == 0)
 #    define CLEAR_LOW_BITS(u)       (_F_WORD(u,1) = 0, _F_WORD(u,2) = 0)
 #elif (_WORDS_PER_F_TYPE == 4)
@@ -1473,7 +1473,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #      define IEEE_SELECT(x,y)	x
 #      define VMS_SELECT(x,y)	y
 #   else
-#      define IF_IEEE(x)	
+#      define IF_IEEE(x)
 #      define IF_VAX(x)	x
 #      define IEEE_SELECT(x,y)	y
 #      define VMS_SELECT(x,y)	x
@@ -1560,7 +1560,7 @@ typedef union {
 #endif
     } bits;
     double d;
-} dnan; 
+} dnan;
 
 
 
@@ -1575,22 +1575,22 @@ typedef union {
         unsigned exponent : 8;
         unsigned sign_bit : 1;
         unsigned char    c[2];
-    } 
+    }
     vax_f_float;
     struct {
         unsigned char    c[2];
         unsigned hi_bits  : 7;
         unsigned exponent : 8;
         unsigned sign_bit : 1;
-    } 
+    }
     ieee_single;
     struct {
         unsigned char    c[3];
         unsigned exponent : 7;
         unsigned sign_bit : 1;
-    } 
+    }
     ibm_short;
-} 
+}
 REAL4;
 
 typedef REAL4 *REAL4_PTR;
@@ -1608,35 +1608,35 @@ typedef union {
         unsigned exponent : 8;
         unsigned sign_bit : 1;
         unsigned char    c[6];
-    } 
+    }
     vax_d_float;
     struct {
         unsigned hi_bits  : 4;
         unsigned exponent : 11;
         unsigned sign_bit : 1;
         unsigned char    c[6];
-    } 
+    }
     vax_g_float;
     struct {
         unsigned char    c[6];
         unsigned hi_bits  : 4;
         unsigned exponent : 11;
         unsigned sign_bit : 1;
-    } 
+    }
     ieee_double;
     struct {
         unsigned char    c[7];
         unsigned exponent : 7;
         unsigned sign_bit : 1;
-    } 
+    }
     ibm_long;
     struct {
         unsigned char    c[6];
         unsigned exponent : 15;
         unsigned sign_bit : 1;
-    } 
+    }
     cray;
-} 
+}
 REAL8;
 
 typedef REAL8 *REAL8_PTR;

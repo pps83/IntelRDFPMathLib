@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION TABLE_NAME[] = { 
+    static const TABLE_UNION TABLE_NAME[] = {
 
 	/* Negate class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x18618618, 0x06186186 ),

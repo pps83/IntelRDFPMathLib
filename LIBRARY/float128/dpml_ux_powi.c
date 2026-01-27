@@ -40,11 +40,11 @@
 ** whether the integer power is a signed or unsigned integer and whether 0^0
 ** retun 0, 1 or an error.  The following note discusses a common subroutine,
 ** __powil, that supports all 6 types of powi functions.
-** 
-** 
+**
+**
 ** 1.0 BASIC DESIGN AND INTERFACE
 ** ------------------------------
-** 
+**
 ** The basic approach to __powil to to encode the behavior of the 0^0 case in
 ** the class-to-action mapping array.   Specifically, if we denote the exponent
 ** as n, we create a class-to-action mapping array that has mappings for n < 0,
@@ -56,19 +56,19 @@
 ** index into the class-to-action mapping table for n < 0; the second for n = 0;
 ** and the third for n > 0.  Note that the unsigned integer case is handled by
 ** making the first and third field of index_map identical.
-** 
+**
 ** The actual algorithm for __powil is fairly simple - it uses the standard
 ** iterative "square and multiply" approach.  The only difference from the basic
 ** DPML implementation is that for negative exponents, the reciprocal of the
 ** argument is used for the iterations rather than performing the reciprocal
 ** after the iterations.
-** 
+**
 ** It should be pointed out, that this will most likely mean the __powil routine
 ** will be slightly *SLOWER* than the existing DPML routines for the
 ** non-exceptional cases.  We might want to consider expanding the MULTIPLY and
 ** SQUARE operations in-line to improve performance.  The resulting code
 ** expansion should not be too great (i.e. less that 10%).
-*/ 
+*/
 
 #if !defined(C_UX_POW_I)
 #   define C_UX_POW_I	__INTERNAL_NAME(C_ux_pow_i)
@@ -178,7 +178,7 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n)
     RETURN_X_FLOAT(packed_result);
 
     }
-    
+
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME	F_POW_I_E_NAME
 
@@ -200,8 +200,8 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n)
     RETURN_X_FLOAT(packed_result);
 
     }
-    
-    
+
+
 #if defined(POW_Z)
 
 #   undef  F_ENTRY_NAME
@@ -226,7 +226,7 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n)
 
         }
 #endif
-    
+
 
 
 #if defined(MAKE_INCLUDE)

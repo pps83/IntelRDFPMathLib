@@ -85,7 +85,7 @@
 #define VOC	0		/* have a 'variable-octant' parameter */
 #define BIX	1		/* have a 'binary scaling' parameter */
 
-
+
 /*
  * BASIC ALGORITHM:
  * ----------------
@@ -103,7 +103,7 @@
  *		I = nint( x'/(pi/2) )
  *		y = ( x' - I*(pi/2) )/2^bix
  *
- * We also want to produce an integer result containing the low bits of I 
+ * We also want to produce an integer result containing the low bits of I
  * (called the 'octant' bits) and some 'fractional' bits of I that can be
  * used as a table index (these are called the 'index' bits).  We also want
  * to compute and return y as two floating-point values, y = hi - lo, so
@@ -158,7 +158,7 @@
  *              2^(n-P+v+1)*(4/pi) = J*8 + g
  *
  * That is, J is an integer formed from the first n-P+v-2 bits of 4/pi and
- * g is value formed by the remaining bits.  It follows that 
+ * g is value formed by the remaining bits.  It follows that
  *
  *              x/(pi/4) = F*{[2^(n-P+v+1)]*(4/pi)}
  *                       = F*(J*8 + g)
@@ -174,7 +174,7 @@
  * flavor:
  *
  *              (1) index into a precomputed bit string for 4/pi to
- *                  obtain g 
+ *                  obtain g
  *              (2) compute w = F*g (mod 8)
  *              (3) o <-- integer part of w + n
  *              (4) z' <-- fractional part of w
@@ -186,7 +186,7 @@
  *			-----------
  *
  * The following sections describe the implementation issues associated with
- * each of the steps in algorithm I as well as present the code for the 
+ * each of the steps in algorithm I as well as present the code for the
  * overall implementation.
  *
  *
@@ -207,7 +207,7 @@
  *	            00...001.01000101111.....
  *                          ^
  *                          |
- *		       binary point 
+ *		       binary point
  *
  * From the above discussion, we want to shift the binary point of the bit
  * string P-v-1 bits to the right and extract g as some (as yet undetermined)
@@ -261,7 +261,7 @@
  * to ensure consistency between the table and the generated code.  Otherwise
  * use the default DIGIT definitions.
  */
-   
+
 #if !defined(MAKE_COMMON)
 
 #   undef   DIGIT_TYPE
@@ -319,7 +319,7 @@
 #    define MAC2	" \\\n\t"
 #    define MAC3	"\n\n"
 
-
+
 /******************************************************************************/
 /*									      */
 /*			Produce the four_ov_pi table			      */
@@ -446,7 +446,7 @@
 
 #endif
 
-
+
 /******************************************************************************/
 /*									      */
 /*		Generate code for multi-precision multiplication	      */
@@ -507,7 +507,7 @@
  * (i.e. the reduced argument will not have enough significant bits) then we
  * can compute additional bits of w.
  *
- * In order to compute F*g to P + k + 3 bits, we must perform some form of 
+ * In order to compute F*g to P + k + 3 bits, we must perform some form of
  * extended precision arithmetic.  For the sake of uniformity across data
  * types and architectures, the implementation described here computes F*g by
  * expressing F and g as fixed point values in "arrays" of some basic integer
@@ -667,7 +667,7 @@
  *              (11) z = z'     if I is even
  *                   = z' - 1 if I is odd
  *              (12) y = z*(pi/4)
- *		
+ *
  *				Algorithm II
  *				------------
  *
@@ -798,7 +798,7 @@ procedure bit_loss(s,t)
  *
  * Second, for any pass through the loop it's possible there are L+1 leading
  * 0's or 1's, but there are still sufficient significant  bits for the result.
- * In this case, the compaction and additional test could be avoided. 
+ * In this case, the compaction and additional test could be avoided.
  * (However, this will complicate the cycles to radian conversion.  See below)
  *
  * By way of putting these inefficiencies into perspective, for VAX f and g
@@ -826,7 +826,7 @@ procedure bit_loss(s,t)
  *	    for (j = 0; j < num_F_digits; j++)
  *	        t = t + F[j]*g[i]*2^(j*L)
  *	    w[i] = t mod 2^L;
- *	    t = (t >> L);            
+ *	    t = (t >> L);
  *	}
  *
  *			      Example 1
@@ -838,16 +838,16 @@ procedure bit_loss(s,t)
  *
  * If F contains n digits, then the sum in the above loops looks like:
  *
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *   t: |  t(n)  | ... | t(j+3) | t(j+2) | t(j+1) |  t(j)  | ... |  t(0)  |
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *	                                 +--------+--------+
  *	 +                               |    F[j]*g[i]    |
  *	                                 +--------+--------+
  *     ----------------------------------------------------------------------
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *   t: | t'(n)  | ... | t'(j+3)| t'(j+2)| t'(j+1)|  t'(j) | ... |  t(0)  |
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *
  * Note that t(0) through t(j-1) are unaffected and that t(j+2) through
  * t(n) are affected only by the carry out when computing t'(j+1).  It
@@ -856,9 +856,9 @@ procedure bit_loss(s,t)
  * we denote the separate carry by c(j), the picture on the next iteration of
  * the loop (i.e. replace j by j+1) looks like:
  *
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *   t: |  t(n)  | ... | t(j+3) | t(j+2) | t(j+1) |  t(j)  | ... |  t(0)  |
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *	                        +--------+--------+
  *	                        |    F(i)*g(j+1)  |
  *	                        +--------+--------+
@@ -866,9 +866,9 @@ procedure bit_loss(s,t)
  *	 +                      |  c(j)  |
  *	                        +--------+
  *     ----------------------------------------------------------------------
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *  t': |  t(n)  | ... | t(j+3) | t'(j+2)| t'(j+1)|  t(j)  | ... |  t(0)  |
- *	+--------+     +--------+--------+--------+--------+     +--------+ 
+ *	+--------+     +--------+--------+--------+--------+     +--------+
  *	               +--------+
  *	 +             | c(k+1) |
  *	               +--------+
@@ -877,7 +877,7 @@ procedure bit_loss(s,t)
  *				--------
  *
  * The above gives rise to the notion of a multiply/add primitive that has 5
- * inputs and 3 output: 
+ * inputs and 3 output:
  *
  *	Inputs:		N, M	the most and least significant digits
  *				of t that are being added to
@@ -904,16 +904,16 @@ procedure bit_loss(s,t)
  *	2) i = 0, j < n-1	N = C = 0, C' = 0
  *	3) i = 0, j = n-1	N = C = 0, C' = 0 and N' not needed
  *
- *	4) i > 0, j = 0		C = 0	
+ *	4) i > 0, j = 0		C = 0
  *	5) i > 0, j < n-1	general case
  *	6) i > 0, j = n-1	N = 0, C' not needed
  *
  *	7) i + j = n-2		C' not needed
  *	8) i + j = n-1		C, N, C' and N' not needed
- *		
+ *
  * Note that cases 3 and 7 are functionally identical.  For purposes of this
  * discussion we will use the mnemonic XMUL to refer to producing a 2*L-bit
- * product from 2 L-bit digits and XADD/XADDC to refer to the addition of one 
+ * product from 2 L-bit digits and XADD/XADDC to refer to the addition of one
  * 2*L-bit integer to another without/with producing a carry out.  With this
  * naming convention we denote the following 6 mul/add operations that
  * correspond to the 6 special cases as follows:
@@ -1142,22 +1142,22 @@ procedure bit_loss(s,t)
                 if (msd_of_mul_add < num_w_digits) {
 
                     if (j == (num_f_digits - 1))
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADDC(g%i,F%i,c,t%i,c,t%i,t%i)",
                                        i,  j,   lo,   hi, lo);
                     else
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADDC_W_C_IN(g%i,F%i,t%i,t%i,c,c,t%i,t%i)",
                                               i,  j, hi, lo,    hi, lo);
 
                 } else if (msd_of_mul_add <= num_w_digits) {
 
                     if (j == (num_f_digits - 1))
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADD(g%i,F%i,c,t%i,t%i,t%i)",
                                       i,  j,   lo, hi, lo);
                     else
-                        printf(sMAC2 
+                        printf(sMAC2
                          "XMUL_XADD_W_C_IN(g%i,F%i,t%i,t%i,c,t%i,t%i)",
                                              i,  j, hi, lo,   hi, lo);
 
@@ -1293,12 +1293,12 @@ procedure bit_loss(s,t)
  *
  *              r_hi = r1 + r2,         r_lo = r2 - (r_hi - r1)
  *
- * Recall from the description above, that at the point where the conversion to 
+ * Recall from the description above, that at the point where the conversion to
  * floating point takes place, w has less than L leading 0's or 1's.  If the
  * digit size and precision have the "right" relationship, it is relatively
  * easy to determine a short sequence of int ==> float converts that implement
  * the above algorithm.  However, if the digit size is small, since the number
- * of leading zeros is not known at compile time, the necessary sequence of 
+ * of leading zeros is not known at compile time, the necessary sequence of
  * conversions can be complicated.  To alleviate this complication, we will
  * normalize the bits of w.  This costs a little in performance in the case
  * where there is backup precision, but it greatly enhances portability.  The
@@ -1360,7 +1360,7 @@ procedure bit_loss(s,t)
 	 *  CVT_W_TO_HI_LO(hi, lo, tmp_digit) converts w to two F_TYPEs:
 	 *  hi and lo, with the same conventions as CVT_W_TO_B_TYPE.
 	 *  The high part is 'shortened' to half_precision, to make
-	 *  hi*PI_OVER_4_HI exact (PI_OVER_4_HI = bround(pi/4,half_precision). 
+	 *  hi*PI_OVER_4_HI exact (PI_OVER_4_HI = bround(pi/4,half_precision).
 	 *
 	 *  For hi, we'll take the 1+half_precision high bits of w (recall
 	 *  that the highest bit is just a 'sign' bit).
@@ -1424,7 +1424,7 @@ procedure bit_loss(s,t)
 
 #       define PRINT_ENTRY(value)	PRINT_1_TYPE_ENTRY(F_CHAR,value,offset)
 #       define ENTRY_TYPE		F_TYPE
-    
+
         hi = bround(pi_over_4, half_precision);
         lo = pi_over_4 - hi;
         TABLE_COMMENT("pi/4 in hi and lo pieces");
@@ -1445,7 +1445,7 @@ procedure bit_loss(s,t)
     }
 
     END_TABLE;
-    
+
     printf("#define TRIG_RED_TABLE_NAME\t" STR(TABLE_NAME) "\n");
 
 #   define AT_OFFSET  "(((char*)TRIG_RED_TABLE_NAME) + %i)"
@@ -1459,7 +1459,7 @@ procedure bit_loss(s,t)
 	    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_lo_offset);
 #   endif
 
-    printf("#define SCALE_TAB(j) " 
+    printf("#define SCALE_TAB(j) "
 	"*(((" STR(ENTRY_TYPE) "*)" AT_OFFSET ") + j)\n", scale_offset);
 
     @end_divert
@@ -1662,7 +1662,7 @@ F_ENTRY_NAME(F_TYPE x,
      */
     MULTIPLY_F_AND_G_DIGITS( /* F_DIGITS, G_DIGITS, T_DIGITS, */ CARRY_DIGIT );
 
-    /* 
+    /*
      *	Add in the variable octant.
      */
 #   if VOC
@@ -1798,14 +1798,14 @@ F_ENTRY_NAME(F_TYPE x,
     F_TYPE t, s, u, v, r;
 
     CVT_W_TO_HI_LO(t, s, TMP_DIGIT);
-    
+
     uf.f = 0.;
     uf.F_HI_WORD = ALIGN_W_EXP_FIELD(F_EXP_OF_ONE + scale);
     u = uf.f;
 
     v = u*PI_OVER_4_LO;
     u = u*PI_OVER_4_HI;
-    
+
     s = s*(u + v) + t*v;
     r = t*u;
 
