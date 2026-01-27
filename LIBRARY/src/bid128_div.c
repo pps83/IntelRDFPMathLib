@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -67,9 +67,9 @@ if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 }
     // x is Infinity?
 if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-  // check if y is Inf. 
+  // check if y is Inf.
   if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
-    // return NaN 
+    // return NaN
   {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -80,7 +80,7 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   }
   // y is NaN?
   if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
-    // return NaN 
+    // return NaN
   {
     // return +/-Inf
     res.w[1] = ((x.w[1] ^ y.w[1]) & 0x8000000000000000ull) |
@@ -525,7 +525,7 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
 if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
   if ((((y) & 0x7c00000000000000ull) == 0x7800000000000000ull))
-    // return NaN 
+    // return NaN
   {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -974,7 +974,7 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
   if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
-    // return NaN 
+    // return NaN
   {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -1415,9 +1415,9 @@ if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 }
     // x is Infinity?
 if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-  // check if y is Inf. 
+  // check if y is Inf.
   if (((y & 0x7c00000000000000ull) == 0x7800000000000000ull))
-    // return NaN 
+    // return NaN
   {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -1428,7 +1428,7 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   }
   // y is NaN?
   if (((y & 0x7c00000000000000ull) != 0x7c00000000000000ull))
-    // return NaN 
+    // return NaN
   {
     // return +/-Inf
     res.w[1] = ((x.w[1] ^ y) & 0x8000000000000000ull) |

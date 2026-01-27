@@ -34,73 +34,73 @@
 #   include STR(BUILD_FILE_NAME)
 #endif
 
-/* 
+/*
 ** BASIC DESIGN
 ** ------------
-** 
+**
 ** The erf/erfc design is based on the following identities:
-** 
+**
 ** 	           2*x     __inf (-x^2)^k
 ** 	erf(x) = --------  >     --------			(1)
 ** 	         sqrt(pi) /__0   (k+1)*k!
-** 
+**
 ** 	erfc(x) = 1 - erf(x)					(2)
-** 
+**
 ** 	           exp(-x^2)   __inf     (2k)!
 ** 	erfc(x) ~  ----------  >     -------------		(3)
 ** 	           x*sqrt(pi) /__0   k!*(-4*x^2)^k
-** 
+**
 ** 	          exp(-x^2) /  1  1/2 2/2 3/2    \
 ** 	erfc(x) = --------- | --- --- --- --- ... |		(4)
 **	          sqrt(pi)  \ x + x + x + x +    /
-** 
-** 
+**
+**
 ** The domain of the two functions is divided into 8 subintervals, symmetrically
-** placed around 0.  For each subinterval, the general approach is to perform 
+** placed around 0.  For each subinterval, the general approach is to perform
 ** some primary evaluation and then adjust its sign and add or subtract a
 ** constant.
-** 
+**
 ** On the first subinterval, from 0 to 1, the primary evaluation is a rational
 ** approximation to erf(x) of the form x*R(x^2), based on (1).  It should be
 ** noted here that the upper bound of this interval could be taken as large as
 ** 2 and still have the terms of R(x^2) be decreasing. However, as the upper
 ** limit increases past 1, loss of significance when computing 1 - erf(x)
 ** becomes a problem, so we take the upper limit of the first interval a 1
-** because it simplifies the interval determination logic. 
-** 
+** because it simplifies the interval determination logic.
+**
 ** The second subinterval spans 1 to A, where A is chosen so that if x >= A, the
 ** correctly rounded value of erf(x) is 1.  On this subinterval, the primary
 ** evaluation is an approximation to erfc(x), of the form exp(-x*x)*S(x), where
 ** S(x) is a rational approximation based on (4).
-** 
+**
 ** The third subinterval spans A to B, where B is chosen so that if x >= B, then
 ** erfc(x) underflows.  On this subinterval, the primary evaluation is an
 ** approximation to erfc(x) of the form exp(-x*x)*T(1/x^2)/x, where T(1/x^2)
 ** is a rational approximation based on (3).
-** 
+**
 ** The actual values of A and B are somewhat arbitrary.  For this design we take
 ** B = 128, since that choice helps simplify the determination of the intervals.
 ** A is chosen to be 8.75.  The reason for this choice of A is that:
-** 
+**
 ** 	o it meets the requirement that x >= A ==> erf(x) = 1,
 ** 	o A has very few significant bits, so its fraction can be represented
 ** 	  in one word
 ** 	o For this choice of A or larger, the terms in T(1/x^2) decrease
-*/ 
+*/
 
 #define HI_WORD_OF_8_PT_75		0x8c00000000000000ull
 
-/* 
-** 
+/*
+**
 ** IMPLEMENTATION STRATEGY
 ** -----------------------
-** 
+**
 ** Based on the above definitions and equation (2) we can construct table 1
 ** which shows how erf(x) and erfc(x) are computed based on which interval
 ** they lie in.  In the table we refer to the primary evaluations in the first,
 ** second and third subintervals as ERF(x), MID(x) and ERFC(x) respectively.
-** 
-** 
+**
+**
 ** 	Sub-Interval	Index	  erf(x)	  erfc(x)
 ** 	------------	-----	-----------	------------
 **	(-Inf,  -128]     7	-1              2
@@ -111,40 +111,40 @@
 **	[ 1,    8.75]     1	 1 - MID(|x|)	0 + MID(x)
 ** 	( 8.75,  128]     2	 1         	0 + ERFC(|x|)
 ** 	( 128,  +Inf]     3	 1         	underflow
-** 
+**
 ** 			    Table 1
 ** 			    -------
-** 
+**
 ** Ignoring for the time being, that underflows may need to be signaled, the
 ** evaluation scheme for each subinterval, for both functions, is of the form:
-** 
+**
 ** 			   c + t*F(x) 			(5)
 ** where
-** 
+**
 ** 		o t is +/-1
 ** 		o c is -1, 0, 1 or 2
 ** 		o F(x) is ERF(x), MID(x), ERFC(x), UNDERFLOW(x) or 0
-** 
+**
 ** Based on the above, we implement erf and erfc as calls into a common
 ** evaluation routine, C_UX_ERF, that determines the interval the argument
 ** lies in and then dispatches to the appropriate evaluation code.
-** 
-** 
+**
+**
 ** MAPPING INTERVALS TO EVALUATIONS
 ** --------------------------------
-** 
+**
 ** The mapping from interval to evaluation function can be done via a switch
 ** statement on the interval.  The cases for ERFC(x) and UNDERFLOW need to check
 ** for whether an erf(x) or erfc(x) evaluation is being performed.
-** 
-** The selection of the constants, c can be accomplished by encoding the 
+**
+** The selection of the constants, c can be accomplished by encoding the
 ** appropriate values of c for erfc(x) in a "bit string" that can be indexed
 ** by the interval number.  Actually, rather then encoding the constants
 ** themselves we encode the index into an unpacked constant table.  Letting
 ** the index for c = -1, 0, 1 and 2 be c + 1 (i.e the indices 0, 1, 2 and
 ** 3 correspond to the constants -1, 0, 1 and 2), we can create two integers,
 ** defined by:
-** 
+**
 ** 		 1   1   1
 ** 		 4   2   0   8   6   4   2   0: bit position
 ** 	      +---+---+---+---+---+---+---+---+
@@ -153,11 +153,11 @@
 ** 	      +---+---+---+---+---+---+---+---+
 ** 	erf:  | 0 | 0 | 0 | 1 | 2 | 2 | 2 | 1 |
 ** 	      +---+---+---+---+---+---+---+---+
-** 
+**
 ** that map indices of the constants to the intervals. Note that given one of
 ** the above integers, we can determine if an erf or erfc evaluation is being
 ** performed by looking at the low bit.
-*/ 
+*/
 
 #define MAP_BIT_WIDTH			0x2
 #define MAP_MASK			MAKE_MASK(MAP_BIT_WIDTH, 0)
@@ -213,7 +213,7 @@ C_UX_ERF(
   U_WORD       interval_to_constant_map,
   _X_FLOAT   * packed_result
   OPT_EXCEPTION_INFO_DECLARATION )
-    {  
+    {
     WORD fp_class, index;
     WORD const * class_to_action_map;
     UX_SIGN_TYPE  sign;
@@ -238,7 +238,7 @@ C_UX_ERF(
         index = (exponent <= 0) ? 0 : 1;
     else if (exponent > 4)
         index = (exponent < 8) ? 2 : 3;
-    else 
+    else
         index = (G_UX_MSD(&unpacked_argument) < HI_WORD_OF_8_PT_75) ? 1 : 2;
 
     index += G_UX_SIGN(&unpacked_argument) ? 4 : 0;
@@ -296,7 +296,7 @@ C_UX_ERF(
                 NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY)
                   | DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
                 eval_result);
- 
+
              /* Fall through */
 
         multiply_by_exp_m_x_sqr:
@@ -456,7 +456,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 #   if UX_PRECISION != 128
 #        error "Rational coefficient degrees may be invalid for this precision"
 #   endif
- 
+
     /*
     ** Generate coefficients for erf(x) evaluation on [0,1)
     */

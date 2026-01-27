@@ -54,7 +54,7 @@
         printf("_X_CON\t/* %2i */ %#32.4.16i,\n", index, tmp);
         return;
         }
- 
+
     /* Create a NaN value */
 
 #   if (ARCHITECTURE == alpha) && (OP_SYSTEM == osf)
@@ -71,7 +71,7 @@
     nan_value = bldexp(fraction, F_MAX_BIN_EXP + 2);
 */
     inf_value = bldexp(1, F_MAX_BIN_EXP + 1);
-    
+
     index = 0;
 
     printf("_X_CON#if INSTANTIATE_TABLE\n"

@@ -32,7 +32,7 @@
 
 #ifndef DEFINES
 
-    const unsigned __int64 __four_over_pi[] = { 
+    const unsigned __int64 __four_over_pi[] = {
 
         0x0000000000000000ull, 0x0000000000000000ull, 0x0028be60db939105ull,
         0x4a7f09d5f47d4d37ull, 0x7036d8a5664f10e4ull, 0x107f9458eaf7aef1ull,

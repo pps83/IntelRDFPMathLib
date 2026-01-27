@@ -40,7 +40,7 @@ static BID_UINT128 BID128_10POW4464 =
 static BID_UINT128 BID128_10POWN4464 =
   { BID128_LH_INIT( 0x0000000000000001ull, 0x0d60000000000000ull ) };
 
-static BID_UINT128 BID128_NAN = 
+static BID_UINT128 BID128_NAN =
   { BID128_LH_INIT( 0x0000000000000000ull, 0x7c00000000000000ull ) };
 
 BID_F128_CONST_DEF( c_4464_ln_10, 400c4135eb3929fb, a719f2c946d2d728); // 4454*ln(10)
@@ -82,7 +82,7 @@ BID128_FUNCTION_ARG1 (bid128_log1p, x)
   if (sm)
    { BIDECIMAL_CALL2(bid128_add,y,x,BID128_1);
      if ((y.w[BID_HIGH_128W] & MASK_SIGN) == MASK_SIGN)
-      { 
+      {
         #ifdef BID_SET_STATUS_FLAGS
         __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
         #endif

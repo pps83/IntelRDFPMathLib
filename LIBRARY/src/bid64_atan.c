@@ -45,7 +45,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_atan, BID_UINT64, x)
         __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
      #endif
      res = x & 0xfc03ffffffffffffull;
-     if ((res & 0x0003ffffffffffffull) > 999999999999999ull) 
+     if ((res & 0x0003ffffffffffffull) > 999999999999999ull)
         res &= ~0x0003ffffffffffffull;
      BID_RETURN(res);
    }

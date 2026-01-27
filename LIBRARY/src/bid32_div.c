@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,7 +40,7 @@
  *    CA= A*10^(15+j), j=0 for A>=B, 1 otherwise
  *    Q = 0
  *  else
- *    get Q=(int)(coefficient_x/coefficient_y) 
+ *    get Q=(int)(coefficient_x/coefficient_y)
  *        (based on double precision divide)
  *    check for exact divide case
  *    Let R = coefficient_x - Q*coefficient_y
@@ -50,8 +50,8 @@
  *  endif
  *    if (CA<2^64)
  *      Q += CA/B  (64-bit unsigned divide)
- *    else 
- *      get final Q using double precision divide, followed by 3 integer 
+ *    else
+ *      get final Q using double precision divide, followed by 3 integer
  *          iterations
  *    if exact result, eliminate trailing zeros
  *    check for underflow
@@ -107,7 +107,7 @@ BID_UINT64 CA, CT, PD;
     if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
       // check if y is Inf or NaN
       if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
-	// y==Inf, return NaN 
+	// y==Inf, return NaN
 	if ((y & NAN_MASK32) == INFINITY_MASK32) {	// Inf/Inf
 #ifdef BID_SET_STATUS_FLAGS
 	  __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -235,7 +235,7 @@ BID_UINT64 CA, CT, PD;
     B4 = B2 + B2;
     R = CA - Q2 * B;
     Q += Q2;
-   
+
 #ifdef BID_SET_STATUS_FLAGS
   if (R) {
     // set status flags
@@ -275,7 +275,7 @@ BID_UINT64 CA, CT, PD;
 
       diff_expon += nzeros;
 	  }
-    } 
+    }
 	else {
       nzeros = 0;
 

@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,12 +36,12 @@
  *  if(exponent_x < exponent_y)
  *    scale coefficient_y so exponents are aligned
  *    perform coefficient divide (64-bit integer divide), unless
- *            coefficient_y is longer than 64 bits (clearly larger 
- *                                               than coefficient_x) 
+ *            coefficient_y is longer than 64 bits (clearly larger
+ *                                               than coefficient_x)
  *  else  // exponent_x > exponent_y
- *     use a loop to scale coefficient_x to 18_digits, divide by 
+ *     use a loop to scale coefficient_x to 18_digits, divide by
  *         coefficient_y (64-bit integer divide), calculate remainder
- *         as new_coefficient_x and repeat until final remainder is obtained 
+ *         as new_coefficient_x and repeat until final remainder is obtained
  *         (when new_exponent_x < exponent_y)
  *
  ****************************************************************************/

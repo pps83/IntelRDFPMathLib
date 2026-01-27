@@ -1,13 +1,13 @@
 Note: 000, 001, ..., 111 are associated with the following three conditions:
 
-bit 2 [msb]: 0 = call by value (except for the pointer to the status flags, 
+bit 2 [msb]: 0 = call by value (except for the pointer to the status flags,
                  passed by reference unless global)
              1 = call by reference;
 bit 1      : 0 = rounding mode passed as a parameter
-             1 = rounding mode passed in global variable _IDEC_glbround 
+             1 = rounding mode passed in global variable _IDEC_glbround
                  (fixed name)
 bit 0 [lsb]: 0 = pointer to status flags passed as a parameter
-             1 = status flags passed in global variable _IDEC_glbflags 
+             1 = status flags passed in global variable _IDEC_glbflags
                  (fixed name)
 
 Example (one of eight possible, for Linux only; similar for other OS-es):
@@ -16,7 +16,7 @@ Build libbid.a in ../LIBRARY with '...CALL_BY_REF=0 GLOBAL_RND=0 GLOBAL_FLAGS=0'
 $ cp main.c_000 main.c
 $ cp decimal.h_000 decimal.h
 $ icc main.c ../LIBRARY/libbid.a
-$ ./a.out 
+$ ./a.out
 Begin Decimal Floating-Point Sanity Check
 TEST CASE 1 FOR bid128_mul 000 () PASSED
 TEST CASE 2 FOR bid128_mul 000 () PASSED
@@ -24,12 +24,12 @@ TEST CASE 3 FOR bid128_mul 000 () PASSED
 End Decimal Floating-Point Sanity Check
 $ rm main.c decimal.h a.out
 
-    Note: The scripts and makefiles provided here may need adjustments, 
-        depending on the environment in which they are used; for example if 
-        moving files from Windows to Linux, running dos2unix on the Linux 
+    Note: The scripts and makefiles provided here may need adjustments,
+        depending on the environment in which they are used; for example if
+        moving files from Windows to Linux, running dos2unix on the Linux
         script files may be necessary.
 
-Note: For some other operating systems and architecture combinations see the 
+Note: For some other operating systems and architecture combinations see the
   following command files, as well as any command files invoked from these ones:
         RUNWINDOWS_nmake.bat
         RUNOSXINTEL64

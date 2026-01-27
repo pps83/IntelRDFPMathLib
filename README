@@ -15,54 +15,54 @@
 
      Release History:
      ================
-        Jul 2009 - Version 1.0 - implemented all the mandatory functions 
+        Jul 2009 - Version 1.0 - implemented all the mandatory functions
                    from the IEEE Standard 754-2019
-        Jun 2011 - Version 2.0 - implemented also the functions 
-                   recommended in the ISO/IEC Technical Report 24732, 
-                   'Extension for the programming language C to support 
+        Jun 2011 - Version 2.0 - implemented also the functions
+                   recommended in the ISO/IEC Technical Report 24732,
+                   'Extension for the programming language C to support
                    decimal floating-point arithmetic'
         Aug 2011 - Version 2.0 Update 1 - fixed a small issue in fma128
-        Jun 2018 - Version 2.0 Update 2 - fixed issues in powd64, 
-                   acos64, and acos128. Added the llround, llquantexp, 
+        Jun 2018 - Version 2.0 Update 2 - fixed issues in powd64,
+                   acos64, and acos128. Added the llround, llquantexp,
                    and quantum functions, as well as corresponding new tests.
-                   This version has been tested in Linux, Windows, OSX, and 
+                   This version has been tested in Linux, Windows, OSX, and
                    Solaris.
-        Apr 2024 - 1. Version 2.0 Update 3 - Clang and the latest Intel Compiler 
+        Apr 2024 - 1. Version 2.0 Update 3 - Clang and the latest Intel Compiler
                    builds were added.
-                   2. The return type of bid{128,64,32}_class functions was 
-                   updated and 'enum class_types' moved from bid_internal.h to 
+                   2. The return type of bid{128,64,32}_class functions was
+                   updated and 'enum class_types' moved from bid_internal.h to
                    bid_functions.h.
-                   3. The payload mask constant was updated (0x0000cfffffffffff 
+                   3. The payload mask constant was updated (0x0000cfffffffffff
                    --> 0x00003fffffffffff)
                    for the bid128_nan function in bid128_noncomp.c.
-                   4. A few unused variables were removed in order to eliminate 
+                   4. A few unused variables were removed in order to eliminate
                    potential build warnings.
-                   5. The __NO_BINARY80__ option was added (NO_BINARY80 should be 
+                   5. The __NO_BINARY80__ option was added (NO_BINARY80 should be
                    set to zero in the makefile in order to use 80-bit).
-                   6. The bid{64,32}_pow functions were updated so that powers 
-		   of 10 are now rounded correctly. For example,  bid64_pow(10,-398) 
+                   6. The bid{64,32}_pow functions were updated so that powers
+		   of 10 are now rounded correctly. For example,  bid64_pow(10,-398)
                    returns +1E-398 (and it returned zero before).
-                   7. The bid128_pow function was updated to use volatile for a 
-                   certain variable, in order to work correctly with Intel Compiler 
+                   7. The bid128_pow function was updated to use volatile for a
+                   certain variable, in order to work correctly with Intel Compiler
                    optimization.
-                   8. The bid128_hypot function was updated for the case when the 
-                   exponent of one input value is much smaller than the exponent of 
+                   8. The bid128_hypot function was updated for the case when the
+                   exponent of one input value is much smaller than the exponent of
                    the other one (it was being done without checking the mantissas.
-                   For example, hypot(+1E+0, +3333333333333333333333333333333333E-35) 
-                   was returning +1E+0, instead 
+                   For example, hypot(+1E+0, +3333333333333333333333333333333333E-35)
+                   was returning +1E+0, instead
                    of +1000555401320242292114995032370049E-33.
-                   9. Sixteen files were updated by adding a 'default: break;' in 
+                   9. Sixteen files were updated by adding a 'default: break;' in
                    switch statements, to avoid compiler warnings.
-                   10. The ASCII value of 0x30 for zero was replaced with '0' in 
+                   10. The ASCII value of 0x30 for zero was replaced with '0' in
                    bid128_to_string function.
-                   11. The bid{32,64}_from_string functions were updated, as the 
-                   result was not correct for certain inputs when the rounding mode 
-                   was set to 'rounding up'. For example, bid32_from_string function 
-                   with input value "10000000" returns +1000000E+1 now, instead 
+                   11. The bid{32,64}_from_string functions were updated, as the
+                   result was not correct for certain inputs when the rounding mode
+                   was set to 'rounding up'. For example, bid32_from_string function
+                   with input value "10000000" returns +1000000E+1 now, instead
                    of +1000001E+1.
 
-                   The updated library was tested in Linux and in Windows, compiled with 
-                   the Intel ICX (new) and ICC/ICL (classic) compilers, and also with 
+                   The updated library was tested in Linux and in Windows, compiled with
+                   the Intel ICX (new) and ICC/ICL (classic) compilers, and also with
                    the GCC 13.1 and Clang 17.0 compilers.
                    Testing was also performed with the Apple Clang compiler 14.0.0 on Mac.
 
@@ -75,7 +75,7 @@ Point Arithmetic. This is an extension of Release 2.0 Update 2 (or V2.2) of 2018
 
   The library implements the functions defined for decimal floating-point
 arithmetic operations in the IEEE Standard 754-2019 for Floating-Point
-Arithmetic, which is a revision of the IEEE Standard 754-2019 for Floating-Point Arithmetic. 
+Arithmetic, which is a revision of the IEEE Standard 754-2019 for Floating-Point Arithmetic.
 However, there were no changes in what is mandated for decimal floating-point arithmetic
 in the IEEE Standard 754-2019, compared to the IEEE Standard 754-2019.
 
@@ -97,13 +97,13 @@ integer number represented in binary to q - x digits (1 <= x <= q - 1).
   For operations involving integer operands or results, the library supports
 signed and unsigned 8-, 16-, 32-, and 64-bit integers.
 
-Note: Release 2.0 added transcendental functions (supported in 128-bit, 64-bit, 
-and 32-bit decimal formats), including the ones specified in the technical 
+Note: Release 2.0 added transcendental functions (supported in 128-bit, 64-bit,
+and 32-bit decimal formats), including the ones specified in the technical
 report on decimal arithmetic ISO/IEC TR 24732 (available from www.iso.org).
-These functions are not correctly rounded, a fact that should be considered 
-when using them (similary, binary floating-point mathematical functions 
+These functions are not correctly rounded, a fact that should be considered
+when using them (similary, binary floating-point mathematical functions
 implemented for example in C or other compiler math libraries are in general
-not correctly rounded either). 
+not correctly rounded either).
 
 
   2. PACKAGE CONTENTS
@@ -232,17 +232,17 @@ are passed by value).
   ==========
 
   The library was tested on several different platforms (Intel(R)64 Architecture
-running Linux**, Windows*** and OSX**).  For example in Linux** the 
-oneAPI DPC++/C++ Compiler 2024.2.0, Clang**, and gcc** were used. In Windows***, 
-the oneAPI DPC++/C++ Compiler 2024.2.0  and the Microsoft*** Visual C++ Compiler 
-were used. For each of these combinations, eight combinations of parameter passing 
+running Linux**, Windows*** and OSX**).  For example in Linux** the
+oneAPI DPC++/C++ Compiler 2024.2.0, Clang**, and gcc** were used. In Windows***,
+the oneAPI DPC++/C++ Compiler 2024.2.0  and the Microsoft*** Visual C++ Compiler
+were used. For each of these combinations, eight combinations of parameter passing
 method and global or local rounding mode and status flags were tested.
 
-  In limited situations, it is possible for incorrect compiler behavior to 
-lead to incorrect results in the Intel(r) Decimal Floating-Point Math Library. 
-For example, results of round-to-integer functions are incorrect when the 
-library is built using gcc 4.2/4.3. Also, some gcc versions in an IA-32 
-Linux environment cause slightly incorrect results in a few corner cases for 
+  In limited situations, it is possible for incorrect compiler behavior to
+lead to incorrect results in the Intel(r) Decimal Floating-Point Math Library.
+For example, results of round-to-integer functions are incorrect when the
+library is built using gcc 4.2/4.3. Also, some gcc versions in an IA-32
+Linux environment cause slightly incorrect results in a few corner cases for
 the 64-bit decimal square root. (This is not an exhaustive list.) Such errors
 should be caught by the tests provided with the library.
 
@@ -3523,36 +3523,36 @@ FLOATING-POINT EXCEPTIONS: none
 Functions Added in Release 2.0
 ____________________________________________
 
-The functions listed below are described in ISO/IEC TR 24732 (a proposed 
-extension to the ISO C99 standard).  They are also implemented in the Intel(R) 
-Decimal Floating-Point Math Library.  
+The functions listed below are described in ISO/IEC TR 24732 (a proposed
+extension to the ISO C99 standard).  They are also implemented in the Intel(R)
+Decimal Floating-Point Math Library.
 In general, the maximum ulp error was estimated mathematically to be:
     - below 1 ulp for 32-bit functions
     - below 2 ulps for 64-bit functions
     - below 8 ulps for 128-bit functions
-Testing for hundreds of millions of points did not contradict these values. 
+Testing for hundreds of millions of points did not contradict these values.
 A few exceptions exist (notably for the gamma function family):
-    - the 32-bit atanh, with measured errors of less than 6 ulps 
+    - the 32-bit atanh, with measured errors of less than 6 ulps
     - the 64-bit acosh and atanh, with measured errors of less than 6 ulps
     - the 128-bit sinh, cosh, and erfc, with measured errors of less than 9 ulps
-    - the 128-bit tgamma and lgamma functions, whose last 5 digits of the 
+    - the 128-bit tgamma and lgamma functions, whose last 5 digits of the
       34-digit significand in the result are not reliable
-As with the rest of the library, these functions can be built to use a global 
-rounding mode and/or global decimal status flags.  Alternatively, they can be 
-built to take the rounding mode and a pointer to the status flags as arguments 
+As with the rest of the library, these functions can be built to use a global
+rounding mode and/or global decimal status flags.  Alternatively, they can be
+built to take the rounding mode and a pointer to the status flags as arguments
 (as seen for the functions described in the previous section).
-Depending on how the library is built, the arguments and result can be passed 
+Depending on how the library is built, the arguments and result can be passed
 by value or by reference.
 
-The names used by the implementation differ from the names listed in ISO/IEC 
-TR 24732; they are given below (as C comments).   However, the user may easily 
-redefine these names by editing the #define statements at the beginning of 
-bid_conf.h. 
+The names used by the implementation differ from the names listed in ISO/IEC
+TR 24732; they are given below (as C comments).   However, the user may easily
+redefine these names by editing the #define statements at the beginning of
+bid_conf.h.
 
-Below, _Decimal64 stands for BID64;  _Decimal32 stands for BID32 and _Decimal128 
-stands for BID128. 
+Below, _Decimal64 stands for BID64;  _Decimal32 stands for BID32 and _Decimal128
+stands for BID128.
 
-_Decimal64 acosd64(_Decimal64 x);  // library name: __bid64_acos    
+_Decimal64 acosd64(_Decimal64 x);  // library name: __bid64_acos
 _Decimal32 acosd32(_Decimal32 x);  // library name: __bid32_acos
 _Decimal128 acosd128(_Decimal128 x);  // library name: __bid128_acos
 _Decimal64 asind64(_Decimal64 x);  // library name: __bid64_asin
@@ -3705,8 +3705,8 @@ Consider also the following code from bid_conf.h:
 #define bid128_pow        __bid128_pow
 ...
 
-The code examples provided with this package (in the EXAMPLES directory) 
-show how to call __bid128_mul(), and can be followed for transcendental 
+The code examples provided with this package (in the EXAMPLES directory)
+show how to call __bid128_mul(), and can be followed for transcendental
 functions as well.
 
 Here are two simple examples, to compute z=bid128_pow(x,y) and b=bid64_exp(a):
@@ -3717,7 +3717,7 @@ Here are two simple examples, to compute z=bid128_pow(x,y) and b=bid64_exp(a):
   // The user must initialize input arguments x, y, a
 
   // Call sequences, assuming the library is built using:
-  //  DECIMAL_CALL_BY_REFERENCE=1 (arguments passed by reference) 
+  //  DECIMAL_CALL_BY_REFERENCE=1 (arguments passed by reference)
   //  DECIMAL_GLOBAL_ROUNDING=0 (rounding mode passed as argument to function)
   //  DECIMAL_GLOBAL_EXCEPTION_FLAGS=0 (status flags passed as argument)
   // Need to declare and initialize rounding mode and status flags variables
@@ -3728,16 +3728,16 @@ Here are two simple examples, to compute z=bid128_pow(x,y) and b=bid64_exp(a):
   __bid64_exp (&b, &a, &my_rnd_mode, &my_fpsf);
 
   // Call sequences, assuming the library is built using:
-  //  DECIMAL_CALL_BY_REFERENCE=0 (arguments passed by value) 
+  //  DECIMAL_CALL_BY_REFERENCE=0 (arguments passed by value)
   //  DECIMAL_GLOBAL_ROUNDING=1 (rounding mode stored in global variable)
   //  DECIMAL_GLOBAL_EXCEPTION_FLAGS=1 (status flags stored in global variable)
   z = __bid128_pow (x, y);
   b = __bid64_exp (a);
 
-  For more details, including how to access the global rounding mode and 
-status flags variables and how to call decimal functions when the library is 
-built using any of the 8 combinations specified by DECIMAL_CALL_BY_REFERENCE, 
-DECIMAL_GLOBAL_ROUNDING, and DECIMAL_GLOBAL_EXCEPTION_FLAGS, please see the 
+  For more details, including how to access the global rounding mode and
+status flags variables and how to call decimal functions when the library is
+built using any of the 8 combinations specified by DECIMAL_CALL_BY_REFERENCE,
+DECIMAL_GLOBAL_ROUNDING, and DECIMAL_GLOBAL_EXCEPTION_FLAGS, please see the
 EXAMPLES directory.
 
 
@@ -3755,11 +3755,11 @@ trademarks of Microsoft Corporation in the United States and/or other countries
 
 Note 1:
 =======
-  Functions operating on the BID32 format are implemented, but some are not 
-  listed here (for example bid32_add). See the prototypes in 
+  Functions operating on the BID32 format are implemented, but some are not
+  listed here (for example bid32_add). See the prototypes in
   LIBRARY/src/bid_functions.h for a complete list of the library functions.
 
 Note 2:
 =======
-  UNCHANGED_BINARY_STATUS_FLAGS allows for prevention of binary flag pollution 
+  UNCHANGED_BINARY_STATUS_FLAGS allows for prevention of binary flag pollution
 

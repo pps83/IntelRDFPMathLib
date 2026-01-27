@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -353,7 +353,7 @@ bid64_abs (BID_UINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_RETURN (res);
 }
 
-// copies operand x to destination in the same format as x, but 
+// copies operand x to destination in the same format as x, but
 // with the sign of y
 #if DECIMAL_CALL_BY_REFERENCE
 void
@@ -445,7 +445,7 @@ bid64_class (BID_UINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 }
 
 // true if the exponents of x and y are the same, false otherwise.
-// The special cases of sameQuantum (NaN, NaN) and sameQuantum (Inf, Inf) are 
+// The special cases of sameQuantum (NaN, NaN) and sameQuantum (Inf, Inf) are
 // true.
 // If exactly one operand is infinite or exactly one operand is NaN, then false
 #if DECIMAL_CALL_BY_REFERENCE
@@ -558,7 +558,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 	res = 0;	// y is a number, return 1
 	BID_RETURN (res);
       } else {
-	// x and y are both +NaN; 
+	// x and y are both +NaN;
 	// must investigate payload if both quiet or both signaling
 	// this xnor statement will be true if both x and y are +qNaN or +sNaN
 	if (!
@@ -569,7 +569,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 	  // are bitwise identical)
 	  pyld_y = y & 0x0003ffffffffffffull;
 	  pyld_x = x & 0x0003ffffffffffffull;
-	  // if x is zero and y isn't, x has the smaller 
+	  // if x is zero and y isn't, x has the smaller
 	  // payload definitely (since we know y isn't 0 at this point)
 	  if (pyld_x > 999999999999999ull || pyld_x == 0) {
 	    res = 1;
@@ -583,7 +583,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 	  res = (pyld_x <= pyld_y);
 	  BID_RETURN (res);
 	} else {
-	  // return true if y is +qNaN and x is +sNaN 
+	  // return true if y is +qNaN and x is +sNaN
 	  // (we know they're different bc of xor if_stmt above)
 	  res = ((x & MASK_SNAN) == MASK_SNAN);
 	  BID_RETURN (res);
@@ -603,7 +603,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     BID_RETURN (res);
   }
   // OPPOSITE SIGNS (CASE 3)
-  // if signs are opposite, return 1 if x is negative 
+  // if signs are opposite, return 1 if x is negative
   // (if x<y, totalOrder is true)
   if (((x & MASK_SIGN) == MASK_SIGN) ^ ((y & MASK_SIGN) == MASK_SIGN)) {
     res = (x & MASK_SIGN) == MASK_SIGN;
@@ -616,7 +616,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       res = 1;
       BID_RETURN (res);
     } else {
-      // x is positive infinity, only return1 if y 
+      // x is positive infinity, only return1 if y
       // is positive infinity as well
       // (we know y has same sign as x)
       res = ((y & MASK_INF) == MASK_INF);
@@ -660,7 +660,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   }
 
   // ZERO (CASE 5)
-  // if x and y represent the same entities, and 
+  // if x and y represent the same entities, and
   // both are negative , return true iff exp_x <= exp_y
   if (x_is_zero && y_is_zero) {
     if (!((x & MASK_SIGN) == MASK_SIGN) ^
@@ -693,7 +693,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = ((x & MASK_SIGN) == MASK_SIGN);
@@ -703,29 +703,29 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     res = ((x & MASK_SIGN) != MASK_SIGN);
     BID_RETURN (res);
   }
-  // if exp_x is 15 greater than exp_y, it is 
+  // if exp_x is 15 greater than exp_y, it is
   // definitely larger, so no need for compensation
   if (exp_x - exp_y > 15) {
     // difference cannot be greater than 10^15
     res = ((x & MASK_SIGN) == MASK_SIGN);
     BID_RETURN (res);
   }
-  // if exp_x is 15 less than exp_y, it is 
+  // if exp_x is 15 less than exp_y, it is
   // definitely smaller, no need for compensation
   if (exp_y - exp_x > 15) {
     res = ((x & MASK_SIGN) != MASK_SIGN);
     BID_RETURN (res);
   }
-  // if |exp_x - exp_y| < 15, it comes down 
+  // if |exp_x - exp_y| < 15, it comes down
   // to the compensated significand
   if (exp_x > exp_y) {
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
-    // if x and y represent the same entities, 
+    // if x and y represent the same entities,
     // and both are negative, return true iff exp_x <= exp_y
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
-      // case cannot occure, because all bits must 
+      // case cannot occure, because all bits must
       // be the same - would have been caught if (x==y)
       res = (exp_x <= exp_y) ^ ((x & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
@@ -740,15 +740,15 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
 			  bid_mult_factor[exp_y - exp_x]);
 
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative, return true iff exp_x <= exp_y
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
-    // Cannot occur, because all bits must be the same. 
+    // Cannot occur, because all bits must be the same.
     // Case would have been caught if (x==y)
     res = (exp_x <= exp_y) ^ ((x & MASK_SIGN) == MASK_SIGN);
     BID_RETURN (res);
   }
-  // values are not equal, for positive numbers return 1 
+  // values are not equal, for positive numbers return 1
   // if x is less than y.  0 otherwise
   res = ((sig_n_prime.w[1] > 0)
 	 || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
@@ -792,7 +792,7 @@ bid64_totalOrderMag (BID_UINT64 x,
 
     } else {
 
-      // x and y are both +NaN; 
+      // x and y are both +NaN;
       // must investigate payload if both quiet or both signaling
       // this xnor statement will be true if both x and y are +qNaN or +sNaN
       if (!
@@ -803,7 +803,7 @@ bid64_totalOrderMag (BID_UINT64 x,
 	// are bitwise identical)
 	pyld_y = y & 0x0003ffffffffffffull;
 	pyld_x = x & 0x0003ffffffffffffull;
-	// if x is zero and y isn't, x has the smaller 
+	// if x is zero and y isn't, x has the smaller
 	// payload definitely (since we know y isn't 0 at this point)
 	if (pyld_x > 999999999999999ull || pyld_x == 0) {
 	  res = 1;
@@ -819,7 +819,7 @@ bid64_totalOrderMag (BID_UINT64 x,
 	BID_RETURN (res);
 
       } else {
-	// return true if y is +qNaN and x is +sNaN 
+	// return true if y is +qNaN and x is +sNaN
 	// (we know they're different bc of xor if_stmt above)
 	res = ((x & MASK_SNAN) == MASK_SNAN);
 	BID_RETURN (res);
@@ -833,7 +833,7 @@ bid64_totalOrderMag (BID_UINT64 x,
     BID_RETURN (res);
   }
   // SIMPLE (CASE2)
-  // if all the bits (except sign bit) are the same, 
+  // if all the bits (except sign bit) are the same,
   // these numbers are equal.
   if ((x & ~MASK_SIGN) == (y & ~MASK_SIGN)) {
     res = 1;
@@ -841,7 +841,7 @@ bid64_totalOrderMag (BID_UINT64 x,
   }
   // INFINITY (CASE3)
   if ((x & MASK_INF) == MASK_INF) {
-    // x is positive infinity, only return1 
+    // x is positive infinity, only return1
     // if y is positive infinity as well
     res = ((y & MASK_INF) == MASK_INF);
     BID_RETURN (res);
@@ -851,7 +851,7 @@ bid64_totalOrderMag (BID_UINT64 x,
     res = 1;
     BID_RETURN (res);
   }
-  // if steering bits are 11 (condition will be 0), 
+  // if steering bits are 11 (condition will be 0),
   // then exponent is G[0:w+1] =>
   if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
     exp_x = (x & MASK_BINARY_EXPONENT2) >> 51;
@@ -867,7 +867,7 @@ bid64_totalOrderMag (BID_UINT64 x,
     }
   }
 
-  // if steering bits are 11 (condition will be 0), 
+  // if steering bits are 11 (condition will be 0),
   // then exponent is G[0:w+1] =>
   if ((y & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
     exp_y = (y & MASK_BINARY_EXPONENT2) >> 51;
@@ -884,7 +884,7 @@ bid64_totalOrderMag (BID_UINT64 x,
   }
 
   // ZERO (CASE 5)
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative , return true iff exp_x <= exp_y
   if (x_is_zero && y_is_zero) {
     // totalOrder(x,y) iff exp_x <= exp_y for positive numbers
@@ -911,19 +911,19 @@ bid64_totalOrderMag (BID_UINT64 x,
     res = 1;
     BID_RETURN (res);
   }
-  // if exp_x is 15 greater than exp_y, it is definitely 
+  // if exp_x is 15 greater than exp_y, it is definitely
   // larger, so no need for compensation
   if (exp_x - exp_y > 15) {
     res = 0;	// difference cannot be greater than 10^15
     BID_RETURN (res);
   }
-  // if exp_x is 15 less than exp_y, it is definitely 
+  // if exp_x is 15 less than exp_y, it is definitely
   // smaller, no need for compensation
   if (exp_y - exp_x > 15) {
     res = 1;
     BID_RETURN (res);
   }
-  // if |exp_x - exp_y| <= 15, it comes down 
+  // if |exp_x - exp_y| <= 15, it comes down
   // to the compensated significand
   if (exp_x > exp_y) {
 
@@ -931,10 +931,10 @@ bid64_totalOrderMag (BID_UINT64 x,
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
 
-    // if x and y represent the same entities, 
+    // if x and y represent the same entities,
     // and both are negative, return true iff exp_x <= exp_y
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
-      // case cannot occur, because all bits 
+      // case cannot occur, because all bits
       // must be the same - would have been caught if (x==y)
       res = 0; // res = (exp_x <= exp_y); but exp_x > exp_y
       BID_RETURN (res);
@@ -947,13 +947,13 @@ bid64_totalOrderMag (BID_UINT64 x,
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
 			  bid_mult_factor[exp_y - exp_x]);
 
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative, return true iff exp_x <= exp_y
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 1; // res = (exp_x <= exp_y); but -15 <= exp_x - exp_y <= 0
     BID_RETURN (res);
   }
-  // values are not equal, for positive numbers 
+  // values are not equal, for positive numbers
   // return 1 if x is less than y.  0 otherwise
   res = ((sig_n_prime.w[1] > 0) || (sig_x < sig_n_prime.w[0]));
   BID_RETURN (res);
@@ -982,7 +982,7 @@ void bid64_inf (BID_UINT64 *pres) {
 #else
 BID_UINT64 bid64_inf (void) {
 #endif
- 
+
   BID_UINT64 res;
   res = 0x7800000000000000ull; // +inf
   BID_RETURN(res);
@@ -994,7 +994,7 @@ void bid64_nan (BID_UINT64 *pres, const char *tagp) {
 DFP_WRAPFN_OTHERTYPE(64, bid64_nan, const char *)
 BID_UINT64 bid64_nan (const char *tagp) {
 #endif
- 
+
   BID_UINT64 res, x;
 #if !DECIMAL_GLOBAL_ROUNDING
   unsigned int rnd_mode = BID_ROUNDING_TO_NEAREST;
@@ -1014,7 +1014,7 @@ BID_UINT64 bid64_nan (const char *tagp) {
 #endif
   x = x & 0x0003ffffffffffffull; // valid values fit in 50 bits
   res = res | x;
- 
+
   BID_RETURN(res);
 }
- 
+

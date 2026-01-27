@@ -34,7 +34,7 @@
 #   include STR(BUILD_FILE_NAME)
 #endif
 
-/* 
+/*
 ** OVERVIEW
 ** --------
 **
@@ -42,7 +42,7 @@
 ** two common evaluation routine (one for sin/cos/sind/cosd and one for
 ** tan/cot/tand/cotd) together with two argument reduction routines, one for
 ** radian arguments and one for degree arguments.
-** 
+**
 ** There are various reduction schemes that can be used for trigonometric
 ** functions.  The polynomial evaluation routines require that the terms in
 ** the series decrease in magnitude.  For the trig functions, this implies
@@ -51,9 +51,9 @@
 ** particular, we assume that for a given value, x, the argument reduction
 ** scheme (for both radian and degrees) produces two integers, I1 and I and an
 ** unpacked floating point result, z, such that
-** 
+**
 ** 	x = (2*pi)*I1 + I*(pi/2) + z, 	|z| <= pi/4
-** 
+**
 **		NOTE: having the degree reduction return the reduced
 **		argument in radian permits the use of only one set
 **		of polynomial coefficient and simplifies the evaluation
@@ -63,14 +63,14 @@
 ** argument.  We assume also that argument reduction routines returns both I
 ** and z to its caller.  (I1 is never needed in the subsequent computations,
 ** so it is not returned.)
-** 
+**
 ** The following table gives an estimate of the number of terms in a polynomial
 ** and rational approximation for each of the basic trig functions.  For
 ** rational approximations the degree of the numerator and denominator are
 ** presented as an ordered pair.  The approximation is assumed to be good to
 ** 128 bits for |x| <= pi/4.  The values in this table were extrapolated from
 ** the tables given in Hart et. al.
-** 
+**
 ** 			   approximation form
 ** 			------------------------
 ** 	function	polynomial	rational
@@ -78,20 +78,20 @@
 ** 	sin		    12		 (6, 6)
 ** 	cos		    12		 (6, 6)
 ** 	tan		    29		 (7, 7)
-** 
+**
 ** So from the above table, it seems most efficient to evaluate sin and cos via
 ** polynomials and evaluate tangent via a rational approximation.  So we assume
 ** that for |x| <= pi/4, we have polynomials, S, C, P and Q such that
-** 
+**
 ** 		sin(x) ~ x*S(x^2)
 ** 		cos(x) ~ C(x^2)
 ** 		tan(x) ~ x*P(x^2) / Q(x^2)
 ** 		cot(x) ~ Q(x^2) / *[x*P(x^2)]
-** 
+**
 ** Now, for any argument, x, given its reduced argument, z, and its quadrant
 ** bits, I, we can evaluate sin, cos, tan and cot of x according to Table 1.
 ** ( For brevity we denote z*P(z^2) by p, Q(z^2) by q, etc):
-** 
+**
 ** 				   Quadrant bits, I
 ** 				----------------------------
 ** 		function	  0	  1	  2	  3
@@ -100,43 +100,43 @@
 ** 		cos		  c	 -s	 -c	  s
 ** 		tan		 p/q	-q/p	 p/q	-q/p
 ** 		cot		 q/p	-p/q	 q/p	-p/q
-** 
+**
 ** 				   Table 1
 ** 				   -------
-** 
+**
 **
 ** REDUCTION INTERFACE:
 ** --------------------
-** 
+**
 ** As mentioned earlier, the overall design of the the trig routines is
-** dependent on two routines to do argument reduction.  The prototype for 
+** dependent on two routines to do argument reduction.  The prototype for
 ** these functions is;
-** 
+**
 ** 		WORD
 ** 		__reduce(
 ** 		    _UX_FLOAT * unpacked_argument,
 ** 		    INT_64      octant,
 ** 		    _UX_FLOAT * reduced_argument
 ** 		    )
-** 
+**
 ** Assuming that 'unpacked_argument' points to a _UX_FLOAT data item with value
 ** x, then the semantics of the reduction routines are to compute integers I1
 ** and I, and a floating point value, z, such that
-** 
+**
 ** 	x + octant*(CYCLE/4) = (2*CYCLE)*I1 + (CYCLE/2) + z,  |z| < CYCLE/4
-** 
+**
 ** Note that performing the reduction on x + octant*(CYCLE/4), rather than x,
 ** not only allows us to deal with the <name>_vo entry points easily, it also
-** permits easy use of the identities cos(x) = sin(x + CYCLE/2) and cot(x) = 
+** permits easy use of the identities cos(x) = sin(x + CYCLE/2) and cot(x) =
 ** tan(CYCLE/2) to consolidate the overall processing.
-** 
-** 
-** 
+**
+**
+**
 ** EVALUATION INTERFACE:
 ** ---------------------
-** 
+**
 ** The prototypes for each of the two evaluation routines is;
-** 
+**
 ** 	void
 ** 	__trig_evaluate(
 ** 	    UX_FLOAT * unpacked_argument,
@@ -144,11 +144,11 @@
 ** 	    U_WORD     function_code,
 ** 	    UX_FLOAT * unpacked_result
 ** 	    );
-** 
+**
 ** The evaluation routines need not know whether the evaluation is for degrees
 ** because the appropriate reduction is done based on the value of
 ** function_code.
-*/ 
+*/
 
 #if !defined(UX_RADIAN_REDUCE)
 #    define UX_RADIAN_REDUCE		__INTERNAL_NAME(ux_radian_reduce__)
@@ -230,7 +230,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         ** 2^(p + 14)
         **
         ** One last note.  We don't actually do an integer divide to get
-        ** k.  Rather we multiply n by an integer that is effectively the 
+        ** k.  Rather we multiply n by an integer that is effectively the
         ** reciprocal of 12.  This is easier to do if the exponent field
         ** is positive so we want to add a bias to the exponent that is
         ** divisible by 12 and that will force the exponent to be positive.
@@ -243,7 +243,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         **		  = floor((n - p - 3 + 12*B)/12 - B)
         **		  = floor((n - p - 3 + 12*B)/12) - B
         **		  = floor((n + (12*B - p - 3))/12) - B
-        ** 
+        **
         ** 	==> n - 12*k = n - 12*[floor((n + (12*B - p - 3))/12) - B]
         ** 	             = n - 12*floor((n + (12*B - p - 3))/12) - 12*B
         */
@@ -261,7 +261,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         /*
         ** For a medium arguments, 2^15 < |x| < 2^142, we consider the fraction
         ** field of x as a sequence of digit.  The digits that are comprised
-        ** entirely of "integer" bits are reduced modulo 360 using the 
+        ** entirely of "integer" bits are reduced modulo 360 using the
         ** identity 8*2^12 = 8 (mod 360).
         **
         ** Begin by writing |x| = 2^n*f, with f in the interval [1/2, 1) and
@@ -272,7 +272,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         **
         **                  |<---------- n - 15 -------->| 15 |<--
         **	            +-----------+-----------+-----------+-----------+
-        **             f :  |     F1    |     F2    |    F3     |    F4     | 
+        **             f :  |     F1    |     F2    |    F3     |    F4     |
         **	            +-----------+-----------+-----------+-----------+
         **	                                 -->|  s |<-- ^
         **                                                 binary pt
@@ -282,7 +282,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         **
         **	                                 -->| 15 |<--
         **	+-----------+-----------+-----------+-----------+-----------+
-        **  f': |     F0'   |     F1'   |     F2'   |     F3'   |    F4'    | 
+        **  f': |     F0'   |     F1'   |     F2'   |     F3'   |    F4'    |
         **	+-----------+-----------+-----------+-----------+-----------+
         **	                                         ^
         **                                            binary pt
@@ -449,14 +449,14 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 
 
     /*
-    ** At this point |x| < 2^15 so that if I = nint(x/90), I < 2^9 and 
+    ** At this point |x| < 2^15 so that if I = nint(x/90), I < 2^9 and
     ** I*90 requires at most 15 significant bits.  This means that we
     ** can reduce x by working only with its most significant digit.
     **
     ** Let F be the high k bits of the fraction of x, where k is the number
     ** of bits per fraction digit and K = 2^k.  Further, let R an k-1 bit
     ** integer such that 1/90 ~ R/(32*K).  (I.e. R is the high bits of 1/90
-    ** unnormalized by one bit.)  We can now write x = 2^n*(F + e)/K and 
+    ** unnormalized by one bit.)  We can now write x = 2^n*(F + e)/K and
     ** 1/90 = (R + d)/(32*K), where |e| < 1 and |d| < 1/2.  Consequently
     ** we have:
     **
@@ -574,7 +574,7 @@ UX_SINCOS(
     function_code &= ~DEGREE;
 
     /*
-    ** Select the polynomial coefficients and the form of the 
+    ** Select the polynomial coefficients and the form of the
     ** polynomial based on the quadrant the reduced argument
     ** lies in.  NOTE: the difference between the sin and cos
     ** has been accounted for in the value of octant.
@@ -590,7 +590,7 @@ UX_SINCOS(
     else if (quadrant & 1)
         /* We need to evaluate C(x^2) */
         poly_type = SKIP | COS_POLY_FLAGS;
-    else 
+    else
         /* We need to evaluate x*S(x^2) */
         poly_type = SKIP | SIN_POLY_FLAGS;
 
@@ -615,7 +615,7 @@ UX_SINCOS(
 
     if ((SINCOS_FUNC == function_code) && ((quadrant + 1) & 2))
         UX_TOGGLE_SIGN(&unpacked_result[1], UX_SIGN_BIT);
-  
+
     return 0; /* No error conditions for sin/cos */
     }
 
@@ -1012,10 +1012,10 @@ C_UX_TRIG(
     ** by 12 and taking R = N/12 gives the appropriate result.
     */
 
-    PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM( "MSD_OF_RECIP_90\t\t", 
+    PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM( "MSD_OF_RECIP_90\t\t",
         nint(bldexp(1/90, BITS_PER_UX_FRACTION_DIGIT_TYPE + 5)));
 
-    PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM( "RECIP_TWELVE\t\t", 
+    PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM( "RECIP_TWELVE\t\t",
         ceil(bldexp(1/12, BITS_PER_UX_FRACTION_DIGIT_TYPE)));
 
     /*

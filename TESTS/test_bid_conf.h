@@ -27,11 +27,11 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#if defined(__cplusplus) 
-#define BID_EXTERN_C extern "C" 
-#else 
+#if defined(__cplusplus)
+#define BID_EXTERN_C extern "C"
+#else
 #define BID_EXTERN_C extern
-#endif 
+#endif
 
 #ifndef _BID_CONF_H
 #define _BID_CONF_H
@@ -1227,7 +1227,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
         extern unsigned int __bid_ms_restore_flags(unsigned int*);
 
 #       define BID_OPT_FLAG_DECLARE() \
-            unsigned int binaryflags = 0; 
+            unsigned int binaryflags = 0;
 #       define BID_OPT_SAVE_BINARY_FLAGS() \
              binaryflags = _statusfp();
 #        define BID_OPT_RESTORE_BINARY_FLAGS() \
@@ -1237,14 +1237,14 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #       include <fenv.h>
 #       define BID_FE_ALL_FLAGS FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW|FE_UNDERFLOW|FE_INEXACT
 #       define BID_OPT_FLAG_DECLARE() \
-            fexcept_t binaryflags = 0; 
+            fexcept_t binaryflags = 0;
 #       define BID_OPT_SAVE_BINARY_FLAGS() \
             (void) fegetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #       define BID_OPT_RESTORE_BINARY_FLAGS() \
             (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #   endif
 #else
-#   define BID_OPT_FLAG_DECLARE() 
+#   define BID_OPT_FLAG_DECLARE()
 #   define BID_OPT_SAVE_BINARY_FLAGS()
 #   define BID_OPT_RESTORE_BINARY_FLAGS()
 #endif
@@ -1456,7 +1456,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
            type1 *  \
            pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
            _EXC_INFO_PARAM) {\
-     BID_PROLOG_TYPE_REF(type1, arg_name)   
+     BID_PROLOG_TYPE_REF(type1, arg_name)
 
 #define       BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(type0, fn_name, type1, arg_name1, type2, arg_name2)\
       void fn_name (type0 * pres, \
@@ -1645,7 +1645,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
      type0                                     \
      fn_name (type1 bid_##arg_name _EXC_FLAGS_PARAM  \
            _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-     BID_PROLOG_TYPE_VAL(type1, arg_name)                      
+     BID_PROLOG_TYPE_VAL(type1, arg_name)
 
 #define       BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(type0, fn_name, type1, arg_name1, type2, arg_name2)\
      type0                                     \

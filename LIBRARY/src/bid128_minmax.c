@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -169,7 +169,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
   // ZERO (CASE4)
   // some properties:
   //    (+ZERO == -ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => ignore the exponent 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => ignore the exponent
   //    field
   //    (Any non-canonical # is considered 0)
   if ((sig_x.w[1] == 0) && (sig_x.w[0] == 0)) {
@@ -199,7 +199,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if exponents are the same, then we have a simple comparison of 
+  // if exponents are the same, then we have a simple comparison of
   //    the significands
   if (exp_y == exp_x) {
     res = (((sig_x.w[1] > sig_y.w[1])
@@ -208,7 +208,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
 						 MASK_SIGN)) ? y : x;
     BID_RETURN (res);
   }
-  // if both components are either bigger or smaller, it is clear what 
+  // if both components are either bigger or smaller, it is clear what
   //    needs to be done
   if (sig_x.w[1] >= sig_y.w[1] && sig_x.w[0] >= sig_y.w[0]
       && exp_x > exp_y) {
@@ -233,7 +233,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     }
     if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
       __mul_128x128_to_256 (sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
-      // if postitive, return whichever significand is larger 
+      // if postitive, return whichever significand is larger
       // (converse if negative)
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
 	      || (sig_n_prime256.w[1] > sig_y.w[1])
@@ -244,7 +244,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     res =
       (((sig_n_prime192.w[2] > 0) || (sig_n_prime192.w[1] > sig_y.w[1])
@@ -262,7 +262,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
   if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
     // adjust the y significand upwards
     __mul_128x128_to_256 (sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
@@ -424,7 +424,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
   // ZERO (CASE4)
   // some properties:
   //    (+ZERO == -ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if ((sig_x.w[1] == 0) && (sig_x.w[0] == 0)) {
@@ -453,7 +453,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
 		  || (sig_x.w[1] == sig_y.w[1]
 		      && sig_x.w[0] >= sig_y.w[0]))
 		 && exp_x > exp_y)) {
-    // if both components are either bigger or smaller, it is clear what 
+    // if both components are either bigger or smaller, it is clear what
     // needs to be done; also if the magnitudes are equal
     res = y;
     BID_RETURN (res);
@@ -479,7 +479,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     }
     if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
       __mul_128x128_to_256 (sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
-      // if positive, return whichever significand is larger 
+      // if positive, return whichever significand is larger
       // (converse if negative)
       if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
 	  && sig_n_prime256.w[1] == sig_y.w[1]
@@ -494,7 +494,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
-    // if positive, return whichever significand is larger 
+    // if positive, return whichever significand is larger
     // (converse if negative)
     if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_y.w[1]
 	&& (sig_n_prime192.w[0] == sig_y.w[0])) {
@@ -517,7 +517,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
   if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
     // adjust the y significand upwards
     __mul_128x128_to_256 (sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
-    // if positive, return whichever significand is larger 
+    // if positive, return whichever significand is larger
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
 	&& sig_n_prime256.w[1] == sig_x.w[1]
@@ -686,7 +686,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
   // ZERO (CASE4)
   // some properties:
   //    (+ZERO == -ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if ((sig_x.w[1] == 0) && (sig_x.w[0] == 0)) {
@@ -716,7 +716,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if exponents are the same, then we have a simple comparison of 
+  // if exponents are the same, then we have a simple comparison of
   // the significands
   if (exp_y == exp_x) {
     res = (((sig_x.w[1] > sig_y.w[1]) || (sig_x.w[1] == sig_y.w[1] &&
@@ -724,7 +724,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
 	   ((x.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
-  // if both components are either bigger or smaller, it is clear what 
+  // if both components are either bigger or smaller, it is clear what
   // needs to be done
   if ((sig_x.w[1] > sig_y.w[1]
        || (sig_x.w[1] == sig_y.w[1] && sig_x.w[0] > sig_y.w[0]))
@@ -749,7 +749,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     }
     if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
       __mul_128x128_to_256 (sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
-      // if postitive, return whichever significand is larger 
+      // if postitive, return whichever significand is larger
       // (converse if negative)
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
 	      || (sig_n_prime256.w[1] > sig_y.w[1])
@@ -760,7 +760,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     res =
       (((sig_n_prime192.w[2] > 0) || (sig_n_prime192.w[1] > sig_y.w[1])
@@ -778,7 +778,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
   if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
     // adjust the y significand upwards
     __mul_128x128_to_256 (sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
@@ -941,7 +941,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
   // ZERO (CASE4)
   // some properties:
   //    (+ZERO == -ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //         therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if ((sig_x.w[1] == 0) && (sig_x.w[0] == 0)) {
@@ -970,7 +970,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
 		  || (sig_x.w[1] == sig_y.w[1]
 		      && sig_x.w[0] >= sig_y.w[0]))
 		 && exp_x > exp_y)) {
-    // if both components are either bigger or smaller, it is clear what 
+    // if both components are either bigger or smaller, it is clear what
     // needs to be done; also if the magnitudes are equal
     res = x;
     BID_RETURN (res);
@@ -996,7 +996,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
     }
     if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
       __mul_128x128_to_256 (sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
-      // if postitive, return whichever significand is larger 
+      // if postitive, return whichever significand is larger
       // (converse if negative)
       if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
 	  && sig_n_prime256.w[1] == sig_y.w[1]
@@ -1033,7 +1033,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
   if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
     // adjust the y significand upwards
     __mul_128x128_to_256 (sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
 	&& sig_n_prime256.w[1] == sig_x.w[1]

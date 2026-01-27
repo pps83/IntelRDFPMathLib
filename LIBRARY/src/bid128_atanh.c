@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -67,7 +67,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
      BID_RETURN (res);
 }
 
-	
+
 	if(exponent_x <= DECIMAL_EXPONENT_BIAS_128 - 51)
 	{
 		res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W];
@@ -75,7 +75,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 		BID_RETURN (res);
 	}
 
-	// |x| 
+	// |x|
 	xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
 	xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
 
@@ -112,7 +112,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 	BIDECIMAL_CALL2 (bid128_add, y, tmp, tmp);
 
 	BIDECIMAL_CALL1 (bid128_to_binary128, xq, y);
-	__bid_f128_log1p(rq, xq);        
+	__bid_f128_log1p(rq, xq);
 	__bid_f128_mul(rq, rq, c_half.v);
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 

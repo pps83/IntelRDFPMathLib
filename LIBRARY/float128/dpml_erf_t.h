@@ -34,7 +34,7 @@
 
 #include "dpml_private.h"
 
-    static const TABLE_UNION __erf_t_table[] = { 
+    static const TABLE_UNION __erf_t_table[] = {
 
 	/* 2/sqrt(pi) - 1, 8 and 1/8 */
 	/* 000 */ DATA_1x2( 0x8214db69, 0x3fc06eba ),

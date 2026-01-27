@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,9 +35,9 @@
  *
  *  if multiplication is guranteed exact (short coefficients)
  *     call the unpacked arg. equivalent of bid64_add(x*y, z)
- *  else 
+ *  else
  *     get full coefficient_x*coefficient_y product
- *     call subroutine to perform addition of 64-bit argument 
+ *     call subroutine to perform addition of 64-bit argument
  *                                         to 128-bit product
  *
  ****************************************************************************/
@@ -62,7 +62,7 @@ BID_EXTERN_C BID_UINT64 bid64_mul (BID_UINT64 x,
 
 BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64, x, BID_UINT64, y, BID_UINT64, z)
   BID_UINT128 P, CT, CZ;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
   BID_UINT128 PU;
 #endif
   BID_UINT64 sign_x, sign_y, coefficient_x, coefficient_y, sign_z,
@@ -72,7 +72,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
   int_double tempx, tempy;
   int extra_digits, exponent_x, exponent_y, bin_expon_cx, bin_expon_cy,
     bin_expon_product;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
   int rmode;
 #endif
   int digits_p, bp, final_exponent, exponent_z, digits_z, ez, ey,
@@ -168,7 +168,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
 	// test if z is Inf of oposite sign
 	if (((z & 0x7c00000000000000ull) == 0x7800000000000000ull)
 	    && (((x ^ y) ^ z) & 0x8000000000000000ull)) {
-	  // return NaN 
+	  // return NaN
 #ifdef BID_SET_STATUS_FLAGS
 	  __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -222,7 +222,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
 	BID_RETURN (((x ^ y) & 0x8000000000000000ull) |
 		    0x7800000000000000ull);
       }
-      // y is 0 
+      // y is 0
       if (((z & 0x7800000000000000ull) != 0x7800000000000000ull)) {
 
 	if (coefficient_z) {
@@ -282,7 +282,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
   tempy.d = (double) coefficient_y;
   bin_expon_cy = ((tempy.i & MASK_BINARY_EXPONENT) >> 52);
 
-  // magnitude estimate for coefficient_x*coefficient_y is 
+  // magnitude estimate for coefficient_x*coefficient_y is
   //        2^(unbiased_bin_expon_cx + unbiased_bin_expon_cx)
   bin_expon_product = bin_expon_cx + bin_expon_cy;
 
@@ -415,7 +415,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
 	  &&
 	  __unsigned_compare_gt_128 (bid_power10_table_128
 				     [extra_digits + 15], CT)) {
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 	rmode = rnd_mode;
 	if (sign_z && (unsigned) (rmode - 1) < 2)
 	  rmode = 3 - rmode;
@@ -452,7 +452,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
 	  }
 	  //__set_status_flags (pfpsf, uf_status);
 	}
-#else  // DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#else  // DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 		uf_status = BID_UNDERFLOW_EXCEPTION;
 #endif
       }
@@ -488,11 +488,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
 
     res =
       bid_get_add64 (sign_x ^ sign_y,
-		 exponent_x + exponent_y - DECIMAL_EXPONENT_BIAS, C64, 
-		 sign_z, exponent_z, coefficient_z, 
+		 exponent_x + exponent_y - DECIMAL_EXPONENT_BIAS, C64,
+		 sign_z, exponent_z, coefficient_z,
 		 rnd_mode, pfpsf);
     BID_RETURN (res);
   }
-} 
- 
+}
+
 

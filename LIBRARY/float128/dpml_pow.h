@@ -60,7 +60,7 @@
 
 /*
 ** When BITS_PER_F_TYPE < BITS_PER_WORD, the sign bit of IEEE floating point
-** values is not at the high end of a WORD, so that integer tests on the 
+** values is not at the high end of a WORD, so that integer tests on the
 ** sign of the value don't yield the correct result.
 */
 
@@ -96,7 +96,7 @@
 #else
 #   define POSITION_BITS(ix, exp_pos)					\
 		((ix << (LOG_INDEX_SHIFT - (exp_pos))) |		\
-		 ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT)))) 
+		 ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT))))
 #endif
 
 /*
@@ -153,5 +153,5 @@
 				    (BITS_PER_WORD - 32));		\
 				u32 = ((u32 >> 16) | (u32 << 16));	\
 				i = (WORD) ((INT_32) u32);		\
-				} 
+				}
 #endif

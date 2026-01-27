@@ -3,16 +3,16 @@
 #  Copyright (c) 2007-2024, Intel Corp.
 #  All rights reserved.
 #
-#  Redistribution and use in source and binary forms, with or without 
+#  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
 #
-#    * Redistributions of source code must retain the above copyright notice, 
+#    * Redistributions of source code must retain the above copyright notice,
 #      this list of conditions and the following disclaimer.
-#    * Redistributions in binary form must reproduce the above copyright 
-#      notice, this list of conditions and the following disclaimer in the 
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#    * Neither the name of Intel Corporation nor the names of its contributors 
-#      may be used to endorse or promote products derived from this software 
+#    * Neither the name of Intel Corporation nor the names of its contributors
+#      may be used to endorse or promote products derived from this software
 #      without specific prior written permission.
 #
 #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -61,7 +61,7 @@ DEBUG=
 CFLAG_F128_CONF=-DUSE_NATIVE_QUAD_TYPE=0 -Dia32 -Dwnt -UBID_BIG_ENDIAN
 CFLAG_F53_CONF=-DT_FLOAT -Dia32 -Dwnt -UBID_BIG_ENDIAN
 
-!IFDEF CALL_BY_REF 
+!IFDEF CALL_BY_REF
 !IF ($(CALL_BY_REF)==1)
 COPT_REF=-DDECIMAL_CALL_BY_REFERENCE=1
 !ELSE
@@ -146,18 +146,18 @@ FLOAT128_OBJS = \
 $O\dpml_ux_bid.$(OBJ) $O\dpml_ux_bessel.$(OBJ) $O\dpml_ux_cbrt.$(OBJ) $O\dpml_ux_erf.$(OBJ) $O\dpml_ux_exp.$(OBJ) $O\dpml_ux_int.$(OBJ)\
 $O\dpml_ux_inv_hyper.$(OBJ) $O\dpml_ux_inv_trig.$(OBJ) $O\dpml_ux_lgamma.$(OBJ) $O\dpml_ux_log.$(OBJ) $O\dpml_ux_mod.$(OBJ)\
 $O\dpml_ux_powi.$(OBJ) $O\dpml_ux_pow.$(OBJ) $O\dpml_ux_sqrt.$(OBJ) $O\dpml_ux_trig.$(OBJ) $O\dpml_ux_ops.$(OBJ) $O\dpml_ux_ops_64.$(OBJ)\
-$O\dpml_four_over_pi.$(OBJ) $O\dpml_exception.$(OBJ) $O\sqrt_tab_t.$(OBJ) 
+$O\dpml_four_over_pi.$(OBJ) $O\dpml_exception.$(OBJ) $O\sqrt_tab_t.$(OBJ)
 
 FLOAT53_OBJS = \
 $O\dpml_asinh_t.$(OBJ) $O\dpml_acosh_t.$(OBJ) $O\dpml_cbrt_t.$(OBJ) $O\dpml_erf_t.$(OBJ) $O\dpml_erfc_t.$(OBJ) $O\dpml_expm1_t.$(OBJ)\
 $O\dpml_exp10_t.$(OBJ) $O\dpml_exp2_t.$(OBJ) $O\dpml_lgamma_t.$(OBJ) $O\dpml_log1p_t.$(OBJ) $O\dpml_log2_t.$(OBJ) $O\dpml_tgamma_t.$(OBJ)\
-$O\dpml_rt_lgamma_t.$(OBJ) $O\dpml_pow_t_table.$(OBJ) $O\dpml_cbrt_t_table.$(OBJ) $O\dpml_special_exp_t.$(OBJ) 
+$O\dpml_rt_lgamma_t.$(OBJ) $O\dpml_pow_t_table.$(OBJ) $O\dpml_cbrt_t_table.$(OBJ) $O\dpml_special_exp_t.$(OBJ)
 
-ALL: $(BID_LIB) 
+ALL: $(BID_LIB)
 
 .SUFFIXES:
 
-.SUFFIXES: .obj .c 
+.SUFFIXES: .obj .c
 
 BID_OBJECTS: $(BID_OBJS)
 
@@ -230,7 +230,7 @@ $(BID_LIB): $(BID_OBJS) $(FLOAT128_OBJS) $(FLOAT53_OBJS)
 !ELSE
 #Use native 128b data types
 $(BID_LIB): $(BID_OBJS)
-   $(AR) $(AOPT) /out:$(BID_LIB) $(BID_OBJS) 
+   $(AR) $(AOPT) /out:$(BID_LIB) $(BID_OBJS)
 
 !ENDIF
 

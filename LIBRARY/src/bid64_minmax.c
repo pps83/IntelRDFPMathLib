@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -66,7 +66,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
 	// non-canonical
 	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
-    }	// else canonical 
+    }	// else canonical
   }
 
   // check for non-canonical y
@@ -162,9 +162,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
 
   // ZERO (CASE4)
   // some properties:
-  //    (+ZERO == -ZERO) => therefore 
+  //    (+ZERO == -ZERO) => therefore
   //        ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (sig_x == 0) {
@@ -195,7 +195,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
 
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = ((x & MASK_SIGN) != MASK_SIGN) ? y : x;
@@ -221,7 +221,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = y;
@@ -276,7 +276,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
 	// non-canonical
 	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
-    }	// else canonical 
+    }	// else canonical
   }
 
   // check for non-canonical y
@@ -366,9 +366,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
 
   // ZERO (CASE4)
   // some properties:
-  //    (+ZERO == -ZERO) => therefore 
+  //    (+ZERO == -ZERO) => therefore
   //        ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (sig_x == 0) {
@@ -380,7 +380,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = y;
@@ -405,14 +405,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
-    // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), this is 
+    // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), this is
     // the compensated signif.
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       // two numbers are equal, return minNum(x,y)
       res = ((y & MASK_SIGN) == MASK_SIGN) ? y : x;
       BID_RETURN (res);
     }
-    // now, if compensated_x (sig_n_prime) is greater than y, return y,  
+    // now, if compensated_x (sig_n_prime) is greater than y, return y,
     // otherwise return x
     res = ((sig_n_prime.w[1] != 0) || sig_n_prime.w[0] > sig_y) ? y : x;
     BID_RETURN (res);
@@ -460,7 +460,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
 	// non-canonical
 	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
-    }	// else canonical 
+    }	// else canonical
   }
 
   // check for non-canonical y
@@ -521,7 +521,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
   // INFINITY (CASE3)
   if ((x & MASK_INF) == MASK_INF) { // x = +/-infinity
     // if x is neg infinity, there is no way it is greater than y, return y
-    // x is pos infinity, it is greater, unless y is positive infinity => 
+    // x is pos infinity, it is greater, unless y is positive infinity =>
     // return y!=pos_infinity
     if (((x & MASK_SIGN) == MASK_SIGN)) { // x = -infinity
       res = y;
@@ -555,9 +555,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
 
   // ZERO (CASE4)
   // some properties:
-  //    (+ZERO == -ZERO) => therefore 
+  //    (+ZERO == -ZERO) => therefore
   //        ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (sig_x == 0) {
@@ -588,7 +588,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
 
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   //     it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = ((x & MASK_SIGN) != MASK_SIGN) ? x : y;
@@ -614,7 +614,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = y;
@@ -668,7 +668,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
 	// non-canonical
 	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
-    }	// else canonical 
+    }	// else canonical
   }
 
   // check for non-canonical y
@@ -758,9 +758,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
 
   // ZERO (CASE4)
   // some properties:
-  //    (+ZERO == -ZERO) => therefore 
+  //    (+ZERO == -ZERO) => therefore
   //        ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (sig_x == 0) {
@@ -772,7 +772,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = x;
@@ -797,14 +797,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
 			    bid_mult_factor[exp_x - exp_y]);
-    // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), 
+    // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y),
     // this is the compensated signif.
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       // two numbers are equal, return maxNum(x,y)
       res = ((y & MASK_SIGN) == MASK_SIGN) ? x : y;
       BID_RETURN (res);
     }
-    // now, if compensated_x (sig_n_prime) is greater than y return y,  
+    // now, if compensated_x (sig_n_prime) is greater than y return y,
     // otherwise return x
     res = ((sig_n_prime.w[1] != 0) || sig_n_prime.w[0] > sig_y) ? x : y;
     BID_RETURN (res);

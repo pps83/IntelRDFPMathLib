@@ -169,7 +169,7 @@
 ** R(j) = [2^(j/2^POW2_K) - T(j)]/T(j).  We assume that these values are
 ** precomputed and stored in a table.
 **
-** 
+**
 **    Data Types With No Backup
 **    -------------------------
 **
@@ -177,7 +177,7 @@
 **	ln2 in hi and lo pieces:
 **
 **              z <-- [ x - m*hi_bits(ln2/lnb) ] - m*lo_bits(ln2/lnb)
-** 
+**
 **	Perform the evaluation as:
 **
 **		e^x = 2^I * 2^(j/(2^POW2_K)) * [ 1 + z*p(z) ]
@@ -235,7 +235,7 @@
         B_TYPE fm, z, w, t;
         B_UNION stack_tmp_u;
         F_UNION stack_tmp_v;
-    
+
         U_WORD status_word;
         WORD   m, i, j;
 # if !COMPATIBILITY_MODE
@@ -253,14 +253,14 @@
         ** constant 1/ln2 early enough to avoid delaying the reduced argument
         ** computation.  To avoid this delay, we preload (1/ln2).
         */
-    
+
         stack_tmp_v.f = x;
         i = stack_tmp_v.F_SIGNED_HI_WORD;
         m = i & MAKE_MASK(F_SIGN_BIT_POS, 0);
         NOT_EXP2( t = EXP_EXP10_SELECT(RECIP_LN2, LN10_OV_LN2); )
         if (((U_WORD) m - EXP_LO_CHECK) >= EXP_HI_CHECK)
             goto possible_problems;
-    
+
         /*
         ** compute the reduced argument, w.  Note that we obtain
         ** nint((x/ln2) * (2^POW2_K)) by adding x/ln2 to a suitably large
@@ -271,7 +271,7 @@
         z = EXP2_SELECT( (B_TYPE) x , ((B_TYPE) x) * t ) ;
 
         INIT_FPU_STATE_AND_ROUND_TO_NEAREST(status_word);
-    
+
         t = BIG + z;		/* Save for getting m later on */
         fm = D_GROUP(t - BIG);
 
@@ -283,7 +283,7 @@
         /*
         ** Now get the bits of m as a integer and break it up into I and j
         */
-    
+
         stack_tmp_u.f = t;
         GET_LOW_32_BITS(m, stack_tmp_u);
         j = (m & POW2_INDEX_MASK) << POW2_INDEX_POS;
@@ -293,7 +293,7 @@
                 ACC_POW2_POLY_R(w),
                 ACC_POLY_F( POW2_LO_OV_POW2_HI(j), w )
                 );
-    
+
         /*
         ** Scale 2^(j/2^POW2_K) by 2^I, so that only one multiply is done.
         ** Note that the macros IPOW2(j) and IPOW2_LO(u,j) are used to access
@@ -307,7 +307,7 @@
         m = W_ADD_TO_EXP_FIELD(m, i);
         stack_tmp_u.B_HI_WORD = m;
         t = stack_tmp_u.f;
-    
+
         /* Check for possible problems and do the final multiply */
 
         if (((U_WORD) IEEE_SELECT(m, (m & LO_MASK)) - POW2_LO_CHECK)
@@ -315,21 +315,21 @@
             goto boundary_check;
 
         z = BACKUP_SELECT(z*t, t + t*z);
-    
+
         RESTORE_FPU_STATE(status_word);
         return (F_TYPE) z;
-    
+
     boundary_check:
-    
+
         /*
         ** Need to check for overflow, underflow and denormals.  Don't need
         ** round to nearest state any more so restore original state
         */
-    
+
         RESTORE_FPU_STATE(status_word);
-    
-    
-        /* 
+
+
+        /*
         ** Do the "final" multiple.  However, when no backup is available
         ** the final multiply might involve a denormal or NaN, so we need to
         ** do this scaling carefully.  Note that for the no-backup case,
@@ -349,19 +349,19 @@
             stack_tmp_u.B_HI_WORD = m;
             z = stack_tmp_u.f;
             )
-    
+
         /*
         ** Isolate exponent field and check for overflow and underflow.  Note
         ** that subtracting 1 from the biased exponent field causes 0 exponents
-        ** (which indicate underflows or denormal results) to be mapped to the 
+        ** (which indicate underflows or denormal results) to be mapped to the
         ** high integer range.  This allows testing for OK results, overflows
         ** and underflow by checking the size of (i-1)
         */
-    
+
         i = ((U_WORD) m) >> B_EXP_POS;
         IF_VAX( i &= MAKE_MASK(B_EXP_WIDTH + 1, 0); )
         i -=  BACKUP_SELECT( (F_MIN_BIN_EXP + B_EXP_BIAS), 1);
-        if ((U_WORD) i <= 
+        if ((U_WORD) i <=
           F_MAX_BIN_EXP - BACKUP_SELECT( F_MIN_BIN_EXP, (1 - B_EXP_BIAS)))
             /* No exceptions, return final result */
             return (F_TYPE) z;
@@ -377,14 +377,14 @@
 				      0 ) ;
 # endif
 
-        if (((U_WORD) i) < (2*F_MAX_BIN_EXP + B_EXP_BIAS)) 
+        if (((U_WORD) i) < (2*F_MAX_BIN_EXP + B_EXP_BIAS))
            goto do_exception;
-    
+
         /*
         ** OK, If we get here, the result is (most likely) an underflow or
         ** a denormal value.
         */
-    
+
 # if COMPATIBILITY_MODE
         j = ERROR_UNDERFLOW;
 # else
@@ -395,36 +395,36 @@
 				      DPML_ERANGE,
 				      0 ) ;
 # endif
-    
+
 #       if IEEE_FLOATING
-            
+
             i += (F_PRECISION + 1);
             if ((WORD) i < 0)
 		goto do_exception;
-    
+
             /*
             ** The result is probably denormal so we have to (carefully)
             ** generate the result.  Begin by setting the exponent field to
             ** the exponent field of 1, minus the number of bits of
             ** "denormalization" and  convert to F_TYPE
             */
-    
+
             {
             F_TYPE u, v;
-    
+
             stack_tmp_u.B_HI_WORD = m - ALIGN_WITH_B_TYPE_EXP(F_MIN_BIN_EXP);
             v = (F_TYPE) stack_tmp_u.f;
-    
+
             /*
             ** Now add 1 to scaled result to force an alignment shift.  The
             ** result of the addition will have correct fraction field for
             ** the denormalized result, but not the correct exponent
             */
-    
+
             u = (F_TYPE) ONE;
             v += u;
             stack_tmp_v.f = v;
-    
+
             /*
             ** If the result of the sum is equal to one, then the final result
             ** will underflow.  Otherwise remove the scale factor (i.e. get
@@ -432,7 +432,7 @@
             ** from v.
             */
 
-            if (v == u) 
+            if (v == u)
                goto do_exception;
             m = stack_tmp_v.F_HI_WORD - ALIGN_W_EXP_FIELD(F_EXP_BIAS - F_NORM);
             stack_tmp_v.F_HI_WORD = m;
@@ -441,9 +441,9 @@
             /*
             ** check to see if final result really was a denorm
             */
-    
+
 # if COMPATIBILITY_MODE
-            if (((m & F_EXP_MASK) == 0) && !PROCESS_DENORMS) 
+            if (((m & F_EXP_MASK) == 0) && !PROCESS_DENORMS)
                goto do_exception;
 # else
 
@@ -461,9 +461,9 @@
 	    return v ;
 
             }
-    
+
         NaN_or_Inf:
-    
+
            /*
            ** If we get here, i and m are the high words of x and |x|
            ** respectively.  If m doesn't contain all of the bits of x,
@@ -503,31 +503,31 @@
 
 
 
-    
+
     possible_problems:
-    
+
         /*
         ** If we get here, x was either very small (e^x = 1), very big (e^x is
         ** overflow or underflow) or and IEEE special case (NaN or Inf)
         */
 
-    
+
         IF_IEEE(
-            /* Screen out NaN's and Inf's */    
+            /* Screen out NaN's and Inf's */
             if (m >= F_EXP_MASK) goto NaN_or_Inf;
             )
-    
+
         /* If argument is tiny (including denorms and zero) just return 1. */
-    
+
         if (m <= EXP_LO_CHECK)
             return (F_TYPE) ONE;
-    
+
         /*
-        ** If we get here, the final result is guaranteed to overflow or 
+        ** If we get here, the final result is guaranteed to overflow or
         ** underflow, depending on the sign of x.  Since i contains the high
         ** bits of x, just branch on the sign bit of x.
         */
-    
+
 # if COMPATIBILITY_MODE
         j = (i & F_SIGN_BIT_MASK) ? ERROR_UNDERFLOW : ERROR_OVERFLOW;
             /* Argument was positive */
@@ -560,12 +560,12 @@
         return x;
 # else
 	RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeExp ) ;
-# endif    
+# endif
 
         }
-    
+
 #else /* defined(SPECIAL_EXP) */
-    
+
 #   if USE_BACKUP
 #      define LO_PART_DECL
 #   else
@@ -578,39 +578,39 @@
         {
         B_TYPE fm, z, w, t;
         B_UNION stack_tmp_u;
-    
+
         WORD   m, j;
-    
+
         /*
         ** compute the reduced argument, w.
         */
-    
-        z = (B_TYPE) x * RECIP_LN2;  
-    
+
+        z = (B_TYPE) x * RECIP_LN2;
+
         t = BIG + z;		/* Save for getting m later on */
         fm = t - BIG;
         w = BACKUP_SELECT( (z - fm), (x - fm*LN2_HI) - fm*LN2_LO );
-    
+
         /*
         ** Now get the bits of m as a integer and break it up into I and j.
         ** Return the value of I in *pow_of_two.
         */
-    
+
         stack_tmp_u.f = t;
         GET_LOW_32_BITS(m, stack_tmp_u);
         j = (m & POW2_INDEX_MASK) << POW2_INDEX_POS;
-    
+
 #       if USE_BACKUP
-    
+
             z = POW2_HI(j) * ACC_POW2_POLY_R(w);
-    
+
 #       else
-    
+
             z = POW2_HI(j);
             *LO_PART = z*ACC_EXP_POLY_F( POW2_LO_OV_POW2_HI(j), w );
 
 #       endif
-    
+
         *pow_of_two = m & (~POW2_INDEX_MASK);
         return z;
     }

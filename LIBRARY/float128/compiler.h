@@ -139,19 +139,19 @@
 #elif defined __xxx_intel_icc
 
 #   undef  __xxx_intel_icc
-#   define intel_icc 7 
+#   define intel_icc 7
 #   define COMPILER intel_icc
 
 #elif defined __xxx_intel_icl
 
 #   undef  __xxx_intel_icl
-#   define intel_icl 8 
+#   define intel_icl 8
 #   define COMPILER intel_icl
 
 #else
 
 #   undef  __xxx_just_cc
-#   define just_cc 9 
+#   define just_cc 9
 #   define COMPILER just_cc
 
 #endif
@@ -211,13 +211,13 @@
 
 
 // =============================================================================
-// At higher optimization levels, some compilers will ignore parenthesis and 
+// At higher optimization levels, some compilers will ignore parenthesis and
 // re-arrange floating point calculation. Doing so will break some of the
 // algorithms in the DPML (eg. divide). The intel compiler in particular has
-// this problem. However, the Intel compiler has an opperator to avoid 
-// reassociations.  
+// this problem. However, the Intel compiler has an opperator to avoid
+// reassociations.
 // =============================================================================
- 
+
 #if  COMPILER == intel_icc || COMPILER == intel_icl
 #   define GROUP(x)     __fence(x)
 #endif
@@ -335,12 +335,12 @@
                         __trig_reduce, \
                         __trig_reducef \
 		)
-		
+
 #               pragma use_linkage trigd_reduce_linkage ( \
                         __trigd_reduce, \
                         __trigd_reducef \
 		)
-		
+
 		/* some recent decc compilers can not do this */
 /* #               pragma use_linkage trig_reduce_linkage_l ( __trig_reducel, __trigd_reducel ) */
 
@@ -414,28 +414,28 @@
 		)
 
 #               if !__ia64__ || __IEEE_FLOAT
-	
+
 #			pragma linkage trig_reduce_linkage = ( \
 				parameters (f0, r0, r1, r16), \
 				result (r0), \
 				PRESERVED_REGISTERS, \
 				notneeded(ai) \
 			)
-	
+
 #			pragma use_linkage trig_reduce_linkage ( \
 				math$trig_reduce_f, \
 				math$trig_reduce_g, \
 				math$trig_reduce_s, \
 				math$trig_reduce_t  \
 			)
-	
+
 #			pragma linkage trigd_reduce_linkage = ( \
 				parameters (f0, r0, r1), \
 				result (r0), \
 				PRESERVED_REGISTERS, \
 				notneeded(ai) \
 			)
-	
+
 #			pragma use_linkage trigd_reduce_linkage ( \
 				math$trigd_reduce_f, \
 				math$trigd_reduce_g, \

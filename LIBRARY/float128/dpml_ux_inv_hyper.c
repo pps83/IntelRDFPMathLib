@@ -35,25 +35,25 @@
 #endif
 
 
-/* 
+/*
 ** 1. THE BASIC ALGORITHM:
 ** -----------------------
-** 
+**
 ** The inverse hyperbolic functions are defined by the identities:
-** 
+**
 ** 		asinh(x) = log[ x + sqrt(x^2 + 1) ]
 ** 		acosh(x) = log[ x + sqrt(x^2 - 1) ]      x >= 1
-** 		atan(x)  = (1/2)*log[ (1 + x)/(1 - x) ] 
-** 
+** 		atan(x)  = (1/2)*log[ (1 + x)/(1 - x) ]
+**
 ** Noting that asinh(x) and atanh(x) are odd functions, then we can assume that
 ** x >= 0 for all three functions.  Under these circumstances, we see that each
 ** of the functions is of the form:
-** 
+**
 ** 			log[f(x)]	for x >= b
-** 
+**
 ** where b is 0 for asinh and atanh and 1 for acosh.  We note also that
 ** f(b) = 1 for all three functions.
-** 
+**
 ** Since log(z) is evaluated as polynomial in (z-1)/(z+1) when z is between
 ** 1/sqrt(2) and sqrt(2), implementing the inverse hyperbolic functions naively
 ** as log[f(x)], would result in the computation of w = [f(x) - 1]/[f(x) + 1]
@@ -61,31 +61,31 @@
 ** of significance.  To avoid this, when x is close to b, we compute w directly
 ** (and carefully) whenever f(x) is between 1/sqrt(2) and sqrt(2) and invoke
 ** the polynomial evaluation routines directly.
-** 
+**
 ** Recalling that we are dealing with positive values only, 1/sqrt(2) < f(x) <
 ** sqrt(2) iff f(x) < sqrt(2).  In all three cases then, we define a constant c
 ** such that f(x) < sqrt(2) is equivalent to x < c.  Assuming that c = 2^n*g,
 ** where ** g is in the interval [.5, 1).  We define the 64 bit integer, C, by
-** 
+**
 ** 			C = ceil(2^64*g).
-** 
+**
 ** Then we screen for loss of significance with a check on the exponent and
 ** first fraction word of x.
-** 
+**
 ** Table 1 gives the value of c and w for each of the inverse hyperbolic
 ** functions.
-** 
-** 
-** 		Function	      c		        w   
+**
+**
+** 		Function	      c		        w
 ** 		--------	-------------	-------------------
 ** 		  asinh		  sqrt(2)/4	x/[1 + sqrt(x^2+1)]
 ** 		  acosh		 3*sqrt(2)/4	 sqrt[(x-1)/(x+1)]
 ** 		  atanh		[sqrt(2)-1]^2	         x
-** 
+**
 ** 				Table 1
 ** 				-------
-** 
-*/ 
+**
+*/
 
 
 #undef  F_ENTRY_NAME
@@ -185,7 +185,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     if (0 > fp_class)
        RETURN_X_FLOAT(packed_result);
 
-    /* Only positive arguments get here */ 
+    /* Only positive arguments get here */
 
     exponent = G_UX_EXPONENT(unpacked_argument);
     f_hi     = G_UX_MSD(unpacked_argument);

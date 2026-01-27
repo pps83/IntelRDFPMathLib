@@ -37,13 +37,13 @@
 
 /* The basic design of for the log functions relies on a common evaluation
 ** routine.  The evaluation routine is based on the identities:
-** 
+**
 ** 	logb(x) = ln(x)/ln(b)					(1)
 ** 	ln(2^n*f) = n*ln(2) + ln(f)				(2)
 ** 	ln[(1+x)/(1-x)] = 2*sum{ k = 0,... | x^(2k+1)/(2k+1) }	(3)
-** 
+**
 ** Assuming that x = 2^n*f, where 1/2 <= f < 1, we define g and m as:
-** 
+**
 ** 	g = f;
 ** 	m = n;
 ** 	if (f < 1/sqrt(2))
@@ -51,15 +51,15 @@
 ** 	    g = 2*f;
 ** 	    m = n - 1;
 ** 	    }
-** 
+**
 ** Then x = 2^m*g where 1/sqrt(2) <= g < sqrt(2).  From (2) and (3) it follows
 ** that
 ** 		                                     g - 1
 ** 		ln(x) = m*ln(2) + z*p(z^2) where z = -----
 ** 		                                     g + 1
-** 
+**
 ** Then from (1) it follows that
-** 
+**
 ** 		logb(x) = m*ln(2)/ln(b) + z*p(z^2)/ln(b)
 **		        = [m + z*r(z^2)]*[1/ln(b)]
 **
@@ -86,7 +86,7 @@ UX_LOG( UX_FLOAT * unpacked_argument, UX_FLOAT * scale,
     {
     UX_FLOAT tmp[2];
     UX_EXPONENT_TYPE m;
-    UX_FRACTION_DIGIT_TYPE f_hi; 
+    UX_FRACTION_DIGIT_TYPE f_hi;
 
     /*
     ** Compute z = (g - 1)/(g + 1).  Make sure to restore the input
@@ -131,10 +131,10 @@ UX_LOG( UX_FLOAT * unpacked_argument, UX_FLOAT * scale,
     /* multiply by scale */
 
 		//printf("u_res= (%x %x) %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);
- 
+
     if (scale)
         MULTIPLY( unpacked_result, scale, unpacked_result);
- 
+
 
     return;
     }
@@ -355,7 +355,7 @@ small_argument:
         NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
         &unpacked_result
         );
- 
+
     MULTIPLY( &unpacked_result, LN_2, &unpacked_result);
     goto pack_it;
 

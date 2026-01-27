@@ -30,7 +30,7 @@
 #include "endian.h"
 
 
-    static const TABLE_UNION __pow_x_table[] = { 
+    static const TABLE_UNION __pow_x_table[] = {
 
 	/* ansi-c class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x00000000, 0x10000000 ),

@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION TABLE_NAME[] = { 
+    static const TABLE_UNION TABLE_NAME[] = {
 
 	/* lgamma class-to-action-mapping */
 	/* 000 */ DATA_1x2( 0x00eb9408, 0x1efb0000 ),

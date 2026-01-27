@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -42,7 +42,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_equal, BID_UINT32, x,
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y, lcv;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   // rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -98,7 +98,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_equal, BID_UINT32, x,
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //    therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -151,7 +151,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, rather than equal : 
+  // if either number is NAN, the comparison is unordered, rather than equal :
   // return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -173,7 +173,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
       res = 0;
       BID_RETURN (res);
     } else {
-      // x is pos infinity, it is greater, unless y is positive 
+      // x is pos infinity, it is greater, unless y is positive
       // infinity => return y!=pos_infinity
       res = (((y & MASK_INF32) != MASK_INF32)
 	     || ((y & MASK_SIGN32) == MASK_SIGN32));
@@ -216,7 +216,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
   // ZERO (CASE4)
   // some properties:
   //(+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //(ZERO x 10^A == ZERO x 10^B) for any valid A, B => therefore ignore the 
+  //(ZERO x 10^A == ZERO x 10^B) for any valid A, B => therefore ignore the
   // exponent field
   // (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -245,7 +245,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x > exp_y) {
     res = ((x & MASK_SIGN32) != MASK_SIGN32);
@@ -285,7 +285,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
   }
   // adjust the y significand upwards
   sig_n_prime = (BID_UINT64)sig_y * (BID_UINT64)bid_mult_factor[exp_y - exp_x];
-  // if postitive, return whichever significand is larger 
+  // if postitive, return whichever significand is larger
   //     (converse if negative)
   if (sig_n_prime == sig_x) {
     res = 0;
@@ -369,7 +369,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_equal, BID_UI
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //   therefore ignore the exponent field
   //  (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -427,7 +427,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_equal, BID_UI
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     // (converse if negative)
     res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
     BID_RETURN (res);
@@ -439,7 +439,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_equal, BID_UI
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   // (converse if negative)
   res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
   BID_RETURN (res);
@@ -454,7 +454,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_unordered, BI
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, rather than equal : 
+  // if either number is NAN, the comparison is unordered, rather than equal :
   // return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -476,7 +476,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_unordered, BI
       res = 0;
       BID_RETURN (res);
     } else {
-      // x is pos infinity, it is greater, unless y is positive infinity => 
+      // x is pos infinity, it is greater, unless y is positive infinity =>
       // return y!=pos_infinity
       res = (((y & MASK_INF32) != MASK_INF32)
 	     || ((y & MASK_SIGN32) == MASK_SIGN32));
@@ -519,7 +519,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_unordered, BI
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   // therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -572,7 +572,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_unordered, BI
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     sig_n_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x - exp_y];
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     // (converse if negative)
     if (sig_n_prime == sig_y) {
       res = 0;
@@ -666,7 +666,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less, BID_UINT32, x, 
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //  therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -695,7 +695,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less, BID_UINT32, x, 
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = ((x & MASK_SIGN32) == MASK_SIGN32);
@@ -725,7 +725,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less, BID_UINT32, x, 
       res = 0;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     // (converse if negative)
     res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
     BID_RETURN (res);
@@ -737,7 +737,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less, BID_UINT32, x, 
     res = 0;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   // (converse if negative)
   res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
   BID_RETURN (res);
@@ -752,7 +752,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, rather than equal : 
+  // if either number is NAN, the comparison is unordered, rather than equal :
   //     return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -774,7 +774,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
       res = 1;
       BID_RETURN (res);
     } else {
-      // x is pos infinity, it is greater, unless y is positive infinity => 
+      // x is pos infinity, it is greater, unless y is positive infinity =>
       // return y==pos_infinity
       res = !(((y & MASK_INF32) != MASK_INF32)
 	      || ((y & MASK_SIGN32) == MASK_SIGN32));
@@ -817,7 +817,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //     therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -875,7 +875,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
     BID_RETURN (res);
@@ -887,7 +887,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
   BID_RETURN (res);
@@ -967,7 +967,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_unordered, BID_U
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  // (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //     therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1025,7 +1025,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_unordered, BID_U
       res = 0;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
     BID_RETURN (res);
@@ -1037,7 +1037,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_unordered, BID_U
     res = 0;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
   BID_RETURN (res);
@@ -1051,7 +1051,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_equal, BID_UINT32
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y, lcv;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   // rather than equal : return 1
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -1109,7 +1109,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_equal, BID_UINT32
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1170,7 +1170,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   //   rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -1192,7 +1192,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
       res = 1;
       BID_RETURN (res);
     }
-    // x is pos infinity, it is greater, unless y is positive 
+    // x is pos infinity, it is greater, unless y is positive
     // infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
@@ -1239,9 +1239,9 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
 
   // ZERO (CASE4)
   // some properties:
-  // (+ZERO==-ZERO) => therefore ignore the sign, and neither 
+  // (+ZERO==-ZERO) => therefore ignore the sign, and neither
   //         number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //         therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1304,7 +1304,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -1319,7 +1319,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -1406,9 +1406,9 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_less, BID_UINT32,
 
   // ZERO (CASE4)
   // some properties:
-  // (+ZERO==-ZERO) => therefore ignore the sign, and neither 
+  // (+ZERO==-ZERO) => therefore ignore the sign, and neither
   //        number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //        therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1471,7 +1471,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_less, BID_UINT32,
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
@@ -1486,7 +1486,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_less, BID_UINT32,
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
@@ -1517,7 +1517,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_unordered, BID_UINT32
   int res;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   //     rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     if ((x & MASK_SNAN32) == MASK_SNAN32 || (y & MASK_SNAN32) == MASK_SNAN32) {
@@ -1540,7 +1540,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   //     rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid exception if NaN
@@ -1560,7 +1560,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
       res = 0;
       BID_RETURN (res);
     }
-    // x is pos infinity, it is greater, 
+    // x is pos infinity, it is greater,
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF32) != MASK_INF32)
@@ -1608,7 +1608,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1668,7 +1668,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
     sig_n_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x - exp_y];
 
 
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     //     (converse if negative)
     if (sig_n_prime == sig_y) {
       res = 0;
@@ -1683,7 +1683,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
   // adjust the y significand upwards
   sig_n_prime = (BID_UINT64)sig_y * (BID_UINT64)bid_mult_factor[exp_y - exp_x];
 
-  // if postitive, return whichever significand is larger 
+  // if postitive, return whichever significand is larger
   //     (converse if negative)
   if (sig_n_prime == sig_x) {
     res = 0;
@@ -1773,7 +1773,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_equal, BI
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1836,7 +1836,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_equal, BI
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
@@ -1851,7 +1851,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_equal, BI
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
@@ -1868,7 +1868,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   // rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid exception if NaN
@@ -1888,7 +1888,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
       res = 0;
       BID_RETURN (res);
     }
-    // x is pos infinity, it is greater, 
+    // x is pos infinity, it is greater,
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF32) != MASK_INF32)
@@ -1936,7 +1936,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -1995,7 +1995,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
     // otherwise adjust the x significand upwards
     sig_n_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x - exp_y];
 
-    // if postitive, return whichever significand is larger 
+    // if postitive, return whichever significand is larger
     //     (converse if negative)
     if (sig_n_prime == sig_y) {
       res = 0;
@@ -2010,7 +2010,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
   // adjust the y significand upwards
   sig_n_prime = (BID_UINT64)sig_y * (BID_UINT64)bid_mult_factor[exp_y - exp_x];
 
-  // if postitive, return whichever significand is larger 
+  // if postitive, return whichever significand is larger
   //     (converse if negative)
   if (sig_n_prime == sig_x) {
     res = 0;
@@ -2100,7 +2100,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less, BID_UINT32,
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -2163,7 +2163,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less, BID_UINT32,
       res = 0;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2178,7 +2178,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less, BID_UINT32,
     res = 0;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2195,7 +2195,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   // rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid exception if NaN
@@ -2215,7 +2215,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
       res = 1;
       BID_RETURN (res);
     }
-    // x is pos infinity, it is greater, 
+    // x is pos infinity, it is greater,
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
@@ -2263,7 +2263,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -2326,7 +2326,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2341,7 +2341,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2427,7 +2427,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_unordered, B
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -2490,7 +2490,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_unordered, B
       res = 0;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2505,7 +2505,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_unordered, B
     res = 0;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2522,7 +2522,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
   char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
   // NaN (CASE1)
-  // if either number is NAN, the comparison is unordered, 
+  // if either number is NAN, the comparison is unordered,
   // rather than equal : return 0
   if (((x & MASK_NAN32) == MASK_NAN32) || ((y & MASK_NAN32) == MASK_NAN32)) {
     *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid exception if NaN
@@ -2542,7 +2542,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
       res = 1;
       BID_RETURN (res);
     }
-    // x is pos infinity, it is greater, 
+    // x is pos infinity, it is greater,
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
@@ -2590,7 +2590,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -2653,7 +2653,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2668,7 +2668,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
@@ -2754,7 +2754,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_less, BID_UIN
   // ZERO (CASE4)
   // some properties:
   // (+ZERO==-ZERO) => therefore ignore the sign, and neither number is greater
-  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => 
+  //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
   //      therefore ignore the exponent field
   //    (Any non-canonical # is considered 0)
   if (non_canon_x || sig_x == 0) {
@@ -2817,7 +2817,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_less, BID_UIN
       res = 1;
       BID_RETURN (res);
     }
-    // if postitive, return whichever significand abs is smaller 
+    // if postitive, return whichever significand abs is smaller
     //     (converse if negative)
     {
       res = ((sig_n_prime < sig_y) ^ ((x & MASK_SIGN32) != MASK_SIGN32));
@@ -2832,7 +2832,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_less, BID_UIN
     res = 1;
     BID_RETURN (res);
   }
-  // if positive, return whichever significand abs is smaller 
+  // if positive, return whichever significand abs is smaller
   //     (converse if negative)
   {
     res = ((sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) != MASK_SIGN32));

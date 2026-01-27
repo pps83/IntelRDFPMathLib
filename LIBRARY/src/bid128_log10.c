@@ -112,7 +112,7 @@ BID128_FUNCTION_ARG1 (bid128_log10, x)
      BIDECIMAL_CALL1(bid128_to_binary128, xq, x_mod);
      __bid_f128_log(rq, xq);
      __bid_f128_mul(rq, rq, c_inv_log10.v);
-     __bid_f128_sub(rq, rq, c_4464.v); 
+     __bid_f128_sub(rq, rq, c_4464.v);
      BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
      BID_RETURN (res);
    }

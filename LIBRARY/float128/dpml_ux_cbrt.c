@@ -38,8 +38,8 @@
 **  The algorithms used for the cbrt function are detailed in the X_FLOAT_NOTES
 **  file (notes 18.*).
 **
-**  The basic approach is to factor the input x into f * 2^n, where 
-**  1 <= f < 2  and  n = 3*m + i, where i = 0, 1, or 2.  Then 
+**  The basic approach is to factor the input x into f * 2^n, where
+**  1 <= f < 2  and  n = 3*m + i, where i = 0, 1, or 2.  Then
 **
 **		cbrt(x) = cbrt(2^n * f)
 **		        = cbrt(2^(3*m+i) * f)
@@ -48,7 +48,7 @@
 ** To get cbrt(f), we do a poly approx y = P(f) good to about 15 bits, then
 ** perform one Newton's iterations in double precision to get 45 bits and then
 ** one Newton's iteration in unpacked format good to about 135 bits. We fetch
-** 2^(i/3) from a table in double precision and incorporate during the 
+** 2^(i/3) from a table in double precision and incorporate during the
 ** double precision Newton's iteration.  The result of the unpacked Newton's
 ** iteration is scaled by m and has its sign bit adjusted to get the final
 ** result.
@@ -57,7 +57,7 @@
 ** from dpml_cbrt.c and is shared between this file and the routines generated
 ** form dpml_cbrt.c
 **
-** Given z, an approximation to 1/cbrt(f)^2, the double precision Newton's 
+** Given z, an approximation to 1/cbrt(f)^2, the double precision Newton's
 ** iteration is of the form:
 **
 **  	y <--  z * f * (14 -  7 * z^3 * f^2  +  2 * z^6 * f^4 ) * 1/9
@@ -100,7 +100,7 @@
 
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     {
-    DECLARE_X_FLOAT(packed_result) 
+    DECLARE_X_FLOAT(packed_result)
     WORD fp_class;
     UX_UNSIGNED_EXPONENT_TYPE m, i, j;
     UX_FRACTION_DIGIT_TYPE msd, tmp_digit;

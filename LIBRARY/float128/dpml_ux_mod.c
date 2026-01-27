@@ -38,42 +38,42 @@
 #define KMASK     (((U_WORD) 1 << (BITS_PER_INT - 2)) - 1)
 
 
-/* 
+/*
 ** PRELIMINARIES
 ** -------------
-** 
+**
 ** The mod and rem functions are defined as:
-** 
+**
 ** 		mod(x,y) = x - y*trunc(x/y)
-** 
+**
 ** 		rem(x,y) = x - y*rint(x/y)
-** 
+**
 ** If we denote by R any of the rounding modes defined in x_float note 19.x,
 ** then we can consider mod and rem as specific cases of the more general
-** function, Mod, defined by: 
-** 
+** function, Mod, defined by:
+**
 ** 		Mod(x,y,R) = x - y*rnd_to_int(x/y, R)			(1)
-** 
+**
 ** Now, consider the following decomposition of the binary representation of
 ** |x|/|y|:
-** 
+**
 ** 		x/y = qqqqqqqqql.rpppppppp....
 ** 		      \_______/   \__________/
 ** 		          q             u
-** 
+**
 ** 		    = 2*q + l + r/2 + u/2
-** 
+**
 ** As in note 19.x, if we know the sign of x/y (call it s), and we define k,
 ** the sticky bit, to be 0 if u = 0 and 1 otherwise, then for each of the
 ** possible rounding modes, R, there is a binary function, B(R,s,l,r,k), such
 ** that
-** 
+**
 ** 	rnd_to_int(x/y, R) = (-1)^s*[2*q + l + B(R,s,l,r,k)]
 ** 	                   = (-1)^[sx + sy]*[2*q + l + B(R,s,l,r,k)]
-** 
+**
 ** where sx and sy are the sign bits of x and y respectively.  If we denote
 ** B(R,s,l,r,k) by B and 2*q + l by Q, it follows that
-** 
+**
 ** 	Mod(x,y,R) = x - y*rnd_to_int(x/y, R)
 ** 	           = x - y*(-1)^[sx + sy]*[Q + B]
 ** 	           = (-1)^sx*|x| - (-1)^sy*|y|*(-1)^[sx + sy]*[Q + B]
@@ -81,51 +81,51 @@
 ** 	           = (-1)^sx*|x| - (-1)^sx*|y|*[Q + B]
 ** 	           = (-1)^sx*{ |x| - |y|*[Q + B] }
 ** 	           = (-1)^sx*{ |x| - |y|*Q - |y|*B] }
-** 
+**
 ** Now Q = 2*q + l = trunc(x/y) so we have:
-** 
+**
 ** 	Mod(x,y,R) = (-1)^sx*{ |x| - |y|*Q - |y|*B] }
 ** 	           = (-1)^sx*{ |x| - |y|*trunc(|x|/|y|) - |y|*B] }
 ** 	           = (-1)^sx*{ mod(|x|, |y|) - |y|*B] }			(2)
-** 
+**
 ** That is, we can compute the generalized Mod function by computing
 ** mod(|x|,|y|), adjusting by 0 or |y|, and then optionally negating the
 ** result.  With the above result in mind, for the remainder of this
 ** discussion, we assume that x and y are positive.
-** 
+**
 ** A slight variation on the above description is to compute mod(2*x, y).  The
 ** binary expansion of 2x/y is
-** 
+**
 ** 		2x/y = qqqqqqqqqlr.pppppppp....
 ** 		       \_______/   \__________/
 ** 		          q             u
-** 
+**
 ** 		    = 4*q + 2*l + r + u
-** 
-** If we denote Q = trunc(2*x/y), then l and r are the two low bits of Q and 
+**
+** If we denote Q = trunc(2*x/y), then l and r are the two low bits of Q and
 ** k = 0 or 1 if mod(2x,y) = 0 or not.  Now
-** 
+**
 ** 	mod(2*x,y) = 2*x - y*trunc(2*x/y)
 ** 	          = 2*x - y*(4*q + 2*l + r)
 ** 	          = 2*x - y*(4*q + 2*l) - y*r
 ** 	          = 2*[x - y*(2*q + l)] - y*r
 ** 	          = 2*[x - y*trunc(x/y)] - y*r
 ** 	          = 2*mod(x,y) - y*r
-** 
+**
 ** Substituting the above result into (2) we get
-** 
+**
 ** 	Mod(x,y,R) = mod(x, y) - y*B
 ** 	           = [ mod(2*x) + y*r ]/2 - y*B
 ** 	           = mod(2*x,y)/2 + y*(r/2 - B)
-** 
+**
 ** Since B = 0 or 1 depending on the values of s, l, r and k, and r = 0 or 1,
 ** it follows that r/2 - B = -1, -1/2, 0 or 1/2 depending on s, l, r and k.
 ** This means we can define a function, B'(R,s,l,r,k) that takes on the values
 ** -2, -1, 0 or 1 and compute Mod(x,y,R) as mod(2*x)/2 + y*(B'/2)
-** 
+**
 ** So we are led to the following basic approach to computing the generalized
 ** mod function:
-** 
+**
 ** 	o Compute u = mod(2*|x|, |y|) keeping track of the low order
 ** 	  digit, Q, of the quotient 2*|x|/|y|
 ** 	o Based on the sign bits of x and y, the low 2 bits of Q, and x',
@@ -136,41 +136,41 @@
 **
 ** LONG DIVISION REVISITED
 ** -----------------------
-** 
+**
 ** Given x = 2^n*f and y = 2^m*g where f and g are in the interval [1/2, 1),
 ** the basic approach to computing the quotient, 2*x/y, is to do it one
 ** "digit" at a time.  That is, we essentially perform long division,
 ** computing one quotient digit at a time while simultaneously producing
 ** the remainder in the process.  Continuing the analogy to long division,
 ** the basic process is as follows:
-** 
-**		(1) At each stage, we know the current remainder, x, and the 
+**
+**		(1) At each stage, we know the current remainder, x, and the
 **		    divisor, y.
 **		(2) We make a guess at the next quotient digit, Q
 **		(3) Compute a new remainder, x', as x' = x - Q*y.
-** 
+**
 ** Since the value of Q at in step (2) was a guess, the new remainder may be
 ** greater than y or less than zero depending on whether Q was too small or
 ** too large.  In any case, we can obtain the correct Q and x' by
 ** incrementing or decrementing Q and adding or subtracting y from x'.
-** 
+**
 ** An important conclusion to draw from the above discussion is that the
 ** correct computation of Q is very closely tied to the computation of the
 ** remainder.  In particular, the two computations are not done
 ** independently from one another, but rather they overlap each other.
-** 
+**
 ** In the discussion, that follows, we present a method for computing Q
 ** and x' that involve a 3 step process:
-** 
+**
 ** 	Step 1:	Obtain a mediocre estimate of Q, call it Q" based on only
 ** 		the high digit of x and y.
 ** 	Step 2: Obtain a fairly good estimate of Q, call it Q', based on
 ** 		the high two digits of x and Q".  In the process, we compute
 ** 		the high two digits of the new remainder.
 ** 	Step 3: Compute the low order digits of the remaider, and adjust it
-** 		and Q' accordingly to obtain the final remainder and the 
+** 		and Q' accordingly to obtain the final remainder and the
 ** 		exact value of Q
-*/ 
+*/
 
 #define EXT_SHIFT(a,s,b,c)	(((a) << (s)) | ((b) >> (c)))
 
@@ -248,7 +248,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
     UX_SIGN_TYPE sign_x, sign_xor;
     UX_FLOAT ux_tmp, ux_g_lo, ux_q, product, *addend;
     UX_FRACTION_DIGIT_TYPE F1, F2, G1, R, Q, T1, T2;
-    UX_FRACTION_DIGIT_TYPE old_quot; 
+    UX_FRACTION_DIGIT_TYPE old_quot;
     WORD quotient;
     D_TYPE r, r_hi, g_hi, g_lo, r_lo;
 
@@ -260,15 +260,15 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
     /*
     ** At this point, we consider the general algorithm for long division.
     ** With x = 2^n*f, y = 2^m*g consider the following algorithm:
-    ** 
+    **
     ** 			 (1) J = n - m + 1
     ** 			 (2) if (J < 0) goto (11)
     ** 			 (3) if f < g
     ** 			         f' <-- f
-    ** 			         Q <-- 0 
+    ** 			         Q <-- 0
     ** 			     else
-    ** 			         Q <-- 1 
-    ** 			         f' <-- f - g 
+    ** 			         Q <-- 1
+    ** 			         f' <-- f - g
     ** 			 (4) if (J <= 0) goto (11)
     ** 			 (5) t <-- (J >= k) ? k : J
     ** 			 (6) f" <-- 2^t*f'
@@ -277,13 +277,13 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
     ** 			 (9) J <-- j - t
     ** 			(10) goto 4
     ** 			(11)
-    ** 
+    **
     ** 				Algorithm 1
     ** 				-----------
-    ** 
+    **
     ** We state here without proof that at step (11), Q is the low order digit
-    ** of the quotient 2*x/y and f' is mod(2*x, y).  
-    ** 
+    ** of the quotient 2*x/y and f' is mod(2*x, y).
+    **
     ** The next section of code implements the first four steps of algorithm 1.
     */
 
@@ -308,66 +308,66 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
     if (J <= 0)
         goto final_step;
 
-    /* 
+    /*
     ** COMPUTING Q"
     ** ------------
-    ** 
+    **
     ** In step 7, we compute an estimate for Q, call it Q" by multiplying the
     ** high digit of 1/g by the high digit of f".  That is, we assume that we
     ** have a k-bit integer R, such that r = 2*R/M is a good approximation to
     ** 1/g.  For reasons that will be discussed later, we want r < 1/g.  In this
     ** section we describe how to compute R.
-    ** 
+    **
     ** We note that the method for computing of R is almost identical to the
     ** method used to obtain the initial reciprocal approximation in the divide
     ** algorithm (see note 6.x).  The main difference being that in divide
     ** algorithm, r was to be as close to 1/g as possible, and for mod, we want
-    ** r to underestimate 1/g. 
-    ** 
+    ** r to underestimate 1/g.
+    **
     ** The value of R is computed using multi-precision floating point
     ** arithmetic and then is converted back to an integer data type.  We
     ** assume the existence of a floating point type with 53 bits of precision.
-    */ 
+    */
 
 #   if (D_PRECISION < 53)
 #       error "Must have D_PRECISION >= 53"
 #   endif
 
-    /* 
-    ** Let G1 be the high digit of g, K = 2^k and define g" = (G1 + 1)/K. 
+    /*
+    ** Let G1 be the high digit of g, K = 2^k and define g" = (G1 + 1)/K.
     ** Note that 1/g" < 1/g.  The remainder of this section is concerned
     ** with the computation R = trunc[(K/2)/g"].  The computation of R depends
     ** on the relative size of a digit, k, compared to the floating point
     ** precision.
-    */ 
+    */
 
     G1 = G_UX_MSD(y);
 
 #   if (BITS_PER_UX_FRACTION_DIGIT_TYPE < D_PRECISION)
 
-        /* 
+        /*
         ** If k <= 53, then define gt = high k bits of g plus 1/K - i.e.
         ** gt = (G1 + 1)/K.  Then let R = trunc[(K/2)/gt - 1/2^53].  (NOTE:
         ** the 1/2^53 term is to compensate for a possible round up on the
         ** division.)
-        */ 
+        */
 
         R = (UX_FRACTION_DIGIT_TYPE)
              (D_TWO_POW_2Km1/((double) (G1 + 1)) - D_TWO_POW_Km53);
 
 #   else
 
-        /* 
+        /*
         ** If 53 < k < 78, then define the following double precision floating
         ** point values:
-        ** 
+        **
         ** 		gt   = high 53 bits of g
         ** 		r    = 1/gt
         ** 		r_hi = high 24 bits of r
         ** 		g_hi = high 26 bits of g
         ** 		g_lo = next (k - 26) bits of g incremented by 1/K
         **	 	r_lo = [ (1 - g_hi*r_hi) - g_lo*r_hi] * r
-        ** 
+        **
         ** and then compute
         **
         **		R = floor[ K*(r_hi + r_lo) - 1/2^78 ]		(1)
@@ -377,7 +377,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         ** 1/g and R is in the interval [K/2, K-1].  In order to ease the
         ** conversion to integer, force r_hi to be less than 1/g.  This will
         ** make r_lo positive.
-        */ 
+        */
 
         r    = D_TWO_POW_53 / ((double) (G1 >> 11));
         r_hi = ((double)((float) r)) - D_RECIP_TWO_POW_23;
@@ -386,31 +386,31 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
                ((double) ((WORD) ((G1 & MAKE_MASK(38, 0)) + 1)));
         r_lo = (D_GROUP( D_ONE - g_hi*r_hi) - g_lo*r_hi)*r;
 
-        /* 
+        /*
         ** Some care is required in computing (1) in order to insure no
         ** additional rounding takes place.  We begin by defining
-        ** 
+        **
         ** 		R1 = floor(2^23*r_hi)
         ** 		R2 = floor(2^78*r_lo)
-        ** 
+        **
         ** Since r_hi has at most 24 significant bits and r_hi > 1,
         ** R1 = 2^23*r_hi.  Also, since |r_lo| < 1/2^24, no integer overflow
-        ** will occur when computing R2.  It follows that 
-        ** 
+        ** will occur when computing R2.  It follows that
+        **
         ** 		r_hi + r_lo = R1/2^23 + (R2 + e)/2^78
-        ** 
+        **
         ** where 0 <= e < 1 is the error in truncating 2^78*r_lo. This implies
         ** that
-        ** 
+        **
         ** 		R = floor[ K*(r_hi + r_lo) - 1/2^75 ]
         ** 		  = floor[ K*(R1/2^23 + (R2 + e))/2^78 - 1/2^75]
         ** 		  = floor[ K*(2^25*R1 + R2 + e - 8)/2^78 ]
         ** 		  = floor[ K*(2^25*R1 + R2 + e - 8)/2^78 ]
         ** 		  = 2^*(k-53)*R1 + floor[K*(R2 + e - 8)/2^78 ]
         ** 		  = [R1 << (k-53)] + [(R2 - 8) >> (78-k)]
-        ** 
+        **
         ** Note that the shift of (R2-8) should be a signed shift.
-        */ 
+        */
 
         R = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_23*r_hi);
         T1 = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_78*r_lo);
@@ -439,9 +439,9 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
 
         J -= BITS_PER_UX_FRACTION_DIGIT_TYPE;
         if (J >= 0)
-            { 
+            {
             EXTENDED_DIGIT_SHIFT_LEFT_UX_FRACTION(result, F1);
-	    old_quot = 0; 
+	    old_quot = 0;
             }
         else
             {
@@ -454,19 +454,19 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
             J = 0;
             }
 
-        /* 
+        /*
         ** COMPUTING THE REAL Q AND NEW F'
         ** ------------------------------
-        ** 
+        **
         ** The two key issues associated with algorithm 1 from a computational
         ** point of view is getting Q = trunc(2^t*f'/g) and updating f' to
         ** 2^t*f' - Q*g.  In this section we address these two issues.
-        ** 
+        **
         ** Denoting the high k bits of f' by F1, the next k bits by F2, the
         ** first 2k bits by F1:F2, and denoting the high k bits of g by G1,
         ** consider the following algorithm:
-        ** 
-        ** 
+        **
+        **
         ** 		if (F1 == G1)				// line 1
         ** 		    {					// line 2
         ** 		    Q' <-- K - 1			// line 3
@@ -482,23 +482,23 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         ** 		        Q' <-- Q' + 1			// line 13
         ** 		        }				// line 14
         ** 		    }					// line 15
-        ** 
+        **
         ** 			Algorithm 2
         ** 			-----------
-        ** 
+        **
         ** We note that since 2*R/K underestimates 1/g and F1/K underestimates
         ** f', the Q' in line 8 underestimates Q.  Lines 9 through 15 continue
         ** to increment Q' by one until the following condition is satisfied:
-        ** 
+        **
         ** 		0 <= (K*F1 + F2) - Q'*G1 <= G1 - 1	(5)
-        ** 
+        **
         ** or equivalently
-        ** 
+        **
         ** 		Q' = trunc[(K*F1 + F2)/G1]
-        ** 
+        **
         ** We note without proof that Q' <= K-1 and Q <= Q' <= Q + 2.  I.e.
         ** Q' overestimates Q by at most 2.
-        */ 
+        */
 
         F2 = G_UX_FRACTION_DIGIT(result, 0);
 
@@ -523,10 +523,10 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
                 }
             }
 
-        /* 
+        /*
         ** UPDATING F'
         ** -----------
-        ** 
+        **
         ** With Q' defined as above, define:
         **
         **	fh' 	the high two digits of f'
@@ -535,23 +535,23 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
 	**	gl	the remaining digits of g
         **
         ** we proceed with the updating of f':
-        ** 
+        **
         ** 		f' <-- K*f' - Q'g
         ** 		   <-- K*(fh' + fl') - Q'(gh + gl)
         ** 		   <-- K*[(K*F1 + F2)/K^2 + fl'] - Q'(G1/K + gl)
         ** 		   <-- (K*F1 + F2)/K + K*fl' - Q'*G1/K - Q'*gl
         ** 		   <-- [(K*F1 + F2) - Q'*G1]/K + K*fl' - Q'*gl
-        ** 
+        **
         ** Now the quantity in square brackets has already been computed by
         ** algorithm 2.  In particular, [(K*F1 + F2) - Q'*G1] = K*T1 + T2,
         ** and T1 is guaranteed to be 0 or 1.  Consequently we can write
-        ** 
+        **
         ** 		f' <-- [(K*F1 + F2) - Q'*G1]/K + K*fl' - Q'*gl
         ** 		   <-- (K*T1+T2)/K + K*fl' - Q'*gl
-        ** 
+        **
         ** Since Q' overestimates Q by at most 2, we know that we may need to
         ** adjust f' by adding in g at most twice.
-        */ 
+        */
 
 	P_UX_MSD(result, T2);
         P_UX_MSD(&ux_q, Q);
@@ -573,7 +573,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
                 }
             ADDSUB(result, addend, ADD | NO_NORMALIZATION, result);
             }
-	    Q |= old_quot; 
+	    Q |= old_quot;
 
         } while (J > 0);
 
@@ -593,7 +593,7 @@ final_step:
 
     rounding_flags = (rounding_flags >> (SKLR*FLAGS_BIT_WIDTH)) & FLAGS_MASK;
 
-    Q >>= 1;    
+    Q >>= 1;
     UX_DECR_EXPONENT(result, 1);
     if (rounding_flags != ZERO_FLAG )
         {
@@ -603,9 +603,9 @@ final_step:
             Q += 1;
         }
 
-    /* 
-    ** remquo returns a pointer to the lo (BITS_PER_INT - 2) bits 
-    ** of the signed quotient 
+    /*
+    ** remquo returns a pointer to the lo (BITS_PER_INT - 2) bits
+    ** of the signed quotient
     */
 
      Q &= KMASK;
@@ -694,7 +694,7 @@ C_UX_MOD(_X_FLOAT * packed_x, _X_FLOAT * packed_y, U_WORD bit_vector,
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     {
-     
+
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
     INIT_EXCEPTION_INFO;
@@ -716,7 +716,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     {
-     
+
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
 
@@ -739,7 +739,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     {
-     
+
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
 
@@ -762,7 +762,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 
 X_XXIptr_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y, quotient)
     {
-     
+
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
     WORD quot;
@@ -801,7 +801,7 @@ X_XXIptr_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y, quotient)
 
     procedure print_class_to_action_table( infinity_error, zero_error )
         {
-	   /* Index 0: mapping for x */	
+	   /* Index 0: mapping for x */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(6) +
 	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,      0) +

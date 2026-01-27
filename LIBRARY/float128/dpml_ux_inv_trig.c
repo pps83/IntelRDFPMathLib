@@ -53,12 +53,12 @@
 **              high digits of y and x are equal. RNH 19-Apr-02
 **      1-004   Added special intel specific switch in class to
 **              action map. Added class to action map for atan2 and atan2d
-**              when y is -0. SBN 22-Apr-2002.    
+**              when y is -0. SBN 22-Apr-2002.
 **      1-005   Modified unpacked_result to array of 2 in C_UX_ATAN2.
-**              SBN 24-Apr-2002. 
+**              SBN 24-Apr-2002.
 **      1-006   Added interface macros. SBN 29-Apr-2002.
 **      1-007   Changed type of diff from unsigned to signed in quotient
-**              estimation. SBN 30-Apr-2002. 
+**              estimation. SBN 30-Apr-2002.
 **      1-008   Modified interface macros. SBN 15-May-2002.
 **
 ** Build Info:
@@ -77,10 +77,10 @@
 #endif
 
 
-/* 
+/*
 ** 1. BASIC DESIGN/ALGORITHMS
 ** --------------------------
-** 
+**
 ** The basic design of for the inverse trig functions relies on two evaluation
 ** routines, one for the atan family of functions and one for the asin/acos
 ** family.  Within each family, the differences between the degree and radian
@@ -90,35 +90,35 @@
 ** constants.  In order to discuss some of the design issues independent of the
 ** choice mechanism for dealing with the radian/degree differences, we will use
 ** the symbolic name CYCLE to refer to 180 or pi.
-** 
-** 
+**
+**
 ** 1.1 ATAN
 ** --------
-** 
+**
 ** We note that the atan(x) = atan2(x,1), so we will confine most of the
 ** discussion to the atan2 case.  The basic algorithm makes use of the
 ** following identities:
-** 
+**
 ** 		atan2(-y,x) = - atan2(y,x)			(1)
 ** 		atan2(y,-x) = CYCLE - atan(y,x)			(2)
 ** 		atan2(y, x) = atan(y/x)	x,y >= 0		(3)
 ** 		atan(z) = atan(a) + atan[(z - a)/(1 + a*z)	(4)
 ** 		atan(1/z) = CYCLE/2 - atan(z)			(5)
-** 
+**
 ** Items (1) through (3) imply that for the most part we need only deal with
 ** |y/x|.  In particular, based on the above we make the following definitions
 ** of i, C(i), S(i) and z(i), according to the size of |y/x|:
-** 
+**
 ** 	Size of |y/x|	 i	  c(i)	  s(i)        z(i)
 ** 	-------------	---	--------- ---- ------------------
 ** 	[0, 1/2)	 0	    0	    1         |y/x|
 ** 	[1/2, 2]	 1	 CYCLE/4    1  (|y|-|x|)/(|y|+|x|)
 ** 	(2, Inf)	 2	 CYCLE/2   -1         |x/y|
-** 
+**
 ** From which it follows that:
-** 
+**
 ** 		atan2(|y|,|x|) = c(i) + s(i)*atan(z(i))
-** 
+**
 ** where 0 <= z(i) < 1/2.  Using (2) we can extend the above table for negative
 ** x as
 ** 	Size of |y/x|	 i	   c(i)	  s(i)        z(i)
@@ -126,13 +126,13 @@
 ** 	[0, 1/2) x < 0	 3	CYCLE	   -1         |y/x|
 ** 	[1/2, 2] x < 0	 4	3*CYCLE/4  -1  (|y|-|x|)/(|y|+|x|)
 ** 	(2, Inf) x < 0	 5	CYCLE/2	    1         |x/y|
-** 
+**
 ** Finally, using (1) we have
-** 
+**
 ** 		atan2(y,x) = sign(y)*[c(i) + s(i)*atan(z(i))]
-** 
-** Based on the above, the general approach to evaluating atan2(y,x) is: 
-** 
+**
+** Based on the above, the general approach to evaluating atan2(y,x) is:
+**
 ** 	(a) compute the exponent value, n, of y/x
 ** 	(b) Based on n and the sign of x, compute the index i, and the
 ** 	    value z(i).
@@ -140,42 +140,42 @@
 ** 	    2)
 ** 	(d) based on i, compute c(i) + atan(z(i)) or c(i) - atan(z(i))
 ** 	(e) copy the sign of y onto the last result.
-** 
+**
 ** At this point we would like to discuss step (d) in more detail.  We note
 ** the following:
-** 
+**
 ** 		o c(i) = (i/4)*CYCLE      for i = 0, 1, 2
 ** 		o c(i+3) = (4-i)/4]*CYCLE for i = 0, 1, 2
 ** 		o s(i+3) = -s(i)          for i = 0, 1, 2
-** 
+**
 ** This implies that during the screening to determine the interval, we can
 ** determine c(i) and s(i) for i = 0, 1, or 2 and then adjust c(i) and s(i)
-** to reflect the sign of x.  
-** 
-** 
+** to reflect the sign of x.
+**
+**
 ** EVALUATE_RATIONAL depends on the reduced argument x satisfying
 ** |x| < 1 , and the coefficients decreasing.  If the coefficients
-** don't decrease, shifting the exponent of the reduced argument 
+** don't decrease, shifting the exponent of the reduced argument
 ** (effectively multiplying by 2, 4, or more) and pulling this factor
 ** out of the coefficients can then allow them to decrease.
 ** For atan, the reduced argument has its exponent shifted by 1,
 ** which effectively mutliplies it by 2.  If the argument is
 ** exactly 1/2, the shift makes it 1, and EVALUATE_RATIONAL won't work.
-** So, we want to avoid a reduced argument of 1/2 for atan. 
+** So, we want to avoid a reduced argument of 1/2 for atan.
 **
 ** In order to call the polynomial evaluation routine with
 ** a reduced argument strictly less than 1/2 we check the
 ** value of the reduced argument after |y/x| is calculated.
 **
-** But rather than calculate |y/x|, its value is estimated by 
+** But rather than calculate |y/x|, its value is estimated by
 ** calculating its exponentt.  The value of this exponent
 ** determines which of |y/x|, (|y|-|x|)/(|y|+|x|), or |x/y| is
-** actually calculated and used as the reduced argument.  
+** actually calculated and used as the reduced argument.
 ** When the exponent is >1, the value is >= 2, and |x/y| is
 ** calculated as the reduced argument.  But if |y/x| is
 ** exactly = 2, |x/y| = 1/2, which should not be sent to the polynomial
 ** evaluation routine.
-** So, the un-normalized exponent is checked, and decremented 
+** So, the un-normalized exponent is checked, and decremented
 ** if the most significant bit of the fraction field is 0.
 ** If the exponent is still >= 0, the initial reduced_argument = 1/2,
 ** so we want to use (|y|-|x|)/(|y|+|x|) = 1/3 instead
@@ -183,12 +183,12 @@
 **   (1) decrement the index
 **   (2) un-toggle the sign bit
 **   (3) change the reduced argument to 1/3 (via a table entry)
-** 
-** 
-** 
+**
+**
+**
 ** 2. ATAN/ATAN2 EVALUATION
 ** ------------------------
-** 
+**
 ** The atan family of functions call a common routine to unpack their arguments
 ** and invoke the evaluation routine UX_ATAN2.  For atan and atand, the 'x'
 ** argument passed to UX_ATAN2 is a null pointer.  UX_ATAN2 uses the null
@@ -196,7 +196,7 @@
 ** Also, the null pointer is passed onto the divide routine, where it is
 ** implicitly treated as a pointer to the value 1.  In this way, very little
 ** special casing is required for atan cases being processed by UX_ATAN2.
-*/ 
+*/
 
 #if !defined(UX_ATAN2)
 #   define UX_ATAN2	__INTERNAL_NAME(ux_atan2__)
@@ -291,7 +291,7 @@ UX_ATAN2(
         NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
           DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(1),
         unpacked_result);
- 
+
     /* Add in the appropriate constant */
 
     UX_TOGGLE_SIGN(unpacked_result, sign);
@@ -303,7 +303,7 @@ UX_ATAN2(
             ATAN_MAP_FIELD( 2, UX_PI_OVER_2_INDEX )      	+
             ATAN_MAP_FIELD( 3, UX_PI_INDEX )			+
             ATAN_MAP_FIELD( 4, UX_THREE_QUARTERS_PI_INDEX )	+
-            ATAN_MAP_FIELD( 5, UX_PI_OVER_2_INDEX ) ) >> index) & 
+            ATAN_MAP_FIELD( 5, UX_PI_OVER_2_INDEX ) ) >> index) &
             MAKE_MASK(ATAN_MAP_WIDTH, 3);
 
         NORMALIZE(unpacked_result);
@@ -468,45 +468,45 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x)
 
     }
 
-/* 
+/*
 ** 3.0 ASIN/ACOS
 ** -------------
-** 
+**
 ** The overall design for the asin/acos functions is remarkably similar to the
 ** atan functions.  The asin/acos evaluations are based on the following
 ** identities:
-** 
+**
 ** 		asin(-x) = -asin(x)				(1)
 ** 		asin(x)  = CYCLE/2 - 2*asin(sqrt((1-x)/2))	(2)
 ** 		acos(x)  = CYCLE/2 - asin(x)			(3)
-** 
+**
 ** As for atan, based on the above identities and the size of x, we can define
 ** quantities i, j, c(i), s(i), t(i) and z(i) such that
-** 
+**
 ** 	asin(x) or acos(x) = s(i)*[ c(i) + t(i)*2^j*asin(z(i))]
-** 
-** 
+**
+**
 ** 	Function      x	     i	s(i)    c(i)  t(i)  j     z(i)
 ** 	-------- ---------- ---	---- -------- ---- --- ------------------
 ** 	  asin   [-1, -1/2)  3   -1   CYCLE/2  -1   1  sqrt((1-|x|)/2)
 ** 	         [-1/2, 0)   2   -1      0      1   0       |x|
 ** 	         [0, 1/2)    0    1      0      1   0       |x|
 ** 	         [1/2, 1)    1    1   CYCLE/2  -1   1  sqrt((1-|x|)/2)
-** 
+**
 ** 	  acos   [-1, -1/2)  3    1    CYCLE   -1   1  sqrt((1-|x|)/2)
 ** 	         [-1/2, 0)   2    1   CYCLE/2   1   0       |x|
 ** 	         [0, 1/2)    0    1   CYCLE/2  -1   0       |x|
 ** 	         [1/2, 1)    1    1      0      1   1  sqrt((1-|x|)/2)
-** 
-** With the above in mind, the general approach to evaluating asin or acos is: 
-** 
+**
+** With the above in mind, the general approach to evaluating asin or acos is:
+**
 ** 	(a) Based on the exponent and sign of x, compute the index i, and the
 ** 	    values of j and z(i).
 ** 	(b) compute w = asin(z(i)) using a rational approximation (see section
 ** 	    2)
 ** 	(c) increment the exponent of w by j.
 ** 	(d) based on i, compute s(i)*[c(i) + t(i)*w]
-** 
+**
 ** The algorithm for determining s(i), t(i) and c(i) for asin and acos is more
 ** complicated, so we resort to a "table look-up" scheme.  That is, We assume
 ** that there will be a array of _UX_FLOAT constants that contains the values
@@ -516,37 +516,37 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x)
 ** can be done at compile time, so that at run time, step (d) consists of
 ** accessing the appropriate 7 bit field and extracting s(i), t(i) and the
 ** index for c(i).  We assume that the 7 bit fields are allocated as
-** 
+**
 ** 		        7          2  1  0
 ** 			 +----------+--+--+
 ** 			 |  index   | s| t|
 ** 			 +----------+--+--+
-** 
+**
 ** with the first field starting at bit 4.  We further assume that the bit 0 is
 ** one for a degree evaluation and 0 otherwise.
-** 
-** 
+**
+**
 ** 4. ATAN AND ASIN EVALUATION
 ** ---------------------------
-** 
+**
 ** Both atan and asin are more efficiently evaluated using rational
 ** approximations than polynomial evaluations.  Extrapolating from the tables
 ** in Hart and the current x-float asin polynomial, the number of terms in a
 ** polynomial and a rational approximations are:
-** 
+**
 ** 		Function	polynomial	rational
 ** 		--------	----------	--------
 ** 		  asin		    32		 (10,10)
 ** 		  atan		    30		 (10,10)
-** 
+**
 ** 5. ASIN/ACOS EVALUATION
 ** -----------------------
-** 
+**
 ** Since asin and acos do not require unpacked interfaces, the user level
 ** routines do not unpack their arguments.  Instead they simply pass them on to
 ** the general asin/acos evaluation routine, UX_ASIN_ACOS.  The interface
 ** to UX_ASIN_ACOS is:
-** 
+**
 ** 	static void
 ** 	UX_ASIN_ACOS(
 ** 	    _X_FLOAT     * packed_argument,
@@ -554,12 +554,12 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x)
 **          WORD           invalid_error,
 **          U_WORD const * class_to_action_map,
 ** 	    _X_FLOAT     * packed_result);
-** 
+**
 ** where: 'index_map' is the 32 bit data item used to encode the c(i)'s, s(i)'s
 ** and t(i)'s defined in section 1; 'invalid_error' is the error code for the
 ** indicated error and 'class_to_action_array' is the mapping array for the
 ** given function.
-*/ 
+*/
 
 
 #define BIT_FROM_MAP(m,i)	(((m) << (BITS_PER_WORD - (i))) & UX_SIGN_BIT)
@@ -888,7 +888,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
 	   /* Index 1: class-to-index mapping */
 
-    PRINT_64_TBL_ITEM( 
+    PRINT_64_TBL_ITEM(
 	       CLASS_TO_INDEX( F_C_POS_INF,    2) +
 	       CLASS_TO_INDEX( F_C_NEG_INF,    2) +
 	       CLASS_TO_INDEX( F_C_POS_NORM,   3) +
@@ -1020,7 +1020,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
 	   /* Index 1: class-to-index mapping */
 
-    PRINT_64_TBL_ITEM( 
+    PRINT_64_TBL_ITEM(
 	       CLASS_TO_INDEX( F_C_POS_INF,    2) +
 	       CLASS_TO_INDEX( F_C_NEG_INF,    3) +
 	       CLASS_TO_INDEX( F_C_POS_NORM,   4) +

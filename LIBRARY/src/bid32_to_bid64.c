@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -130,7 +130,7 @@ BID_UINT128 Q;
     exponent_x += extra_digits;
     if ((exponent_x < 0) && (exponent_x + MAX_FORMAT_DIGITS_32 >= 0)) {
       status = BID_UNDERFLOW_EXCEPTION;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING  
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
       if (exponent_x == -1)
 	if (coefficient_x + bid_round_const_table[rmode][extra_digits] >=
 	    bid_power10_table_128[extra_digits + 7].w[0])
@@ -153,7 +153,7 @@ BID_UINT128 Q;
     if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
       if (coefficient_x & 1) {
-	// check whether fractional part of initial_P/10^extra_digits 
+	// check whether fractional part of initial_P/10^extra_digits
 	// is exactly .5
 
 	// get remainder

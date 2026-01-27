@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -56,7 +56,7 @@
  *       else
  *         add sign_a*coefficient_a*10^diff_expon, sign_b*coefficient_b
  *             in 128-bit integer arithmetic, then round to 16 decimal digits
- *           
+ *
  *
  ****************************************************************************/
 
@@ -448,10 +448,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
     amount = bid_short_recip_scale[extra_digits];
     C0_64 = CT.w[1] >> amount;
 
-    // result coefficient 
+    // result coefficient
     C64 = C0_64 + coefficient_a;
     // filter out difficult (corner) cases
-    // this test ensures the number of digits in coefficient_a does not change 
+    // this test ensures the number of digits in coefficient_a does not change
     // after adding (the appropriately scaled and rounded) coefficient_b
     if ((BID_UINT64) (C64 - 1000000000000000ull - 1) >
 	9000000000000000ull - 2) {
@@ -487,7 +487,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
 	amount = bid_short_recip_scale[extra_digits];
 	C0_64 = CT.w[1] >> amount;
 
-	// result coefficient 
+	// result coefficient
 	C64 = C0_64 + coefficient_a;
       } else if (C64 <= 1000000000000000ull) {
 	// less than 16 digits in result
@@ -508,7 +508,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
 	amount = bid_short_recip_scale[extra_digits];
 	C0_64 = CT_new.w[1] >> amount;
 
-	// result coefficient 
+	// result coefficient
 	C64_new = C0_64 + coefficient_a;
 	if (C64_new < 10000000000000000ull) {
 	  C64 = C64_new;
@@ -528,9 +528,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
   if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
     if (C64 & 1) {
-      // check whether fractional part of initial_P/10^extra_digits is 
+      // check whether fractional part of initial_P/10^extra_digits is
       // exactly .5
-      // this is the same as fractional part of 
+      // this is the same as fractional part of
       //      (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
       // get remainder

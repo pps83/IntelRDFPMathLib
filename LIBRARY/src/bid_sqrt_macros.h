@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -54,7 +54,7 @@ short_sqrt128 (BID_UINT128 A10) {
 typedef union BID_ALIGN (16)
      {
        BID_UINT64 w[2];
-	   long double d; 
+	   long double d;
      } int_dext;
 
 
@@ -305,7 +305,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
     if (ES.w[0])
       ES.w[1]--;
 
-    // A*RS*eps 
+    // A*RS*eps
     __mul_128x128_to_256 (AE, ES, ARS1);
 
     __add_carry_out (S.w[0], CY, ARS00.w[0], AE.w[0]);
@@ -313,7 +313,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
     __add_carry_in_out (S.w[2], CY, ARS00.w[2], AE.w[2], CY);
     S.w[3] = ARS00.w[3] + AE.w[3] + CY;
   } else {
-    // A*RS*eps 
+    // A*RS*eps
     __mul_128x128_to_256 (AE, ES, ARS1);
 
     __sub_borrow_out (S.w[0], CY, ARS00.w[0], AE.w[0]);

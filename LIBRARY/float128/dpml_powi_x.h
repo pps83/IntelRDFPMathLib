@@ -31,7 +31,7 @@
 
 
 
-    static const TABLE_UNION __powi_x_table[] = { 
+    static const TABLE_UNION __powi_x_table[] = {
 
 	/* powi class-to-action-mapping */
 

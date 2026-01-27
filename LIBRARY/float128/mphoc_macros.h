@@ -215,7 +215,7 @@
 					    printf( "\t/* padding for alignment */ " \
 					    "0x00000000,\n"); \
 					    o += BITS_PER_TABLE_WORD; }
-					
+
 
 #define	BITS_PER_f		BITS_PER_FLOAT
 #define	BITS_PER_s		BITS_PER_FLOAT
@@ -258,7 +258,7 @@
 #if NEW_DPML_MACROS == 1
 
     /*
-     * Set up default table name and offset for printing macros 
+     * Set up default table name and offset for printing macros
      */
 
 #   if !defined(MP_TABLE_NAME)
@@ -333,7 +333,7 @@
 
 #   define PRINT_TYPED_TBL_ADEF(name, tchar)	\
 		PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
-		    tchar, "") 
+		    tchar, "")
 
 #   define PRINT_TYPED_TBL_VDEF_ITEM(n,v,tchar) \
 		PRINT_TYPED_TBL_VDEF(n, tchar); PRINT_TYPED_TBL_ITEM(v, tchar)

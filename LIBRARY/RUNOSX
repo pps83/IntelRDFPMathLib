@@ -1,5 +1,5 @@
 echo "BEGIN BUILDING LIBRARY IN LINUX..."
 rm *.a
-./linuxbuild 
+./linuxbuild
 echo "END BUILDING LIBRARY IN LINUX..."
 

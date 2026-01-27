@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -52,7 +52,7 @@ bid128_to_string (char *str,
 
 VOID_WRAPFN_OTHERTYPERES_DFP(bid128_to_string, char, 128)
 void
-bid128_to_string (char *str, BID_UINT128 x 
+bid128_to_string (char *str, BID_UINT128 x
     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT64 x_sign;
@@ -83,14 +83,14 @@ bid128_to_string (char *str, BID_UINT128 x
     if ((x.w[1] & MASK_NAN) == MASK_NAN) { // x is NAN
       if ((x.w[1] & MASK_SNAN) == MASK_SNAN) { // x is SNAN
 	// set invalid flag
-    str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+'; 
+    str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+';
 	str[1] = 'S';
 	str[2] = 'N';
 	str[3] = 'a';
 	str[4] = 'N';
 	str[5] = '\0';
       } else { // x is QNaN
-    str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+'; 
+    str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+';
 	str[1] = 'N';
 	str[2] = 'a';
 	str[3] = 'N';
@@ -103,7 +103,7 @@ bid128_to_string (char *str, BID_UINT128 x
 	str[2] = 'n';
 	str[3] = 'f';
 	str[4] = '\0';
-      } else { // x is -inf 
+      } else { // x is -inf
 	str[0] = '-';
 	str[1] = 'I';
 	str[2] = 'n';
@@ -131,11 +131,11 @@ bid128_to_string (char *str, BID_UINT128 x
 	}
     if (exp >= 0) {
       str[len++] = '+';
-      len += sprintf (str + len, "%u", exp);// should not use sprintf (should 
+      len += sprintf (str + len, "%u", exp);// should not use sprintf (should
       // use sophisticated algorithm, since we know range of exp is limited)
       str[len++] = '\0';
     } else {
-      len += sprintf (str + len, "%d", exp);// should not use sprintf (should 
+      len += sprintf (str + len, "%d", exp);// should not use sprintf (should
       // use sophisticated algorithm, since we know range of exp is limited)
       str[len++] = '\0';
     }
@@ -159,18 +159,18 @@ bid128_to_string (char *str, BID_UINT128 x
     // determine coefficient's representation as a decimal string
 
     // if zero or non-canonical, set coefficient to '0'
-    if ((C1.w[1] > 0x0001ed09bead87c0ull) || 
-        (C1.w[1] == 0x0001ed09bead87c0ull && 
-        (C1.w[0] > 0x378d8e63ffffffffull)) || 
-        ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull) || 
+    if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
+        (C1.w[1] == 0x0001ed09bead87c0ull &&
+        (C1.w[0] > 0x378d8e63ffffffffull)) ||
+        ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull) ||
         ((C1.w[1] == 0) && (C1.w[0] == 0))) {
       str[k++] = '0';
     } else {
       /* ****************************************************
-         This takes a bid coefficient in C1.w[1],C1.w[0] 
-         and put the converted character sequence at location 
+         This takes a bid coefficient in C1.w[1],C1.w[0]
+         and put the converted character sequence at location
          starting at &(str[k]). The function returns the number
-         of MiDi returned. Note that the character sequence 
+         of MiDi returned. Note that the character sequence
          does not have leading zeros EXCEPT when the input is of
          zero value. It will then output 1 character '0'
          The algorithm essentailly tries first to get a sequence of
@@ -188,7 +188,7 @@ bid128_to_string (char *str, BID_UINT128 x
          18 digits,  we set hi = 0, and lo = d to begin with.
          We then retrieve from a table, for j = 0, 1, ..., 8
          that gives us A and B where c_j 2^(59+6j) = A * 10^18 + B.
-         hi += A ; lo += B; After each accumulation into lo, we normalize 
+         hi += A ; lo += B; After each accumulation into lo, we normalize
          immediately. So at the end, we have the decomposition as we need. */
 
       Tmp = C1.w[0] >> 59;
@@ -322,7 +322,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   c = *ps;
 
 
-  // if c is null or not equal to a (radix point, negative sign, 
+  // if c is null or not equal to a (radix point, negative sign,
   // positive sign, or number) it might be SNaN, sNaN, Infinity
   if (!c
       || (c != '.' && c != '-' && c != '+'
@@ -342,8 +342,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       BID_RETURN (res);
     }
     // return sNaN
-    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') {        
+    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' &&
+        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') {
         // case insensitive check for snan
       res.w[1] = 0x7e00000000000000ull;
       BID_RETURN (res);
@@ -353,11 +353,11 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       BID_RETURN (res);
     }
   }
-  // if +Inf, -Inf, +Infinity, or -Infinity (case insensitive check for inf)   
-  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' && 
-      tolower_macro (ps[3]) == 'f') && (!ps[4] || 
-      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' && 
-      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' && 
+  // if +Inf, -Inf, +Infinity, or -Infinity (case insensitive check for inf)
+  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' &&
+      tolower_macro (ps[3]) == 'f') && (!ps[4] ||
+      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' &&
+      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' &&
       tolower_macro (ps[8]) == 'y' && !ps[9]))) { // ci check for infinity
     res.w[0] = 0;
 
@@ -412,17 +412,17 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
       ps++;
 
-      // for numbers such as 0.0000000000000000000000000000000000001001, 
+      // for numbers such as 0.0000000000000000000000000000000000001001,
       // we want to count the leading zeros
       if (rdx_pt_enc) {
         right_radix_leading_zeros++;
       }
-      // if this character is a radix point, make sure we haven't already 
+      // if this character is a radix point, make sure we haven't already
       // encountered one
       if (*(ps) == '.') {
         if (rdx_pt_enc == 0) {
           rdx_pt_enc = 1;
-          // if this is the first radix point, and the next character is NULL, 
+          // if this is the first radix point, and the next character is NULL,
           // we have a zero
           if (!*(ps + 1)) {
             res.w[1] =
@@ -450,7 +450,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   }
 
   c = *ps;
- 
+
   // initialize local variables
   ndigits_before = ndigits_after = ndigits_total = 0;
   sgn_exp = 0;
@@ -460,7 +460,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     // investigate string (before radix point)
     while ((unsigned) (c - '0') <= 9
            /*&& ndigits_before < MAX_STRING_DIGITS_128*/) {
-      if(ndigits_before < MAX_FORMAT_DIGITS_128) buffer[ndigits_before] = c; 
+      if(ndigits_before < MAX_FORMAT_DIGITS_128) buffer[ndigits_before] = c;
       else if(ndigits_before < MAX_STRING_DIGITS_128) { buffer[ndigits_before] = c; if(c>'0') set_inexact=1; }
 	  else if(c>'0') set_inexact=1;
       ps++;
@@ -495,7 +495,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     // investigate string (after radix point)
     while ((unsigned) (c - '0') <= 9
            /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
-      if(ndigits_total < MAX_FORMAT_DIGITS_128)  buffer[ndigits_total] = c; 
+      if(ndigits_total < MAX_FORMAT_DIGITS_128)  buffer[ndigits_total] = c;
 	  else if(ndigits_total < MAX_STRING_DIGITS_128)  { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
 	  else if(c>'0') set_inexact=1;
       ps++;
@@ -639,7 +639,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       break;
 
     case BID_ROUNDING_DOWN:
-      if(sign_x) 
+      if(sign_x)
         for (; i < ndigits_total; i++) {
           if (buffer[i] > '0') {
             carry = 1;
@@ -648,7 +648,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
         }
       break;
     case BID_ROUNDING_UP:
-      if(!sign_x) 
+      if(!sign_x)
         for (; i < ndigits_total; i++) {
           if (buffer[i] > '0') {
             carry = 1;
@@ -682,7 +682,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       }
       if (dec_expon == -MAX_FORMAT_DIGITS_128
           && coeff_high > 50000000000000000ull)
-        carry = 0; 
+        carry = 0;
     }
 
     __mul_64x64_to_128_fast (CX, coeff_high, scale_high);

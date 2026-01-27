@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,7 +30,7 @@
 #include "bid_internal.h"
 
 BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
-  
+
   BID_UINT128 Tmp;
   BID_UINT64 P, Q, R;
   BID_UINT32 sign_x, sign_y, coefficient_x, coefficient_y, res;
@@ -122,9 +122,9 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
       exponent_x = 0;
     BID_RETURN ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23));
   }
- 
+
   P = (BID_UINT64)coefficient_x * (BID_UINT64)coefficient_y;
-  
+
   //--- get number of bits in C64 ---
   // version 2 (original)
   tempx.d = (double) P;
@@ -187,7 +187,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
 		   Q &= 0xfffffffe;
 #endif
 
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 	  if((exponent_x==-1) && (Q==9999999) && (rnd_mode!=BID_ROUNDING_TO_ZERO))
 	  {
 		 rmode = rnd_mode;
@@ -202,7 +202,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
 #else
     rmode = 0;
 #endif
-            
+
 	     if((R && (rmode==BID_ROUNDING_UP)) || ((!(rmode&3)) && (R+R>=bid_power10_table_128[extra_digits].w[0])))
 		 {
 			 res = very_fast_get_BID32(sign_x^sign_y, 0, 1000000);
@@ -214,5 +214,5 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
 	  res = get_BID32_UF (sign_x^sign_y, exponent_x, Q, (BID_UINT32)R, rnd_mode, pfpsf);
 
     BID_RETURN (res);
-  
+
 }

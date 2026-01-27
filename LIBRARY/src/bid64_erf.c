@@ -51,7 +51,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_erf, BID_UINT64, x)
    }
 
 // Otherwise just do the operation "naively".
-// We inherit the erf([-]inf) = [-]1 case from the binary function,  
+// We inherit the erf([-]inf) = [-]1 case from the binary function,
 // rather than having a special case for it.
 
   BIDECIMAL_CALL1(bid64_to_binary80,xd,x);

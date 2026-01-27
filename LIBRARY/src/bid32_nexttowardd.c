@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -41,13 +41,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
   BID_FPSC tmp_fpsf = 0; // dummy fpsf for calls to comparison functions
   int res1, res2;
 #if !DECIMAL_GLOBAL_ROUNDING
-  unsigned int rnd_mode = BID_ROUNDING_TO_NEAREST; 
+  unsigned int rnd_mode = BID_ROUNDING_TO_NEAREST;
       // dummy; used to convert 128-bit NaN result to 32-bit
-#endif 
+#endif
 
   // check for NaNs or infinities
   if (((x & MASK_SPECIAL32) == MASK_SPECIAL32) ||
-      (((y.w[BID_HIGH_128W] & MASK_NAN) == MASK_NAN) || 
+      (((y.w[BID_HIGH_128W] & MASK_NAN) == MASK_NAN) ||
       ((y.w[BID_HIGH_128W] & MASK_ANY_INF) == MASK_INF))) {
     // x is NaN or infinity or y is NaN or infinity
 
@@ -71,21 +71,21 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
       }
       BID_RETURN (res);
     } else if ((y.w[BID_HIGH_128W] & MASK_NAN) == MASK_NAN) { // y is NAN then res = Q (y)
-      // check first for non-canonical NaN payload 
+      // check first for non-canonical NaN payload
       if (((y.w[BID_HIGH_128W] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
           (((y.w[BID_HIGH_128W] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
            (y.w[BID_LOW_128W] > 0x38c15b09ffffffffull))) {
         y.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0xffffc00000000000ull;
-        y.w[BID_LOW_128W] = 0x0ull; 
-      }  
+        y.w[BID_LOW_128W] = 0x0ull;
+      }
       if ((y.w[BID_HIGH_128W] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-        // set invalid flag 
-        *pfpsf |= BID_INVALID_EXCEPTION; 
+        // set invalid flag
+        *pfpsf |= BID_INVALID_EXCEPTION;
         // return quiet (y)
-        tmp128.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0xfc003fffffffffffull; 
+        tmp128.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
             // clear out also G[6]-G[16]
         tmp128.w[BID_LOW_128W] = y.w[BID_LOW_128W];
-      } else { // y is QNaN  
+      } else { // y is QNaN
         // return y
         tmp128.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0xfc003fffffffffffull; // clear out G[6]-G[16]
         tmp128.w[BID_LOW_128W] = y.w[BID_LOW_128W];
@@ -114,7 +114,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
 	// non-canonical
 	x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
       }
-    } else { 
+    } else {
       // if ((x & MASK_STEERING_BITS32) != MASK_STEERING_BITS32) x is unchanged
       ;	// canonical
     }
@@ -145,7 +145,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
     *pfpsf |= BID_OVERFLOW_EXCEPTION;
   }
   // if the result is in (-10^emin, 10^emin), and is different from the
-  // operand x, signal underflow and inexact 
+  // operand x, signal underflow and inexact
   tmp1 = 0x0f4240; // +1000000 * 10^emin
   tmp2 = res & 0x7fffffff;
   tmp_fpsf = *pfpsf; // save fpsf

@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -184,7 +184,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextup, x)
 	  ind = exp + 6176;
 	  // C1 = C1 * 10^ind
 	  if (ind <= 19) {	// 1 <= P34 - q1 <= 19 <=> 15 <= q1 <= 33
-	    if (q1 <= 19) {	// 64-bit C1, 64-bit 10^ind 
+	    if (q1 <= 19) {	// 64-bit C1, 64-bit 10^ind
 	      __mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[ind]);
 	    } else {	// 20 <= q1 <= 33 => 128-bit C1, 64-bit 10^ind
 	      __mul_128x64_to_128 (C1, bid_ten2k64[ind], C1);
@@ -377,7 +377,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextdown, x)
 	  ind = exp + 6176;
 	  // C1 = C1 * 10^ind
 	  if (ind <= 19) {	// 1 <= P34 - q1 <= 19 <=> 15 <= q1 <= 33
-	    if (q1 <= 19) {	// 64-bit C1, 64-bit 10^ind 
+	    if (q1 <= 19) {	// 64-bit C1, 64-bit 10^ind
 	      __mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[ind]);
 	    } else {	// 20 <= q1 <= 33 => 128-bit C1, 64-bit 10^ind
 	      __mul_128x64_to_128 (C1, bid_ten2k64[ind], C1);
@@ -568,7 +568,7 @@ BID128_FUNCTION_ARG2_NORND (bid128_nextafter, x, y)
 #endif
     BID_SWAP128 (res);
   }
-  // if the operand x is finite but the result is infinite, signal 
+  // if the operand x is finite but the result is infinite, signal
   // overflow and inexact
   if (((x.w[1] & MASK_SPECIAL) != MASK_SPECIAL)
       && ((res.w[1] & MASK_SPECIAL) == MASK_SPECIAL)) {
@@ -605,9 +605,9 @@ BID128_FUNCTION_ARG2_NORND (bid128_nextafter, x, y)
 #endif
   *pfpsf = tmp_fpsf;	// restore fpsf
   if (res1 && res2) {
-    // set the inexact flag 
+    // set the inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
-    // set the underflow flag 
+    // set the underflow flag
     *pfpsf |= BID_UNDERFLOW_EXCEPTION;
   }
   BID_RETURN (res);

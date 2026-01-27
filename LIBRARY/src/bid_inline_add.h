@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,31 +32,31 @@
  *    Helper add functions (for fma)
  *
  *    __BID_INLINE__ BID_UINT64 bid_get_add64(
- *        BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x, 
- *        BID_UINT64 sign_y, int exponent_y, BID_UINT64 coefficient_y, 
+ *        BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
+ *        BID_UINT64 sign_y, int exponent_y, BID_UINT64 coefficient_y,
  *  					 int rounding_mode)
  *
  *   __BID_INLINE__ BID_UINT64 bid_get_add128(
- *                       BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x, 
- *                       BID_UINT64 sign_y, int final_exponent_y, BID_UINT128 CY, 
+ *                       BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
+ *                       BID_UINT64 sign_y, int final_exponent_y, BID_UINT128 CY,
  *                       int extra_digits, int rounding_mode)
  *
  *****************************************************************************
  *
  *  Algorithm description:
  *
- *  bid_get_add64:  same as BID64 add, but arguments are unpacked and there 
+ *  bid_get_add64:  same as BID64 add, but arguments are unpacked and there
  *                                 are no special case checks
  *
- *  bid_get_add128: add 64-bit coefficient to 128-bit product (which contains 
- *                                        16+extra_digits decimal digits), 
+ *  bid_get_add128: add 64-bit coefficient to 128-bit product (which contains
+ *                                        16+extra_digits decimal digits),
  *                         return BID64 result
- *              - the exponents are compared and the two coefficients are 
+ *              - the exponents are compared and the two coefficients are
  *                properly aligned for addition/subtraction
  *              - multiple paths are needed
  *              - final result exponent is calculated and the lower term is
- *                      rounded first if necessary, to avoid manipulating 
- *                      coefficients longer than 128 bits 
+ *                      rounded first if necessary, to avoid manipulating
+ *                      coefficients longer than 128 bits
  *
  ****************************************************************************/
 
@@ -73,7 +73,7 @@
 
 ///////////////////////////////////////////////////////////////////////
 //
-// bid_get_add64() is essentially the same as bid_add(), except that 
+// bid_get_add64() is essentially the same as bid_add(), except that
 //             the arguments are unpacked
 //
 //////////////////////////////////////////////////////////////////////
@@ -333,13 +333,13 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     amount = bid_short_recip_scale[extra_digits];
     C0_64 = CT.w[1] >> amount;
 
-    // result coefficient 
+    // result coefficient
     C64 = C0_64 + coefficient_a;
     // filter out difficult (corner) cases
-    // the following test is equivalent to 
-    // ( (initial_coefficient_a + Ts) < P_ca && 
-    //     (initial_coefficient_a + Ts) > P_ca_m1 ), 
-    // which ensures the number of digits in coefficient_a does not change 
+    // the following test is equivalent to
+    // ( (initial_coefficient_a + Ts) < P_ca &&
+    //     (initial_coefficient_a + Ts) > P_ca_m1 ),
+    // which ensures the number of digits in coefficient_a does not change
     // after adding (the appropriately scaled and rounded) coefficient_b
     if ((BID_UINT64) (C64 - 1000000000000000ull - 1) >
 	9000000000000000ull - 2) {
@@ -377,7 +377,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	amount = bid_short_recip_scale[extra_digits];
 	C0_64 = CT.w[1] >> amount;
 
-	// result coefficient 
+	// result coefficient
 	C64 = C0_64 + coefficient_a;
       } else if (C64 <= 1000000000000000ull) {
 	// less than 16 digits in result
@@ -398,7 +398,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	amount = bid_short_recip_scale[extra_digits];
 	C0_64 = CT_new.w[1] >> amount;
 
-	// result coefficient 
+	// result coefficient
 	C64_new = C0_64 + coefficient_a;
 	if (C64_new < 10000000000000000ull) {
 	  C64 = C64_new;
@@ -418,9 +418,9 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
   if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
     if (C64 & 1) {
-      // check whether fractional part of initial_P/10^extra_digits 
+      // check whether fractional part of initial_P/10^extra_digits
       // is exactly .5
-      // this is the same as fractional part of 
+      // this is the same as fractional part of
       //      (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
       // get remainder
@@ -519,7 +519,7 @@ __bid_full_round64 (BID_UINT64 sign, int exponent, BID_UINT128 P,
 		    unsigned *fpsc) {
   BID_UINT128 Q_high, Q_low, C128, Stemp;
 #ifdef BID_SET_STATUS_FLAGS
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
   BID_UINT128 PU;
 #endif
 #endif
@@ -530,7 +530,7 @@ __bid_full_round64 (BID_UINT64 sign, int exponent, BID_UINT128 P,
     if (exponent >= -16 && (extra_digits + exponent < 0)) {
       extra_digits = -exponent;
 #ifdef BID_SET_STATUS_FLAGS
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
       if (extra_digits > 0) {
 	rmode = rounding_mode;
 	if (sign && (unsigned) (rmode - 1) < 2)
@@ -570,7 +570,7 @@ __bid_full_round64 (BID_UINT64 sign, int exponent, BID_UINT128 P,
     if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
       if (C64 & 1) {
-	// check whether fractional part of initial_P/10^extra_digits 
+	// check whether fractional part of initial_P/10^extra_digits
 	// is exactly .5
 
 	// get remainder
@@ -681,7 +681,7 @@ __bid_full_round64_remainder (BID_UINT64 sign, int exponent, BID_UINT128 P,
     if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
       if (!remainder_P && (C64 & 1)) {
-	// check whether fractional part of initial_P/10^extra_digits 
+	// check whether fractional part of initial_P/10^extra_digits
 	// is exactly .5
 
 	// get remainder
@@ -905,7 +905,7 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	return __bid_full_round64 (sign_y, exponent_y, CT, extra_digits,
 				   rounding_mode, fpsc);
       }
-      // diff_dec2+extra_digits is the number of digits to eliminate from 
+      // diff_dec2+extra_digits is the number of digits to eliminate from
       //                           argument CY
       diff_dec2 = exponent_x - final_exponent_y;
 
@@ -1022,7 +1022,7 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     CX.w[0] = (coefficient_x + sign_x) ^ sign_x;
     CX.w[1] = sign_x;
 
-    // check whether CY (rounded to 16 digits) and CX have 
+    // check whether CY (rounded to 16 digits) and CX have
     //                     any digits in the same position
     diff_dec2 = final_exponent_y - exponent_x;
 
@@ -1208,7 +1208,7 @@ BID_normalize (BID_UINT64 sign_z, int exponent_z,
       __set_status_flags (fpsc, BID_UNDERFLOW_EXCEPTION);
     else if ((coefficient_z == 1000000000000000ull) && !exponent_z
 	     && ((BID_SINT64) (round_dir ^ sign_z) < 0) && round_flag
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 	     && (rmode == BID_ROUNDING_DOWN || rmode == BID_ROUNDING_TO_ZERO)
 #endif
 		 )
@@ -1243,7 +1243,7 @@ BID_normalize (BID_UINT64 sign_z, int exponent_z,
 
 //////////////////////////////////////////////////////////////////////////
 //
-//    0*10^ey + cz*10^ez,   ey<ez  
+//    0*10^ey + cz*10^ez,   ey<ez
 //
 //////////////////////////////////////////////////////////////////////////
 

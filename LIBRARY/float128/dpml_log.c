@@ -87,7 +87,7 @@
 
 /*
  *  Compile time information, depending on which function is compiled:
- *     default function names and base names;  
+ *     default function names and base names;
  *     error codes for the exception dispatcher (note that the FAST functions
  *       do not invoke the exception dispatching mechanism);
  *     and other function-related symbolic constants, e.g. natural log or not,
@@ -170,19 +170,19 @@
  * SUMMARY OF THE ALGORITHM
  *
  *  The algorithm uses a large table for argument reduction, and then
- *  polynomial approximation.  Certain aspects of the algorithm were 
- *  suggested in an article by Peter Tang, in Transactions on Mathematical 
+ *  polynomial approximation.  Certain aspects of the algorithm were
+ *  suggested in an article by Peter Tang, in Transactions on Mathematical
  *  Software, December 1990.
  *
  *  In general, log of x can be computed by first reducing x to a small range
  *  near 1, and computing the log of the reduced argument.  Write x = 2^m * f,
- *  where f is in the interval [1, 2], then  log(x) = m * log(2) + log(f).  
- *  Chop up the interval [1,2] into tiny subintervals [F(i), F(i+1)].  
- *  Determine which division point F(j) is closest to f; then  
+ *  where f is in the interval [1, 2], then  log(x) = m * log(2) + log(f).
+ *  Chop up the interval [1,2] into tiny subintervals [F(i), F(i+1)].
+ *  Determine which division point F(j) is closest to f; then
  *     x = 2^m * f =  2^m *  F(j) * ( f/F(j) ),
- *  where the last factor is very close to 1.  Then 
+ *  where the last factor is very close to 1.  Then
  *     log(x) =  m * log(2) +  log(F(j)) +  log(f/F(j)) .
- *  Since w = f/F(j) is very close to 1, its log can be approximated with a 
+ *  Since w = f/F(j) is very close to 1, its log can be approximated with a
  *  relatively small degree polynomial in w - 1 or (1-w)/(1+w)  (details in
  *  a following section).
  *
@@ -215,22 +215,22 @@
  *  e.g. when x is large.
  *
  * TABLE CONSTANTS
- *  Both the ONE_PATH and the two path approaches store F(j), log(F(j)), 
+ *  Both the ONE_PATH and the two path approaches store F(j), log(F(j)),
  *  and 1/F(j) in a table, and index into the table using the leading
  *  LOG_K fraction bits of f.
  *
  *  In order to maintain the accuracy, computations use backup precision
  *  wherever possible.
- *  
+ *
  *  If no backup precision is available, log(F(j)) and (for the ONE_PATH
  *  algorithm) 1/F(j) are stored in the table in hi and lo parts.
- *  log(2) and, for base 2 and 10, log(e), are also given in hi and lo parts. 
+ *  log(2) and, for base 2 and 10, log(e), are also given in hi and lo parts.
  *  The hi part of log(2) is generated to have at least F_EXP_WIDTH trailing
- *  zero bits so that m * log(2) will be an exact product.  Similarly, 
+ *  zero bits so that m * log(2) will be an exact product.  Similarly,
  *  the hi part of log(F(j)) has enough trailing zeros so that
  *  when it is added to  m * log2_hi, no significant bits of log(F(j))_hi
- *  will be lost.  The lo parts of log(2) and log(F) are given in full 
- *  precision.  Any roundoff error generated in computations that involve 
+ *  will be lost.  The lo parts of log(2) and log(F) are given in full
+ *  precision.  Any roundoff error generated in computations that involve
  *  the lo parts will be shifted off.
  *
  *  All of these constants, the coefficients for the approximation polynomials,
@@ -239,21 +239,21 @@
  * LOG1P
  *  The computation of log1p(x) is similar to that for ln(x).  If x is not
  *  too close to zero, we compute ln(1+x) following Tang's recommendations
- *  to avoid roundoff error in the computation of (y - Fj)/Fj.  
- *  If x is within the interval [T1 - 1, T2 - 1], then x + 1 
- *  will be in the small interval [T1, T2] used in this implementation.  
- *  If x is really close to zero, return x.  The error cases are analogous 
+ *  to avoid roundoff error in the computation of (y - Fj)/Fj.
+ *  If x is within the interval [T1 - 1, T2 - 1], then x + 1
+ *  will be in the small interval [T1, T2] used in this implementation.
+ *  If x is really close to zero, return x.  The error cases are analogous
  *  to those for natural log.
  *
  * POLYNOMIAL APPROXIMATIONS
  *  There are two standard approaches for polynomial approximation for the
  *  natural log, ln(w), where w is close to 1.
- *  1.  Write f = y + F, then f/F = 1 + y/F = 1 + z.  Using the Taylor's 
- *   expansion,  
+ *  1.  Write f = y + F, then f/F = 1 + y/F = 1 + z.  Using the Taylor's
+ *   expansion,
  *       log(1 + z)  =  z - z^2/2 + z^3/3 + ... + (-1)^(n+1) * z^n / n + ...
  *  This suggests the minmax polynomial will be of the form
  *     Q(z)  = z +  C1*z^2 + C2*z^3 + ....
- *  This implementation computes the variable z by taking 
+ *  This implementation computes the variable z by taking
  *    z = (f-F) * (1/F),  where the reciprocal 1/F is stored in the F table.
  *
  *  2.  Write  z = ((f/F) - 1)/( (f/F) + 1) =  (f - F)/(f + F).
@@ -265,7 +265,7 @@
  *      log(1 + f/F) =  z +  z^3/12  +  z^5/80 + ...
  *   This suggests that the minmax polynomial will be
  *      z +  z * (C1* (z^2) + C2* (z^2)^2  + ...  =   z + z*P(z^2).
- *  
+ *
  *  To achieve comparable accuracy, more terms are required in the first
  *  approach's polynomial (the "reciprocal" approach) than in the second
  *  (the "quotient" approach), but the second approach requires a division
@@ -296,7 +296,7 @@
 
 
 /*
- *  If the log base 10 or base 2 is required, since 
+ *  If the log base 10 or base 2 is required, since
  *     log_base(x) = ln(x) / ln(base) =  ln(x) * log_base(e),
  *  each of the coefficients for the polynomial will be multiplied by
  *  by the appropriate base log of e.  These factors will be absorbed into
@@ -319,17 +319,17 @@
 /*
  * ERROR CASES
  *  Special cases (negative input, zero, NaNs, infinity, reserved operand)
- *  and denormalized numbers are screened out early in the routine, 
+ *  and denormalized numbers are screened out early in the routine,
  *  by examining the sign and exponent fields.  The accurate routines
  *  use the DPML exception dispatching mechanism to raise the appropriate
- *  error and return the appropriate value.  
+ *  error and return the appropriate value.
  *
  *      VAX format:
  *          x = 0   raises an error  ("log of zero")
  *          x < 0   raises an error  ("log of negative")
  *
  *      IEEE format:
- *          x = NaN  returns the NaN, without raising an error 
+ *          x = NaN  returns the NaN, without raising an error
  *          x = +INFINITY returns +INFINITY, without raising an error.
  *          x = +denormal  is scaled, and the log is computed.
  *          x = +0  returns -INFINITY, through the exception dispatcher.
@@ -365,17 +365,17 @@
  */
 
 #undef DO_SHARED_TABLE
-#undef DO_ONE_PATH 
+#undef DO_ONE_PATH
 
 
 #if !MAKE_INCLUDE
 #   if MAKE_COMMON
 #      define TABLE_IS_EXTERNAL 1
 #   else
-#      undef TABLE_IS_EXTERNAL 
+#      undef TABLE_IS_EXTERNAL
 #   endif
 
-#   include  STR(BUILD_FILE_NAME) 
+#   include  STR(BUILD_FILE_NAME)
 #endif
 
 #if LOG1P && DO_ONE_PATH
@@ -395,7 +395,7 @@
 #endif
 
 
-/*  
+/*
  * MPHOC code to generate the include file.
  *
  *  When processed by MPHOC, this code will generate arrays and definitions
@@ -416,7 +416,7 @@
  *  The endpoints for the "near 1" interval, T1 and T2, in a useful format,
  *  are also generated.
  *
- *  Logarithms are given in base e by default.  The compile options 
+ *  Logarithms are given in base e by default.  The compile options
  *   BASE_OF_LOG = BASE_2  or BASE_10   generate the include files for the
  *  log2 and the log10 families of functions.
  *
@@ -447,7 +447,7 @@
 
 
 /*
- *  Various constants, e.g. log(2), will be built with EXP_WIDTH trailing 
+ *  Various constants, e.g. log(2), will be built with EXP_WIDTH trailing
  *  zeros, so that multiplying by the exponent will not lose any bits.
  */
 
@@ -520,16 +520,16 @@
     remes_bits_of_accuracy = $2;
 
     remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG,
-          a, b, log_x_plus_1_over_x, remes_bits_of_accuracy, 
+          a, b, log_x_plus_1_over_x, remes_bits_of_accuracy,
           &remes_degree_numer,  &remes_coeff_numer);
 
     for (i = 1; i <= remes_degree_numer ; i++) {
        y = remes_coeff_numer[i];
-       PRINT_POLY_ITEM( y * log_of_e); 
+       PRINT_POLY_ITEM( y * log_of_e);
      }
 
     return (remes_degree_numer);
- 
+
  }
 
 /*
@@ -554,14 +554,14 @@
     remes_bits_of_accuracy = $2;
 
     remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-          a, b, atanh_ov_x, remes_bits_of_accuracy, 
+          a, b, atanh_ov_x, remes_bits_of_accuracy,
           &remes_degree_numer,  &remes_coeff_numer);
 
     div_by_two = 2;
     for (i = 1; i <= remes_degree_numer ; i++) {
        div_by_two *= 4;
        y = remes_coeff_numer[i];
-       PRINT_F_ITEM( y * log_of_e / div_by_two); 
+       PRINT_F_ITEM( y * log_of_e / div_by_two);
 
      }
 
@@ -594,19 +594,19 @@
 #else
      y = rint(part_prec * v) / part_prec;
 #endif
-     z = v - y;     
+     z = v - y;
 
-     PRINT_TABLE_VALUE_DEFINE(LOG2_HI, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOG2_HI, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM( y);
-     PRINT_TABLE_VALUE_DEFINE(LOG2_LO, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOG2_LO, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM( z);
 
 #else
 
      PAD_IF_NEEDED(offset, BITS_PER_B_TYPE);
      TABLE_COMMENT("log of 2 in full precision");
-     PRINT_TABLE_VALUE_DEFINE(LOG2_HI, LOG_TABLE_NAME, offset, B_TYPE);  
-     PRINT_B_ITEM(v);           
+     PRINT_TABLE_VALUE_DEFINE(LOG2_HI, LOG_TABLE_NAME, offset, B_TYPE);
+     PRINT_B_ITEM(v);
 
 #endif
 
@@ -618,16 +618,16 @@
      d = log_of_e - b;
 
 #  if PRECISION_BACKUP_AVAILABLE && !MAKE_COMMON
-     PRINT_TABLE_VALUE_DEFINE(LOGE_HI, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOGE_HI, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(a);
-     PRINT_TABLE_VALUE_DEFINE(LOGE_LO, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOGE_LO, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(c);
 #  else
-     PRINT_TABLE_VALUE_DEFINE(LOGE_HI, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOGE_HI, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(a);
      PRINT_TABLE_VALUE_DEFINE(LOGE_HI2, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(b);
-     PRINT_TABLE_VALUE_DEFINE(LOGE_LO, LOG_TABLE_NAME, offset, B_TYPE);  
+     PRINT_TABLE_VALUE_DEFINE(LOGE_LO, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(c);
      PRINT_TABLE_VALUE_DEFINE(LOGE_LO2, LOG_TABLE_NAME, offset, B_TYPE);
      PRINT_B_ITEM(d);
@@ -640,13 +640,13 @@
 /*
  *  There are 3 ways to build the table of F(j) and related data:
  *    1.  if ONE_PATH and DOUBLE_PRECISION or larger, we need to store  1/F(j)
- *        in hi and lo parts, to preserve accuracy.  So each row 
+ *        in hi and lo parts, to preserve accuracy.  So each row
  *        of the table contains 5 items:
  *
  *          F(j)  = 1 + j/2^LOG_K     in "half" precision
  *          hi part of log(F(j))      in "half" precision
  *          full precision form of 1/F(j)
- *          lo part of 1/F(j)   where (1/F)_full - (1/F)_lo is "short" 
+ *          lo part of 1/F(j)   where (1/F)_full - (1/F)_lo is "short"
  *                                  (has around "half" precision - 3 bits)
  *          lo part of log(F(j))
  *
@@ -715,7 +715,7 @@
 
 
 /*
- *  This procedure generates T1 and T2 (the boundaries of the interval 
+ *  This procedure generates T1 and T2 (the boundaries of the interval
  *  "near 1") given as "integers" in the form  sign-expon-frac.
  *
  *  The values of T1 and T2 depend on LOG_K.  If x > 1 is very close to 1,
@@ -723,22 +723,22 @@
  *     log(x) = log(F(j))_hi + z + poly(z) + log(F(j))_lo
  *  where z = (x - F(j))* 1/F(j).  Although x - F(j) is exact, multiplying
  *  by 1/F causes a rounding error (3/2 lsb in the worst case).  log(F(j)) is
- *  approximately  j/2^LOG_K, and is given in extra precision.  If z is 
+ *  approximately  j/2^LOG_K, and is given in extra precision.  If z is
  *  computed only to working precision, then by forcing an alignment shift
  *  of at least 2 bits, the error in z is safely shifted off.  When using
  *  backup precision, a smaller alignment shift will work.
  *  The alignment shift used here is log2(SAFE_LIM) = 3  if no backup
- *  type exists, and an alignment shift of approximately 1 if there is 
- *  backup, leading to a max relative error of approx .56 lsb (double).  
- *  The smallest value of F(j) used is 1 + SAFE_LIM/2^LOG_K = T2, and 
- *  1 - SAFE_LIM/2^LOG_K for T1.  
+ *  type exists, and an alignment shift of approximately 1 if there is
+ *  backup, leading to a max relative error of approx .56 lsb (double).
+ *  The smallest value of F(j) used is 1 + SAFE_LIM/2^LOG_K = T2, and
+ *  1 - SAFE_LIM/2^LOG_K for T1.
  *
  *  In base 2 or 10, z is multiplied by log(e), which introduces an additional
  *  1 bit rounding error in the variable.  If we enlarge the interval [T1,T2]
  *  slightly, this error is also shifted off.
  *
- *  The size of the error is related to the alignment shift: an additional 
- *  shift of 1 bit reduces the (error - .5) by approximately 1/2.  
+ *  The size of the error is related to the alignment shift: an additional
+ *  shift of 1 bit reduces the (error - .5) by approximately 1/2.
  *  This corresponds to doubling the size of the interval [T1, T2].
  *
  *  In the code, the hi word of input x is extracted into integer variable
@@ -929,7 +929,7 @@
  *  generates an overflow.
  */
 
-             
+
    working_prec = WORKING_PRECISION;
    SET_MP_PREC(working_prec);
 
@@ -956,7 +956,7 @@
 
    START_TABLE(LOG_TABLE_NAME, offset);
 
-#if MAKE_COMMON  
+#if MAKE_COMMON
 
    TABLE_COMMENT("1.0 in double precision");
    PRINT_TABLE_VALUE_DEFINE(B_ONE, LOG_TABLE_NAME, offset, B_TYPE);
@@ -992,53 +992,53 @@
  *  to allow greater flexibility in adding terms, for performance.
  */
 
-   
+
    TABLE_COMMENT("accurate poly coeffs, single precision, near 1");
-   PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME,
         offset, B_TYPE);
    max_arg =  R_SAFE_LIM/(2^(LOG_K ));
-   deg_sa_near = do_regular_coeffs(max_arg, R_PRECISION + 2);   
+   deg_sa_near = do_regular_coeffs(max_arg, R_PRECISION + 2);
 
 
    TABLE_COMMENT("accurate/fast poly coeffs, single precision, away from 1");
-   PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_AWAY, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_AWAY, LOG_TABLE_NAME,
         offset, B_TYPE);
 #  if IEEE_FLOATING
    max_arg = 1/(2^(LOG_K + 1));
 #  else
    max_arg = 1/(2^(LOG_K));
 #  endif
-   deg_sa_away = do_regular_coeffs(max_arg, R_PRECISION - 3 ); 
+   deg_sa_away = do_regular_coeffs(max_arg, R_PRECISION - 3 );
 
 
    TABLE_COMMENT("accurate poly coeffs, double precision, near 1");
-   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME,
         offset, B_TYPE);
    max_arg =  B_SAFE_LIM/(2^(LOG_K ));
-   deg_da_near = do_regular_coeffs(max_arg, B_PRECISION + 4);   
+   deg_da_near = do_regular_coeffs(max_arg, B_PRECISION + 4);
 
    TABLE_COMMENT("constant 1, the linear coeff of the fast near 1 poly");
    PRINT_B_ITEM(log_of_e);
 
    TABLE_COMMENT("fast poly coeffs, double precision, near 1");
-   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_NEAR, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_NEAR, LOG_TABLE_NAME,
         offset, B_TYPE);
    max_arg =  B_SAFE_LIM/(2^(LOG_K ));
-   deg_df_near = do_regular_coeffs(max_arg, B_PRECISION + 2);   
+   deg_df_near = do_regular_coeffs(max_arg, B_PRECISION + 2);
 
- 
+
    TABLE_COMMENT("accurate poly coeffs, double precision, away from 1");
-   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_AWAY, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_AWAY, LOG_TABLE_NAME,
         offset, B_TYPE);
    max_arg = 1/(2^(LOG_K + 1));
    deg_da_away = do_regular_coeffs(max_arg, B_PRECISION - 2 );
 
 
    TABLE_COMMENT("fast poly coeffs, double precision, away from 1");
-   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_AWAY, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_AWAY, LOG_TABLE_NAME,
         offset, B_TYPE);
    max_arg = 1/(2^(LOG_K + 1));
-   deg_df_away = do_regular_coeffs(max_arg, B_PRECISION - 8); 
+   deg_df_away = do_regular_coeffs(max_arg, B_PRECISION - 8);
 
 
 
@@ -1068,40 +1068,40 @@
    deg_away = do_regular_coeffs(max_arg, F_PRECISION + 3);
 
 
- 
+
 #   else
 
    TABLE_COMMENT("poly coeffs, near 1");
-   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_NEAR, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_NEAR, LOG_TABLE_NAME,
         offset, F_TYPE);
    max_arg =  F_SAFE_LIM/(2^(LOG_K ));
-   deg_near = do_regular_coeffs(max_arg, F_PRECISION +  EXTRA_N);   
+   deg_near = do_regular_coeffs(max_arg, F_PRECISION +  EXTRA_N);
 
 
    TABLE_COMMENT("poly coeffs, quotient, near 1");
-   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_N_Q, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_N_Q, LOG_TABLE_NAME,
         offset, F_TYPE);
    max_arg = F_SAFE_LIM/2^(LOG_K);
-   deg_near_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_N_Q);   
+   deg_near_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_N_Q);
 
 
    for (j = 0; j < deg_near_q ; j++) {
       printf("\n#define B%i POLY_ADD_N_Q[%i]", (2*j + 3), j);
     }
 
- 
+
    TABLE_COMMENT("poly coeffs, away from 1");
-   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_AWAY, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_AWAY, LOG_TABLE_NAME,
         offset, F_TYPE);
    max_arg = 1/(2^(LOG_K + 1));
    deg_away = do_regular_coeffs(max_arg, F_PRECISION - 2 );
 
 
    TABLE_COMMENT("poly coeffs, quotient, away from 1");
-   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_A_Q, LOG_TABLE_NAME, 
+   PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_A_Q, LOG_TABLE_NAME,
         offset, F_TYPE);
    max_arg = 1/2^LOG_K;
-   deg_away_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_A_Q );   
+   deg_away_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_A_Q );
 
    for (j = 0; j < deg_away_q ; j++) {
       printf("\n#define C%i POLY_ADD_A_Q[%i]", (2*j + 3), j);
@@ -1129,7 +1129,7 @@
  *  The table of F(j), reciprocal of F(j), and logF(j).
  */
 
-   printf("\n#define LOG_F_TABLE  %i \n", BYTES(offset) );       
+   printf("\n#define LOG_F_TABLE  %i \n", BYTES(offset) );
    do_table();
 
    END_TABLE;
@@ -1144,7 +1144,7 @@
  *  The constants T1 and T2, which define the endpoints of the "near 1"
  *  interval.
  */
-   
+
 #if !ONE_PATH
    do_T_consts();
 #endif
@@ -1202,15 +1202,15 @@
       my $headerText = GetHeaderText( STR(BUILD_FILE_NAME),		\
                        "Definitions and constants for " .		\
                        STR(F_ENTRY_NAME),  __FILE__);			\
-         print "$headerText\n\n$tableText\n\n$defineText";	
+         print "$headerText\n\n$tableText\n\n$defineText";
 
 #endif
 
 
 
 /*
- *   MACROS 
- */ 
+ *   MACROS
+ */
 
 
 /*
@@ -1281,15 +1281,15 @@
 
 #if DO_SHARED_TABLE
 #   if SINGLE_PRECISION
-#      define T1_64  R_T1_64  
-#      define T2_64  R_T2_64  
+#      define T1_64  R_T1_64
+#      define T2_64  R_T2_64
 #      define T1_32  R_T1_32
-#      define T2_32  R_T2_32  
+#      define T2_32  R_T2_32
 #   elif DOUBLE_PRECISION
-#      define T1_64  B_T1_64  
-#      define T2_64  B_T2_64  
+#      define T1_64  B_T1_64
+#      define T2_64  B_T2_64
 #      define T1_32  B_T1_32
-#      define T2_32  B_T2_32  
+#      define T2_32  B_T2_32
 #   endif
 
 #endif
@@ -1298,12 +1298,12 @@
 #if (BITS_PER_WORD == 64)
 #   define T1    T1_64
 #   define T2    T2_64
-#else 
+#else
 #   define T1    T1_32
 #   define T2    T2_32
-#endif 
+#endif
 
-#if DO_SHARED_TABLE 
+#if DO_SHARED_TABLE
 #  if  SINGLE_PRECISION
 #       define ONE R_ONE
 #  else
@@ -1370,7 +1370,7 @@
               if (m <= ((U_WORD) LOWER_LIMIT << F_EXP_POS)) return (x); \
               if (m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS)) goto label; \
               if (m == ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS)) tmpx = x; \
-              else  tmpx = x + float_one; 
+              else  tmpx = x + float_one;
 
 #      else
 #         define LOGP_CHANGE_VAR_AND_GET_ONE(x, tmpx, float_one, j, m, label) \
@@ -1379,7 +1379,7 @@
               m = (j & F_EXP_MASK); \
               if (m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS)) goto label; \
               if (m <= ((U_WORD) LOWER_LIMIT << F_EXP_POS)) return (x); \
-              tmpx = x + float_one; 
+              tmpx = x + float_one;
 
 #      endif
 #    endif
@@ -1389,19 +1389,19 @@
 #endif
 
 
-/* 
+/*
  *  Macro GET_HI_WORD gets the sign, exponent, and hi fraction bits, of either
  *  the original x, or (for log1p) of temp_x.
  *
  *  VAX F format, accurate log, is treated specially, because we don't want
  *  to incur a penalty for using the "long" indexing, which costs 2 extra
- *  instructions.  Otherwise, for VAX format, if INDEX_BITS_NEEDED > 
+ *  instructions.  Otherwise, for VAX format, if INDEX_BITS_NEEDED >
  *  number of contiguous hi fraction bits, we do a PDP shuffle to get more
- *  fraction bits.  The fast F format log needs the first non-contiguous 
+ *  fraction bits.  The fast F format log needs the first non-contiguous
  *  fraction bit as "rounding" information, because it does not have a
  *  special path near 1 and so has to be careful.
  *
- *  The resulting integer word is used in screening for "near 1" and in 
+ *  The resulting integer word is used in screening for "near 1" and in
  *  computing the index.  We also need to know the location of x's sign bit.
  */
 
@@ -1457,7 +1457,7 @@
  */
 
 #if DO_LOG1P
-#  define PRE_LOAD_ONE(z) 
+#  define PRE_LOAD_ONE(z)
 /*
        clear = CLEAR_MASK; \
        index_mask = JMASK; \
@@ -1478,7 +1478,7 @@
 
 #  endif
 
- 
+
 #endif
 
 
@@ -1487,9 +1487,9 @@
  *  Computes the index into the F_table, using the hi LOG_K fraction bits
  *  of x (really, from the integer hi word of x, PDP shuffled for double
  *  precision VAX).  The original hi part of x has been manipulated so that
- *  at least INDEX_BITS_NEEDED bits lie to the right of the exponent field, 
+ *  at least INDEX_BITS_NEEDED bits lie to the right of the exponent field,
  *  down to (and including) the lsb of the integer.  The index is these leading
- *  INDEX_BITS_NEEDED fraction bits, multiplied by 2^4 or 2^5 for single or 
+ *  INDEX_BITS_NEEDED fraction bits, multiplied by 2^4 or 2^5 for single or
  *  double precision respectively (each row of the table has 4 floating point
  *  numbers, for a total of 16 or 32 bytes).
  *
@@ -1534,7 +1534,7 @@
          other = ((rounding_bit) ? ((U_WORD)1 << SHIFT_AMOUNT) : 0); \
          j += other; \
          m = (hi_x >> CURRENT_EXP_POS); \
-         m &= clear; 
+         m &= clear;
 
 #   else
 
@@ -1542,7 +1542,7 @@
          index_mask = JMASK; \
          j = (hi_x  & index_mask);  \
          j <<= SHIFT_AMOUNT; \
-         m = (hi_x >> CURRENT_EXP_POS); 
+         m = (hi_x >> CURRENT_EXP_POS);
 
 #   endif
 
@@ -1562,9 +1562,9 @@
       m = hi_x >> CURRENT_EXP_POS; \
       j &= clear; \
       j += rounding_bit; \
-      j &= index_mask; 
+      j &= index_mask;
 
- 
+
 #  else
 
 #    define JMASK  MAKE_MASK(INDEX_BITS_NEEDED,(CURRENT_EXP_POS - TABLE_CONST))
@@ -1583,7 +1583,7 @@
        j <<= (SHIFT_THE_INDEX - (CURRENT_EXP_POS - TABLE_CONST)); \
        m = (hi_x >> CURRENT_EXP_POS); \
        m &= EXP_SIGN_MASK;
-  
+
 #   endif
 
 #else
@@ -1623,12 +1623,12 @@
 /*
  *  Screen out bad x.
  *
- *  In principle, for VAX format, we could screen with 
+ *  In principle, for VAX format, we could screen with
  *      "if (x <= 0) goto label"
  *  but in practice, integer compares are faster and have less impact on
  *  code scheduling than floating compares.
  *
- *  Bad x: m = sign/exponent has been shifted to the right. 
+ *  Bad x: m = sign/exponent has been shifted to the right.
  *  For VAX double precision, if m = 0, x was zero; if m < 0, x was negative.
  *  For VAX single precision, need to make sure any fraction bits to the
  *    left of the exponent were zeroed out.
@@ -1674,7 +1674,7 @@
 
 #define FINAL_VERSION_OF_EXPONENT(m)    m -= (F_EXP_BIAS - F_NORM)
 
-/* 
+/*
  *  "Shortens" a variable to half precision or so, so that products of
  *  "short" variables will be exact.  There are two flavors of "shorten":
  *     add and subtract a BIG number to clear out a specific number
@@ -1724,10 +1724,10 @@
  *
  *  The macro PREPARE_VARIABLE_FOR_POLY chooses one approach or the other,
  *  depending on the current value of USE_RECIP.
- *  In the first case, 
+ *  In the first case,
  *     variable = (f - Fj) * (1/Fj)  where the reciprocal is fetched from
  *         the table.
- *  In the second case, compute 
+ *  In the second case, compute
  *     variable = 2*(f - Fj)/(f + Fj).
  *
  *
@@ -1743,16 +1743,16 @@
  *  Then a better approximation to the product (f - Fj)*(1/Fj) consists of
  *  the pieces
  *     (t_hi * 1/F_hi)  and  ( t_lo * 1/F_hi +  (t_hi + t_lo)*1/F_lo )
- *  
+ *
  *
  *  The variable for the approximation for log1p is also more complicated
  *  than the standard variable for log, because f = the scaled (1 + x)
  *  minus F(j) must be computed accurately.
- *  
+ *
  *  m is the IEEE-style exponent for  1 + x, and f = 2^(-m) * (1 + x).
  *  Fj is the nearest division point to f, as above.  Then t is f - F(j),
  *  computed as:
- *  
+ *
  *     m = -2, -3, ...:     t = f - Fj
  *     m = -1 :             t = (2 - Fj) + 2x
  *     m = 0 :              t = (1 - Fj) + x
@@ -1780,20 +1780,20 @@
     else if ((m == F_PRECISION) || (m == (F_PRECISION + 1))) \
         { SCALE_DOWN(m, tmp); \
         y = (tmp * (B_TYPE) x - Fj) + tmp; } \
-    else  y = (B_TYPE) tmpx - Fj; 
+    else  y = (B_TYPE) tmpx - Fj;
 
 
 #  if  USE_RECIP
 
 #    define PREPARE_VARIABLE_FOR_FAR_POLY(j, Fj, tmp, one, x, m, tmpx, z, y) \
       SET_UP_FOR_LOGP_POLY(j, Fj, tmp, one, x, m, tmpx, y); \
-      tmp = RECIP_F(j);  y = y * tmp; 
+      tmp = RECIP_F(j);  y = y * tmp;
 
 #  else
 
 #    define PREPARE_VARIABLE_FOR_FAR_POLY(j, Fj, tmp, one, x, m, tmpx, z, y) \
       SET_UP_FOR_LOGP_POLY(j, Fj, tmp, one, x, m, tmpx, y); \
-      tmp = (y + Fj) + Fj;  y = y/tmp ; y += y; 
+      tmp = (y + Fj) + Fj;  y = y/tmp ; y += y;
 
 #  endif
 
@@ -1806,17 +1806,17 @@
      tmp = (B_TYPE) RECIP_F_FULL(j);   tmpx -=  Fj;\
      x = RECIP_F_LO(j);    y = tmpx * tmp ;    tmp -= x; \
      SHORTEN2(tmpx, z);   x *= tmpx;   tmpx -= z; \
-     z *=  tmp;   x += tmp * tmpx; 
+     z *=  tmp;   x += tmp * tmpx;
 
 #  else
 
 #    if  USE_RECIP
 #      define PREPARE_VARIABLE_FOR_FAR_POLY(j, Fj, tmp, one, x, m, tmpx, z, y)\
-          tmp = RECIP_F(j);  y = (B_TYPE) tmpx - Fj;   y *= tmp; 
+          tmp = RECIP_F(j);  y = (B_TYPE) tmpx - Fj;   y *= tmp;
 #    else
 #      define PREPARE_VARIABLE_FOR_FAR_POLY(j, Fj, tmp, one, x, m, tmpx, z, y)\
           tmp = (B_TYPE) tmpx - Fj;  \
-          y = (B_TYPE) tmpx + Fj;   y = tmp/y;   y += y; 
+          y = (B_TYPE) tmpx + Fj;   y = tmp/y;   y += y;
 #    endif
 
 #  endif
@@ -1835,7 +1835,7 @@
 
 #if NATURAL
 
-#  if DO_ONE_PATH && !PRECISION_BACKUP_AVAILABLE 
+#  if DO_ONE_PATH && !PRECISION_BACKUP_AVAILABLE
 #    define ADD_LINEAR_TERM_TO_LOG_F(w, v, x, t, tmpx, y, z) \
        w += x;  \
        t = v + z;  tmpx = t - v;   v = t;   w += z - tmpx;
@@ -1862,7 +1862,7 @@
 
 /*
  *  If x was close to 1, the polynomial approximation uses either x - 1
- *  (for LOG1P, x itself), or the quotient  z = 2*(x - 1)/(x + 1) 
+ *  (for LOG1P, x itself), or the quotient  z = 2*(x - 1)/(x + 1)
  *  (for LOG1P, x/2 + x) as the variable for the polynomial approximation.
  *
  *  Since the quotient will not be exact, in general, the macro
@@ -1928,11 +1928,11 @@
 #endif
 
 
-/* 
- *  This macro extends the precision of the quotient u = 2(x - 1)/(x + 1), 
+/*
+ *  This macro extends the precision of the quotient u = 2(x - 1)/(x + 1),
  *  where x is the original input to the log function and x is near 1.
  *
- *  x lies in a small interval around 1, [T1, T2] .  
+ *  x lies in a small interval around 1, [T1, T2] .
  *  f was already computed as   f = x - 1.  Because x was near 1, f is exact.
  *  u_hi was already computed by taking a preliminary approximation to
  *     the quotient u, and then "shortening" u to roughly half precision.
@@ -1948,7 +1948,7 @@
  *    (x + 1) * u = (x + 1) * (u_hi + u_lo) = 2 * f .
  *
  *  Replace f by (f_hi + f_lo), and solve for u_lo:
- *  
+ *
  *   (x + 1) * u_lo = 2 * f - (x + 1) * u_hi  =  2 * f - (f + 2) * u_hi =
  *           2 * f - ( f_hi * u_hi - f_lo * u_hi - 2 * u_hi).
  *
@@ -1962,7 +1962,7 @@
  */
 
 #if (NO_DIVISIONS || PRECISION_BACKUP_AVAILABLE)
-#  define GET_ACCURATE_LO_PART_OF_QUOTIENT(f, u_hi, g) 
+#  define GET_ACCURATE_LO_PART_OF_QUOTIENT(f, u_hi, g)
 #else
 #  define GET_ACCURATE_LO_PART_OF_QUOTIENT(f, u_hi, g) \
    {  B_TYPE f_hi, f_lo; \
@@ -1991,7 +1991,7 @@
  *  where the first term is exact (note that z has (LOG_K + 1) trailing zeros).
  *
  *  When using the quotient variable, we add in the "fixed up" part of the
- *  linear term in the variable "extra".  There is no square term in the 
+ *  linear term in the variable "extra".  There is no square term in the
  *  quotient variable approximation.
  *
  *  In base 10 and base 2, the linear term must be multiplied carefully by
@@ -2007,10 +2007,10 @@
 #       if NO_DIVISIONS
 #         define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
              lin -= (lin * lin)*HALF; \
-             t += lin; 
+             t += lin;
 #       else
 #         define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
-             t += lin; 
+             t += lin;
 
 #       endif
 
@@ -2061,7 +2061,7 @@
               lo = lin - short; \
               t += lo * LOGE_HI; \
               t += short * LOGE_LO2; \
-              t += short * LOGE_HI2;         
+              t += short * LOGE_HI2;
 #       else
 #          define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
               t += extra * LOGE_LO2; \
@@ -2091,7 +2091,7 @@
 
 #if !FAST
 
-/* 
+/*
  *  The code for logarithm.
  */
 
@@ -2118,13 +2118,13 @@ F_ENTRY_NAME(F_TYPE x)
  *  in hi_x.  VAX format numbers are massaged so that the fraction bits that
  *  were not adjacent to the sign and exponent are either ignored (single
  *  precision) or are swapped into the "lower" half of the integer word
- *  (double precision).  
+ *  (double precision).
  */
 
 #if LOG1P
-   GET_HI_WORD(temp_x, hi_x) ; 
+   GET_HI_WORD(temp_x, hi_x) ;
 #else
-   GET_HI_WORD(x, hi_x) ; 
+   GET_HI_WORD(x, hi_x) ;
 #endif
 
 
@@ -2135,25 +2135,25 @@ F_ENTRY_NAME(F_TYPE x)
 
     PRE_LOAD_ONE(float_one);
 
-/*  
+/*
  *  Now, screen x to see if it is in the interval [T1, T2], "near 1".
- *  For efficiency, the comparison is done with an unsigned integer compare:  
+ *  For efficiency, the comparison is done with an unsigned integer compare:
  *  (x - T1) < (T2 - T1).
  */
 
 #if !DO_ONE_PATH
    screen = (U_WORD) (hi_x - T1);
 
-   if ( screen < T2_MINUS_T1 ) goto near_1; 
+   if ( screen < T2_MINUS_T1 ) goto near_1;
 #endif
 
-   {                
-     B_TYPE w, t, y, v, z;      
+   {
+     B_TYPE w, t, y, v, z;
 
-/* 
- *  Normalize (a copy of) the fraction field of x to have a value between 
- *  1 and 2, by putting the exponent of 1.0 into the exponent field, 
- *  either with COPY_SIGN_EXP or directly.  
+/*
+ *  Normalize (a copy of) the fraction field of x to have a value between
+ *  1 and 2, by putting the exponent of 1.0 into the exponent field,
+ *  either with COPY_SIGN_EXP or directly.
  */
 
 #if DO_LOG1P
@@ -2166,7 +2166,7 @@ F_ENTRY_NAME(F_TYPE x)
 /*
  *  x is not in the interval [T1, T2], but it still might be negative,
  *  zero, infinity or NaN.  On the way to screening these out, shift the
- *  exponent and fraction field to the right to isolate the leading 
+ *  exponent and fraction field to the right to isolate the leading
  *  INDEX_BITS_NEEDED fraction bits, in order to get the index of the jth row.
  */
 
@@ -2174,7 +2174,7 @@ F_ENTRY_NAME(F_TYPE x)
 
 /*
  *  Continue shifting down, to isolate the exponent.  Screen out the special
- *  cases with another unsigned integer compare, to see if sign = 1, or 
+ *  cases with another unsigned integer compare, to see if sign = 1, or
  *  exponent = 0, or exponent = MAX (IEEE only).  Note that if x's exponent
  *  was zero, subtracting 1 makes it look like a large (unsigned) integer.
  */
@@ -2202,26 +2202,26 @@ F_ENTRY_NAME(F_TYPE x)
  *  The variable for the approximation polynomial is either
  *     (scaled_x - F(j)) * 1/F(j)   where F(j) is fetched from the table
  *  (when USE_RECIP is true)
- *  or    
+ *  or
  *     2(x - F(j))/(x + F(j)).
  *  Use the latter only when divides are relatively fast.
  */
 
-    PREPARE_VARIABLE_FOR_FAR_POLY(j, t, w, float_one, x, m, temp_x, z, y); 
+    PREPARE_VARIABLE_FOR_FAR_POLY(j, t, w, float_one, x, m, temp_x, z, y);
 
-/* 
+/*
  *  Compute  m*log(2) + log(F), in hi and lo parts:
  *    m*log(2)_lo + log(F)_lo
  *    m*log(2)_hi + log(F)_hi
  *
- *  The log(F) is fetched from the F_table.  The base of these logs is 
+ *  The log(F) is fetched from the F_table.  The base of these logs is
  *  2, 10 or e, as appropriate.
  */
 
     v = (B_TYPE) m;
 
 #if !PRECISION_BACKUP_AVAILABLE
-        w = LOG2_LO;             
+        w = LOG2_LO;
         w *= v;
         w += LOGF_LO(j);             /* m*log(2)_lo + log(F)_lo   */
 
@@ -2242,7 +2242,7 @@ F_ENTRY_NAME(F_TYPE x)
 
      ADD_LINEAR_TERM_TO_LOG_F(w, v, x, t, temp_x, y, z);
 
-/*  
+/*
  *  t = poly(y)
  */
 
@@ -2252,7 +2252,7 @@ F_ENTRY_NAME(F_TYPE x)
  *  Combine the poly with log(F).
  */
 
-     w += t;                      
+     w += t;
 
 #if !PRECISION_BACKUP_AVAILABLE
         w += v;
@@ -2261,7 +2261,7 @@ F_ENTRY_NAME(F_TYPE x)
 /*
  *  So, if x = 2^m * fraction = 2^m * (F + rest) = 2^m * F * f,
  *
- *    log(x) = m * log(2) + log(F) + log(f) =   
+ *    log(x) = m * log(2) + log(F) + log(f) =
  *
  *       (m * log(2)_hi + log(F)_hi) +
  *           (f * log(e)_hi + ( f*log(e)_lo + poly(f) +
@@ -2274,25 +2274,25 @@ F_ENTRY_NAME(F_TYPE x)
 
     }                 /* end x not in interval */
 
-/*  
+/*
  *  The approximation for x near 1, in the interval (T1, T2), involves
  *  computing the variable for approximation with PREPARE_VARIABLE_NEAR_1,
  *  to get either z = x - 1 or  z = 2(x-1)/(x+1), and then splitting z
  *  into hi and lo parts z_hi and z_lo using the SHORTEN macro.
  *
  *  In the first, NO_DIVISIONS approach, it's important to split z carefully
- *  so that z_hi has N bits.  Because x was near 1, x - 1 is no smaller 
- *  than 2^(-F_PRECISION + 1) (except in log1p).  
- *  x - 1 has some trailing zeros; in fact, the smaller z is, the more 
+ *  so that z_hi has N bits.  Because x was near 1, x - 1 is no smaller
+ *  than 2^(-F_PRECISION + 1) (except in log1p).
+ *  x - 1 has some trailing zeros; in fact, the smaller z is, the more
  *  trailing zeros.
  *
- *  We can perserve accuracy in the approximation 
+ *  We can perserve accuracy in the approximation
  *         ln(1 + z) = z - z^2/2 + z^3/3 - ....
  *  by splitting the second term z^2/2 into
  *    z_hi^2/2 (exact)  +  z_lo*(z + z_hi)/2.
  *
  *  The smaller z is, the greater the alignment shift between z_hi^2/2 and z,
- *  but then the more trailing zeros z has.  So z - z_hi^2/2 is exact, 
+ *  but then the more trailing zeros z has.  So z - z_hi^2/2 is exact,
  *  provided that the number of bits is small enough ( < F_PRECISION/2 - 1).
  *
  *  In log1p, we use z_hi - (z_hi^2/2).  We also know that z is no smaller
@@ -2306,7 +2306,7 @@ F_ENTRY_NAME(F_TYPE x)
  *  Let f = x - 1  and f1 = shortened f.   f2 = f - f1 is exact.
  *    u = 2(x-1)/(x + 1) is not exact.
  *    Let u1 = shortened u.
- *  The macro GET_ACCURATE_LO_PART_OF_QUOTIENT  computes u2 = u - u1, 
+ *  The macro GET_ACCURATE_LO_PART_OF_QUOTIENT  computes u2 = u - u1,
  *  by reconstructing u itself in extra accuracy.
  *
  *
@@ -2323,7 +2323,7 @@ F_ENTRY_NAME(F_TYPE x)
       if (temp_x == float_one) return (x);
 #endif
 
-     { 
+     {
         B_TYPE  t, z, w, v, y;
 
 /*
@@ -2342,7 +2342,7 @@ F_ENTRY_NAME(F_TYPE x)
  *  t = poly(z).  Does not include linear or square terms.
  */
 
-          EVAL_NEAR_POLY(z, t); 
+          EVAL_NEAR_POLY(z, t);
 
 /*
  *  An accurate estimate of the lo part of the approximation variable is
@@ -2386,7 +2386,7 @@ F_ENTRY_NAME(F_TYPE x)
  */
 
 
-  bad_x:  
+  bad_x:
 
 #if IEEE_FLOATING
 
@@ -2394,10 +2394,10 @@ F_ENTRY_NAME(F_TYPE x)
      if ((hi_x & F_SIGN_BIT_MASK) != 0) {
 
 # if COMPATIBILITY_MODE
-              if ZERO_EXPON(hi_x) {    /* sign = negative, exponent is zero 
+              if ZERO_EXPON(hi_x) {    /* sign = negative, exponent is zero
                                           could be -0 or -denorm */
 
-                       GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x); 
+                       GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x);
                                            return x;
 		       }
 
@@ -2408,7 +2408,7 @@ F_ENTRY_NAME(F_TYPE x)
                       GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x)
                                   return x;
 		  }
-# else  
+# else
 		F_SET_FLAG_IF_NAN( x, m ) ;
 		if ( m )
 		    return x ;
@@ -2423,7 +2423,7 @@ F_ENTRY_NAME(F_TYPE x)
 		    RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
 		    }
 # endif
-            }                      
+            }
 
       else if ZERO_EXPON(hi_x) {   /*  sign = positive, expon = zero */
 
@@ -2431,9 +2431,9 @@ F_ENTRY_NAME(F_TYPE x)
 
 #   if COMPATIBILITY_MODE
 	/*  +0: return -inf, via RAISE */
-	GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
+	GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x);
 	return x;
-#   else  
+#   else
 	{   WORD func_error_word ;
 	    func_error_word = ERROR_WORD( STATUS_OVERFLOW,
 					  NEG_HUGE_INDEX,
@@ -2459,9 +2459,9 @@ F_ENTRY_NAME(F_TYPE x)
 	if (temp_x == 0.0) {       /*  +0: should return -inf, via RAISE */
 
 # if COMPATIBILITY_MODE
-	    GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
+	    GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x);
 	    return x;
-# else  
+# else
 	    WORD func_error_word ;
 	    func_error_word = ERROR_WORD( STATUS_OVERFLOW,
 					  NEG_HUGE_INDEX,
@@ -2475,15 +2475,15 @@ F_ENTRY_NAME(F_TYPE x)
              } else {     /* x is positive denorm - scale and compute log */
 
 
-                 GET_HI_WORD(temp_x, hi_x) ;  
-                                        /* compute the index again */  
+                 GET_HI_WORD(temp_x, hi_x) ;
+                                        /* compute the index again */
 
 
                  F_COPY_SIGN_AND_EXP(temp_x, float_one, temp_x);
 
                  SHIFT_GET_INDEX_AND_EXPONENT(hi_x, m, j);
 
-                 FINAL_VERSION_OF_EXPONENT(m);                
+                 FINAL_VERSION_OF_EXPONENT(m);
 
                  m -= __LOG2_DENORM_SCALE;
 
@@ -2511,7 +2511,7 @@ F_ENTRY_NAME(F_TYPE x)
 
        else if ZERO_EXPON(hi_x) {    /*  sign = positive, expon = zero */
                                     /*  zero:  raise error */
-                  GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
+                  GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x);
                                   return x;
            }
 
@@ -2528,14 +2528,14 @@ F_ENTRY_NAME(F_TYPE x)
  *  Fast logarithm.  The algorithmic steps are the same as in accurate log,
  *  but in slightly different order.
  */
- 
+
 
 F_TYPE
 F_ENTRY_NAME(F_TYPE x)
 
 { WORD m,  hi_x, j;
   WORD clear, index_mask, rounding_bit, other;
-  U_WORD screen; 
+  U_WORD screen;
   F_TYPE float_one, tx;
   B_TYPE  w, w1, w4, t, y, v, z;
 
@@ -2563,16 +2563,16 @@ printf("x = %8.8x\n", (int *) &x);
 
    t = (B_TYPE) GET_F(j);
 
-   z = RECIP_F(j); 
+   z = RECIP_F(j);
    y = (B_TYPE) tx - t;       /* f - Fj */
 
 #if DOUBLE_PRECISION
-   if ( screen < T2_MINUS_T1 ) goto near_1; 
+   if ( screen < T2_MINUS_T1 ) goto near_1;
 #endif
 
    y *= z;                    /* y= (f - Fj)*recip */
 
-   SCREEN_OUT_BAD_X(hi_x, bad_x);  
+   SCREEN_OUT_BAD_X(hi_x, bad_x);
 
    w1 *= v;                   /* m*log2_hi */
 #if DOUBLE_PRECISION
@@ -2586,7 +2586,7 @@ printf("x = %8.8x\n", (int *) &x);
 #endif
 
 
-#if SINGLE_PRECISION 
+#if SINGLE_PRECISION
 #  if NATURAL
 
        w = y + (B_TYPE) LOGF_HI(j);

@@ -107,7 +107,7 @@ typedef BID_UINT128 _Quad;
 #endif
 #endif
 
-// For building the open source tests:  
+// For building the open source tests:
 // set USE_COMPILER_F128_TYPE=1 when using Intel compiler (_Quad is available)
 // unless otherwise specified by user
 #if (defined (__INTEL_COMPILER) || defined (__INTEL_LLVM_COMPILER)) && !defined(USE_COMPILER_F128_TYPE)
@@ -2976,7 +2976,7 @@ typedef unsigned short int fexcept_t;
          _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid128_quantexp (int *pres, BID_UINT128 *px
          _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
-                    
+
      BID_EXTERN_C void bid32_quantum (BID_UINT32 *pres, BID_UINT32 *px
 				      _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid64_quantum (BID_UINT64 *pres, BID_UINT64 *px

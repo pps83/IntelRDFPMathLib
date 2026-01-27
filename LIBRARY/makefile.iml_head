@@ -3,16 +3,16 @@
 #  Copyright (c) 2007-2024, Intel Corp.
 #  All rights reserved.
 #
-#  Redistribution and use in source and binary forms, with or without 
+#  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
 #
-#    * Redistributions of source code must retain the above copyright notice, 
+#    * Redistributions of source code must retain the above copyright notice,
 #      this list of conditions and the following disclaimer.
-#    * Redistributions in binary form must reproduce the above copyright 
-#      notice, this list of conditions and the following disclaimer in the 
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#    * Neither the name of Intel Corporation nor the names of its contributors 
-#      may be used to endorse or promote products derived from this software 
+#    * Neither the name of Intel Corporation nor the names of its contributors
+#      may be used to endorse or promote products derived from this software
 #      without specific prior written permission.
 #
 #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -123,7 +123,7 @@ D5 = $(_FLAG_$(W5))
 # multiple lists and concatenate the elements of the cross product to produce
 # a single name.
 #
-# For example, the CrossCat of the of the three lists "a b", "_" and "1 2 3" is 
+# For example, the CrossCat of the of the three lists "a b", "_" and "1 2 3" is
 # the list "a_1 a_2 a_3 b_1 b_2_b3"
 # ==============================================================================
 
@@ -142,9 +142,9 @@ CrossCat9 = $(call CrossCat,$1,$(call CrossCat8,$2,$3,$4,$5,$6,$7,$8,$9))
 # ==============================================================================
 # The GenList macro is a variant of the CrossCat macro that creates lists of
 # the from:
-# 
+#
 #       <prefix><field_1>_<field_2>_<field_3><suffix>
-# 
+#
 # Where fields 1, 2 and 3 are iteratively taken from lists specified as the
 # 2nd, 3rd or 4th arguments to the macro. If the 3rd or 4th argument is null, it
 # defaults to $(IML_TYPES) and $(IML_VARIANTS) respectively. If the second
@@ -201,7 +201,7 @@ ToLower = $(shell echo "$1" | tr [:upper:] [:lower:])
 # three values depending on the state of a named symbol 'sym'. If 'sym' is
 # undefined, it returns returns 'undefVal'. Otherwise, 'trueVal' or 'falseVal'
 # is returned depending on whether the symbol value equal 'target' or not.
-# 
+#
 # The remaining macros in this section select between two values via the AorBorC
 # macro by making undefVal equal to one of trueVal or falseVal
 # ==============================================================================
@@ -262,7 +262,7 @@ NumCompare = $(shell $(PERL) -e \
 # .<suffix> parts and then echoing each name in the resulting list with the
 # <rootDir> and .<suffix> fields added back it.
 #
-# The calling sequence is 
+# The calling sequence is
 #
 #	$(call EchoLongFileList,<rootDir>,<suffix>,<fileList>)
 
@@ -292,7 +292,7 @@ LongFileListToFile = rm -f $4; $(call EchoLongFileList,$1,$2,$3) > $4
 
 Warning = $(warning $1 = $($1))
 Error = $(warning $1 = $($1))
-       
+
 OS_ALIAS     := Linux FreeBSD  Darwin SunOS HP-UX Windows_NT CYGWIN_NT-5.1 CYGWIN_NT-5.2-WOW64 CYGWIN_NT-6.1-WOW64 CYGWIN_NT-6.2-WOW64
 OS_MAP_LIST  := LINUX FREEBSD  MACH   LINUX LINUX WINNT      WINNT         WINNT               WINNT               WINNT
 OS_LIST      := LINUX FREEBSD  MACH   WINNT
@@ -455,14 +455,14 @@ TargetUarchTypeSelect = $(strip $($(TARGET_UARCH_TYPE_INDEX)))
 # Define standard OS and ARCH dependent symbols
 #
 # CselOs is a combination of Cset and a named 'OsTypeSelect' routine. The value
-# of OS_CHOICE allows selection based on either the host or target OS. The 
+# of OS_CHOICE allows selection based on either the host or target OS. The
 # default value of OS_CHOICE is 'Target'
 #
-# CselArch is a combination of Cset and a named 'ArchTypeSelect' routine. 
-# The value of ARCH_CHOICE allows selection based on either the host or target 
+# CselArch is a combination of Cset and a named 'ArchTypeSelect' routine.
+# The value of ARCH_CHOICE allows selection based on either the host or target
 # ARCH. The default value of ARCH_CHOICE is OS_CHOICE
 #
-# CselOsName is a combination of Cset and a named 'OsSelect' routine. 
+# CselOsName is a combination of Cset and a named 'OsSelect' routine.
 # of OS_CHOICE allows selection based on either the host or target OS.
 # This one is used for distinguishing MacOS (MACH) from other LINUX-type OSes
 # ==============================================================================
@@ -578,7 +578,7 @@ endif
 # RmLeadingDotSlash removes the leading ./ charaters at the beginning of
 # relative path names. This can be useful when trying to pattern match files
 # names in automatic variables (like $?, $^, $<, etc.) because make removes the
-# leading ./ charachters from the file names in those variables. 
+# leading ./ charachters from the file names in those variables.
 # ==============================================================================
 
 ifeq ($(IML_HOST_OS),MACH)

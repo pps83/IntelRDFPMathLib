@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -68,9 +68,9 @@ if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 }
     // x is Infinity?
 if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-  // check if y is Inf. 
+  // check if y is Inf.
   if (((y.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull))
-    // return NaN 
+    // return NaN
   {
 	  if(sign_y) {
 		  res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI34.w[BID_HIGH_128W];
@@ -84,7 +84,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   }
   // y is NaN?
   if (((y.w[BID_HIGH_128W] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
-    // not NaN 
+    // not NaN
   {
     // return +/-pi/2
 		  res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI12.w[BID_HIGH_128W];
@@ -161,7 +161,7 @@ if(valid_y) {
 
 	*pfpsf = save_flags;    // avoided incorrect OF/UF
 
-    BIDECIMAL_CALL2_NORND (bid128_quiet_greater, 
+    BIDECIMAL_CALL2_NORND (bid128_quiet_greater,
             cmp_res, zabs, BID128_10POW36);
 	if(cmp_res) {
 		// |x/y|>10^36
@@ -169,7 +169,7 @@ if(valid_y) {
 		res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
 		BID_RETURN (res);
 	}
-    BIDECIMAL_CALL2_NORND (bid128_quiet_less, 
+    BIDECIMAL_CALL2_NORND (bid128_quiet_less,
             cmp_res, zabs, BID128_10POW_M36);
 	if(cmp_res) {
 		// |x/y|<10^(-36)

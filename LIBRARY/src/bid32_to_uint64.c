@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -140,7 +140,7 @@ bid32_to_uint64_rnint (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] > 0x09 ||
@@ -200,7 +200,7 @@ bid32_to_uint64_rnint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -229,7 +229,7 @@ bid32_to_uint64_rnint (BID_UINT32 x
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
 	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
+	// bid_ten2mk128trunc[ind -1].w[1] is identical to
 	// bid_ten2mk128[ind -1].w[1]
 	// the result is a midpoint; round to nearest
 	if (Cstar & 0x01) { // Cstar is odd; MP in [EVEN, ODD]
@@ -362,7 +362,7 @@ bid32_to_uint64_xrnint (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] > 0x09 ||
@@ -426,7 +426,7 @@ bid32_to_uint64_xrnint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -491,7 +491,7 @@ bid32_to_uint64_xrnint (BID_UINT32 x
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
 	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
+	// bid_ten2mk128trunc[ind -1].w[1] is identical to
 	// bid_ten2mk128[ind -1].w[1]
 	// the result is a midpoint; round to nearest
 	if (Cstar & 0x01) { // Cstar is odd; MP in [EVEN, ODD]
@@ -623,7 +623,7 @@ bid32_to_uint64_floor (BID_UINT32 x
       // else cases that can be rounded to a 64-bit int fall through
       // to '1 <= q + exp <= 20'
     } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-      // Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000 
+      // Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000
       // has 21 digits
       __mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
       if (C.w[1] >= 0x0a) {
@@ -655,7 +655,7 @@ bid32_to_uint64_floor (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -795,7 +795,7 @@ bid32_to_uint64_xfloor (BID_UINT32 x
       // else cases that can be rounded to a 64-bit int fall through
       // to '1 <= q + exp <= 20'
     } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-      // Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000 
+      // Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000
       // has 21 digits
       __mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
       if (C.w[1] >= 0x0a) {
@@ -829,7 +829,7 @@ bid32_to_uint64_xfloor (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1036,7 +1036,7 @@ bid32_to_uint64_ceil (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1243,7 +1243,7 @@ bid32_to_uint64_xceil (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1303,14 +1303,14 @@ bid32_to_uint64_xceil (BID_UINT32 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_uint64_int (BID_UINT64 * pres, BID_UINT32 * px
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM)
 {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(BID_UINT64, bid32_to_uint64_int, 32)
 BID_UINT64
 bid32_to_uint64_int (BID_UINT32 x
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM)
 {
 #endif
   BID_UINT64 res;
@@ -1406,7 +1406,7 @@ bid32_to_uint64_int (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] >= 0x0a) {
@@ -1448,7 +1448,7 @@ bid32_to_uint64_int (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1587,7 +1587,7 @@ bid32_to_uint64_xint (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0xa0000000000000000
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] >= 0x0a) {
@@ -1631,7 +1631,7 @@ bid32_to_uint64_xint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1792,7 +1792,7 @@ bid32_to_uint64_rninta (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] > 0x09 ||
@@ -1852,7 +1852,7 @@ bid32_to_uint64_rninta (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -2000,7 +2000,7 @@ bid32_to_uint64_xrninta (BID_UINT32 x
 	// else cases that can be rounded to a 64-bit int fall through
 	// to '1 <= q + exp <= 20'
       } else { // if (2 <= q <= 7) => 14 <= 21 - q <= 19
-	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb 
+	// Note: C * 10^(21-q) has 20 or 21 digits; 0x9fffffffffffffffb
 	// has 21 digits
 	__mul_64x64_to_128MACH (C, (BID_UINT64)C1, bid_ten2k64[21 - q]);
 	if (C.w[1] > 0x09 ||
@@ -2064,7 +2064,7 @@ bid32_to_uint64_xrninta (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits

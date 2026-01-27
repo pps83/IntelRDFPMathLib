@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -32,7 +32,7 @@
 #include "bid_internal.h"
 
 /*
- * Takes a BID64 as input and converts it to a BID128 and returns it. 
+ * Takes a BID64 as input and converts it to a BID128 and returns it.
  */
 BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS (BID_UINT128, bid64_to_bid128, BID_UINT64, x)
 
@@ -144,7 +144,7 @@ BID_UINT128 CX, T128, TP128, Qh, Ql, Qh1, Stemp, Tmp, Tmp1, CX1;
 	  T128 = bid_round_const_table_128[rmode][extra_digits];
 	  __add_carry_out (CX1.w[0], carry, T128.w[0], CX.w[0]);
 	  CX1.w[1] = CX.w[1] + T128.w[1] + carry;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING  
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 	  if (__unsigned_compare_ge_128
 	      (CX1, bid_power10_table_128[extra_digits + 16]))
 	    uf_check = 0;

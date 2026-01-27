@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -165,7 +165,7 @@ bid32_to_uint32_rnint (BID_UINT32 x
       res = 0x00000001; // return +1
     }
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be 
+    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -185,7 +185,7 @@ bid32_to_uint32_rnint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -214,7 +214,7 @@ bid32_to_uint32_rnint (BID_UINT32 x
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
 	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
         // bid_ten2mk128[ind -1].w[1]
         // the result is a midpoint; round to nearest
 	if (Cstar & 0x01) { // Cstar is odd; MP in [EVEN, ODD]
@@ -375,7 +375,7 @@ bid32_to_uint32_xrnint (BID_UINT32 x
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be 
+    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -395,7 +395,7 @@ bid32_to_uint32_xrnint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -428,7 +428,7 @@ bid32_to_uint32_xrnint (BID_UINT32 x
 	  // f* > 1/2 and the result may be exact
 	  tmp64 = fstar.w[0] - 0x8000000000000000ull; // f* - 1/2
 	  if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
 	    // bid_ten2mk128[ind -1].w[1]
 	    // set the inexact flag
 	    *pfpsf |= BID_INEXACT_EXCEPTION;
@@ -444,7 +444,7 @@ bid32_to_uint32_xrnint (BID_UINT32 x
 	  // Calculate f2* - 1/2
 	  tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
 	  if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
 	    // bid_ten2mk128[ind -1].w[1]
 	    // set the inexact flag
 	    *pfpsf |= BID_INEXACT_EXCEPTION;
@@ -460,7 +460,7 @@ bid32_to_uint32_xrnint (BID_UINT32 x
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
 	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
         // bid_ten2mk128[ind -1].w[1]
         // the result is a midpoint; round to nearest
 	if (Cstar & 0x01) { // Cstar is odd; MP in [EVEN, ODD]
@@ -607,7 +607,7 @@ bid32_to_uint32_floor (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -765,7 +765,7 @@ bid32_to_uint32_xfloor (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -936,7 +936,7 @@ bid32_to_uint32_ceil (BID_UINT32 x
       res = 0x00000001;
     BID_RETURN (res);
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // x <= -1 or 1 <= x <= 2^32 - 1 so if positive, x can be 
+    // x <= -1 or 1 <= x <= 2^32 - 1 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -955,7 +955,7 @@ bid32_to_uint32_ceil (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1126,7 +1126,7 @@ bid32_to_uint32_xceil (BID_UINT32 x
       res = 0x00000001;
     BID_RETURN (res);
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // x <= -1 or 1 <= x < 2^32 so if positive, x can be 
+    // x <= -1 or 1 <= x < 2^32 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -1145,7 +1145,7 @@ bid32_to_uint32_xceil (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1205,14 +1205,14 @@ bid32_to_uint32_xceil (BID_UINT32 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_uint32_int (unsigned int *pres, BID_UINT32 * px
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM)
 {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid32_to_uint32_int, 32)
 unsigned int
 bid32_to_uint32_int (BID_UINT32 x
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM)
 {
 #endif
   unsigned int res;
@@ -1314,7 +1314,7 @@ bid32_to_uint32_int (BID_UINT32 x
     res = 0x00000000;
     BID_RETURN (res);
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // x <= -1 or 1 <= x < 2^32 so if positive, x can be 
+    // x <= -1 or 1 <= x < 2^32 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -1333,7 +1333,7 @@ bid32_to_uint32_int (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1481,7 +1481,7 @@ bid32_to_uint32_xint (BID_UINT32 x
     res = 0x00000000;
     BID_RETURN (res);
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // x <= -1 or 1 <= x < 2^32 so if positive, x can be 
+    // x <= -1 or 1 <= x < 2^32 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -1500,7 +1500,7 @@ bid32_to_uint32_xint (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = C1 * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1686,7 +1686,7 @@ bid32_to_uint32_rninta (BID_UINT32 x
       res = 0x00000001; // return +1
     }
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be 
+    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -1706,7 +1706,7 @@ bid32_to_uint32_rninta (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits
@@ -1876,7 +1876,7 @@ bid32_to_uint32_xrninta (BID_UINT32 x
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
   } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
-    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be 
+    // -2^32-1/2 <= x <= -1 or 1 <= x < 2^32-1/2 so if positive, x can be
     // rounded to nearest to a 32-bit unsigned integer
     if (x_sign) { // x <= -1
       // set invalid flag
@@ -1896,7 +1896,7 @@ bid32_to_uint32_xrninta (BID_UINT32 x
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
       // bid_shiftright128[] and bid_maskhigh128[]
-      // 1 <= x <= 6 
+      // 1 <= x <= 6
       // kx = 10^(-x) = bid_ten2mk64[ind - 1]
       // C* = (C1 + 1/2 * 10^x) * 10^(-x)
       // the approximation of 10^(-x) was rounded up to 54 bits

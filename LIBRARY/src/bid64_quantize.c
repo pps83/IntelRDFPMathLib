@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -87,7 +87,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
     if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((x & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
-	  || ((x & 0x7c00000000000000ull) == 0x7800000000000000ull))	//Inf 
+	  || ((x & 0x7c00000000000000ull) == 0x7800000000000000ull))	//Inf
 	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       if ((x & NAN_MASK64) != NAN_MASK64)
@@ -143,9 +143,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
     if (rnd_mode == 0)
 #endif
       if (C64 & 1) {
-	// check whether fractional part of initial_P/10^extra_digits 
+	// check whether fractional part of initial_P/10^extra_digits
 	// is exactly .5
-	// this is the same as fractional part of 
+	// this is the same as fractional part of
 	//   (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
 	// get remainder

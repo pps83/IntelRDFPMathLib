@@ -43,7 +43,7 @@
 // follows:
 //
 //	+-------------+------------+-----------+------------+
-//	|    f80      |    f128    | *F80_TYPE | *F128_TYPE | 
+//	|    f80      |    f128    | *F80_TYPE | *F128_TYPE |
 //	+-------------+------------+-----------+------------+
 //	| native f80  | native 128 |     1     |     1      |
 //	| native f80  | emulated   |     1     |     0      |
@@ -86,7 +86,7 @@
 #   define BID_F128_TYPE	BID_UINT128
 #else
 #   if (defined __INTEL_COMPILER) || (defined __INTEL_LLVM_COMPILER)
-#       define  BID_F128_TYPE _Quad    
+#       define  BID_F128_TYPE _Quad
 #   else
 #       error "128-bit floating point type for this compiler is unknown"
 #   endif
@@ -96,7 +96,7 @@
 #   define BID_F80_TYPE		BID_F128_TYPE
 #else
 #   if (defined __INTEL_COMPILER) || (defined __INTEL_LLVM_COMPILER)
-#       define  BID_F80_TYPE long double    
+#       define  BID_F80_TYPE long double
 #   else
 #       error "80-bit floating point type for this compiler is unknown"
 #   endif
@@ -152,7 +152,7 @@ typedef union BID_ALIGN (16)
 
 #define BID_INIT_F128(hi,lo)	{ ENDIAN128( HEX64(hi), HEX64(lo)) }
 #if USE_COMPILER_F80_TYPE
-#    define BID_INIT_F80(hi,lo)	{ ENDIAN128( F128_TO_F80_HI(hi,lo), F128_TO_F80_LO(hi,lo)) } 
+#    define BID_INIT_F80(hi,lo)	{ ENDIAN128( F128_TO_F80_HI(hi,lo), F128_TO_F80_LO(hi,lo)) }
 #else
 #    define BID_INIT_F80(hi,lo)	BID_INIT_F128(hi, lo)
 #endif
@@ -201,10 +201,10 @@ typedef union BID_ALIGN (16)
 // The F128 function macros
 // =============================================================================
 
-#define __bid_f128_lt(a, b)		__BID_F128_CMP( a, b, <,  1) 
-#define __bid_f128_eq(a, b)		__BID_F128_CMP( a, b, ==, 2) 
-#define __bid_f128_le(a, b)		__BID_F128_CMP( a, b, <=, 3)   
-#define __bid_f128_gt(a, b)		__BID_F128_CMP( a, b, >,  4)        
+#define __bid_f128_lt(a, b)		__BID_F128_CMP( a, b, <,  1)
+#define __bid_f128_eq(a, b)		__BID_F128_CMP( a, b, ==, 2)
+#define __bid_f128_le(a, b)		__BID_F128_CMP( a, b, <=, 3)
+#define __bid_f128_gt(a, b)		__BID_F128_CMP( a, b, >,  4)
 #define __bid_f128_ne(a, b)		__BID_F128_CMP( a, b, !=, 5)
 #define __bid_f128_ge(a, b)		__BID_F128_CMP( a, b, >=, 6)
 
@@ -335,10 +335,10 @@ __BID_F128_F_FF_DECL(nextafter);
 // The f80 function definitions
 // =============================================================================
 
-#define __bid_f80_lt(a, b)		__BID_F80_CMP( a, b, <,  1) 
-#define __bid_f80_eq(a, b)		__BID_F80_CMP( a, b, ==, 2) 
-#define __bid_f80_le(a, b)		__BID_F80_CMP( a, b, <=, 3)   
-#define __bid_f80_gt(a, b)		__BID_F80_CMP( a, b, >,  4)        
+#define __bid_f80_lt(a, b)		__BID_F80_CMP( a, b, <,  1)
+#define __bid_f80_eq(a, b)		__BID_F80_CMP( a, b, ==, 2)
+#define __bid_f80_le(a, b)		__BID_F80_CMP( a, b, <=, 3)
+#define __bid_f80_gt(a, b)		__BID_F80_CMP( a, b, >,  4)
 #define __bid_f80_ne(a, b)		__BID_F80_CMP( a, b, !=, 5)
 #define __bid_f80_ge(a, b)		__BID_F80_CMP( a, b, >=, 6)
 

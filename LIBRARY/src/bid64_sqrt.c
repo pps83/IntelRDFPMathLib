@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,9 +39,9 @@
  *  - scale coefficient x to between 31 and 33 decimal digits
  *  - in parallel, check for exact case and return if true
  *  - get high part of result coefficient using double precision sqrt
- *  - compute remainder and refine coefficient in one iteration (which 
+ *  - compute remainder and refine coefficient in one iteration (which
  *                                 modifies it by at most 1)
- *  - result exponent is easy to compute from the adjusted arg. exponent 
+ *  - result exponent is easy to compute from the adjusted arg. exponent
  *
  ****************************************************************************/
 
@@ -115,7 +115,7 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT64, bid64_sqrt, x)
   }
 
   dqe = sqrt ((double) A10);
-//dq=(double)A10;  dqe=sqrt(dq); 
+//dq=(double)A10;  dqe=sqrt(dq);
   QE = (BID_UINT32) dqe;
 //printf("QE=%I64d, A10=%I64d, P=%I64d, dq=%016I64x,dqe=%016I64x\n",QE,A10,QE*QE,*(BID_UINT64*)&dq,*(BID_UINT64*)&dqe);
   if (QE * QE == A10) {
@@ -282,7 +282,7 @@ C256.w[0] = A10.w[0];
 CS.w[0] = short_sqrt128 (A10);
 CS.w[1] = 0;
 mul_factor = 0;
-	   // check for exact result  
+	   // check for exact result
 if (CS.w[0] < 10000000000000000ull) {
   if (CS.w[0] * CS.w[0] == A10.w[0]) {
     __sqr64_fast (S2, CS.w[0]);
@@ -367,7 +367,7 @@ if (!done) {
 
   CS.w[0] = short_sqrt128 (C256);
 }
-   
+
 
 exponent_q =
   ((exponent_q - DECIMAL_EXPONENT_BIAS_128) >> 1) +

@@ -84,7 +84,7 @@
      *   lgamma(1+x) = (1-G)x - ln(1+x) + ---------x^2 - ---------x^3 + ...
      *                                        2              3
      *
-     *                     zeta(n)-1      
+     *                     zeta(n)-1
      *                     ---------(-x)^n ...                    (4)
      *                         n
      *
@@ -156,12 +156,12 @@
     TABLE_COMMENT("Miscelaneous constants");
 
     /*
-     * lgamma(x) will overflow for large positive values of x.  Note that 
+     * lgamma(x) will overflow for large positive values of x.  Note that
      * For large negative values of x, x is a negative integer, and hence
      * the function is not defined.  To compute the overflow threshold
      * we need to solve the equatation lgamma(x) = MP_MAX_FLOAT + 1/2 lsb
      * and rounding down the result to working precision.  We do this using
-     * the macro FIND_ROOT defined above with f = lgamma(x) - MP_MAX_FLOAT + 
+     * the macro FIND_ROOT defined above with f = lgamma(x) - MP_MAX_FLOAT +
      * 1/2 lsb.  To find the starting values we note that lgamma is ~ x*log(x)
      * and assume that x = 2^k/k*log(2).  Then x*log(x) ~ MP_MAX_FLOAT when
      * k = F_MAX_BIN_EXP
@@ -184,7 +184,7 @@
      * For large values of x, it is most efficient to use equation (5).
      * When x is very large, 1/x^2 will underflow.  However, long before
      * the underflow threshold is reached, (1/x)*phi(1/x^2) will become
-     * insignificant when compared with the other terms in (5). 
+     * insignificant when compared with the other terms in (5).
      * Consequently, we should stop computing z(x) = (1/x)*phi(1/x^2) when
      * x is big enough.  This is more efficient and avoids the underflow.
      *
@@ -232,7 +232,7 @@
      *
      * combined with (5) this gives:
      *
-     *  lgamma(-x) ~ ln(pi) - ln|sin(pi*x)| - ln(x) - 
+     *  lgamma(-x) ~ ln(pi) - ln|sin(pi*x)| - ln(x) -
      *                [.5*ln(2*pi) - x + (x - .5)*ln(x) + phi(x)/x]
      *             ~ .5*ln(pi/2) - ln|sin(pi*x)| + x - (x + .5)*ln(x) - phi(x)/x
      *
@@ -261,7 +261,7 @@
      *                        = log(n+x) + log(F(n,x)) + x*Q(x)
      *                        = log[(n+x)*F(n,x)] + x*Q(x)
      *
-     * From the above and equation (4) it follows that F(1,x) = 1+x and 
+     * From the above and equation (4) it follows that F(1,x) = 1+x and
      * F(n+1, x) = (n+x)*F(n,x).  Note the F(n,x) is define for both
      * negative and positive integers.
      *
@@ -269,8 +269,8 @@
      * increase the accuracy of the computation of x*Q(x) by performing
      * the following transformation:
      *
-     *      Given Q(x) = p(x)/q(x), define R(X) as 
-     *  
+     *      Given Q(x) = p(x)/q(x), define R(X) as
+     *
      *          Q(x) = 1/2 - R(x)
      *
      *      This yields
@@ -284,7 +284,7 @@
      *
      *
      *    NOTE: We need coefficients for Q and phi.  From (4) we obtain
-     *    Q by approximating 
+     *    Q by approximating
      *
      *           (lgamma(1+x) + ln(1 + x))/x
      *
@@ -312,7 +312,7 @@
                 /* logx1(x) is more accurate than ln(x) for |x| < 1/MP_RADIX */
                 if ( abs($1) < (1 / MP_RADIX))
                     return (lgamma(1+$1) + logx1($1))/$1;
-                else        
+                else
                     return (lgamma(1+$1) + ln(1 + $1))/$1;
             }
          }
@@ -335,7 +335,7 @@
     while (tol < (F_PRECISION + 1 + 3)) {
         den_degree = num_degree = ++degree;
         tol = remes( REMES_STATIC + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT,
-                     -0.5, 0.5, lgamma_approx, 
+                     -0.5, 0.5, lgamma_approx,
                      num_degree, den_degree, &rational_coefs);
     }
 
@@ -412,7 +412,7 @@
           my $headerText = GetHeaderText( STR(BUILD_FILE_NAME),		\
                        "Definitions and constants for " .		\
                        STR(F_ENTRY_NAME),  __FILE__);			\
-          print "$headerText\n\n$tableText\n\n$defineText";	
+          print "$headerText\n\n$tableText\n\n$defineText";
 #endif
 
 
@@ -627,7 +627,7 @@ add_in_log:
     t += s;
 
     return t;
-    
+
 skip_poly:
     /* If x is reaally, really big, result will overflow */
     if (x <= OVERFLOW_THRESHOLD)
@@ -654,7 +654,7 @@ neg_asymtotic:
         /* x is so big that it must be an integer */
         goto non_pos_int;
     y = x + s;
- 
+
     /*
      * get the low fraction bits of y. These are the same as the low
      * bits of k
@@ -695,7 +695,7 @@ special_args:
     /* Note:  The code below assumes that SIGNGAM has already been set to 1.
               Thus, we only bother to set it here when gamma(x) is known to be
               negative.
-    */  
+    */
 
     F_CLASSIFY(x, i);
     switch (i)

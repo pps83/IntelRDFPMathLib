@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -70,7 +70,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
   }
   // unpack x
   if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
-    // if the steering bits are 11 (condition will be 0), then 
+    // if the steering bits are 11 (condition will be 0), then
     // the exponent is G[0:w+1]
     exp = ((x & MASK_BINARY_EXPONENT2) >> 51) - 398;
     C1 = (x & MASK_BINARY_SIG2) | MASK_BINARY_OR2;
@@ -82,7 +82,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     C1 = (x & MASK_BINARY_SIG1);
   }
 
-  // if x is 0 or non-canonical return 0 preserving the sign bit and 
+  // if x is 0 or non-canonical return 0 preserving the sign bit and
   // the preferred exponent of MAX(Q(x), 0)
   if (C1 == 0) {
     if (exp < 0)
@@ -127,7 +127,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     }
     break;
   case BID_ROUNDING_TO_ZERO:
-    // return 0 if (exp <= -p) 
+    // return 0 if (exp <= -p)
     if (exp <= -16) {
       res = x_sign | 0x31c0000000000000ull;
       *pfpsf |= BID_INEXACT_EXCEPTION;
@@ -164,7 +164,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 64 bits
       // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
       C1 = C1 + bid_midpoint64[ind - 1];
@@ -183,10 +183,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       //       shift; C* has p decimal digits, correct by Prop. 1)
       //   else if floor(C*) is odd C* = floor(C*)-1 (logical right
       //       shift; C* has p decimal digits, correct by Pr. 1)
-      // else  
+      // else
       //   C* = floor(C*) (logical right shift; C has p decimal digits,
       //       correct by Property 1)
-      // n = C* * 10^(e+x)  
+      // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
 	res = P128.w[1];
@@ -250,7 +250,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 64 bits
       // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
       C1 = C1 + bid_midpoint64[ind - 1];
@@ -265,7 +265,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       __mul_64x64_to_128 (P128, C1, bid_ten2mk64[ind - 1]);
 
       // if (0 < f* < 10^(-x)) then the result is a midpoint
-      //   C* = floor(C*) - logical right shift; C* has p decimal digits, 
+      //   C* = floor(C*) - logical right shift; C* has p decimal digits,
       //       correct by Prop. 1)
       // else
       //   C* = floor(C*) (logical right shift; C has p decimal digits,
@@ -290,7 +290,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       //   the result is inexact
       if (ind - 1 <= 2) {
 	if (fstar.w[0] > 0x8000000000000000ull) {
-	  // f* > 1/2 and the result may be exact 
+	  // f* > 1/2 and the result may be exact
 	  // fstar.w[0] - 0x8000000000000000ull is f* - 1/2
 	  if ((fstar.w[0] - 0x8000000000000000ull) > bid_ten2mk64[ind - 1]) {
 	    // set the inexact flag
@@ -329,7 +329,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     if ((q + exp) > 0) {	// exp < 0 and 1 <= -exp < q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 fits in 64 bits
       // calculate C* and f*
       // C* is actually floor(C*) in this case
@@ -344,7 +344,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // C* = floor(C*) (logical right shift; C has p decimal digits,
       //       correct by Property 1)
       // if (0 < f* < 10^(-x)) then the result is exact
-      // n = C* * 10^(e+x)  
+      // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
 	res = P128.w[1];
@@ -382,7 +382,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     if ((q + exp) > 0) {	// exp < 0 and 1 <= -exp < q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 fits in 64 bits
       // calculate C* and f*
       // C* is actually floor(C*) in this case
@@ -397,7 +397,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // C* = floor(C*) (logical right shift; C has p decimal digits,
       //       correct by Property 1)
       // if (0 < f* < 10^(-x)) then the result is exact
-      // n = C* * 10^(e+x)  
+      // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
 	res = P128.w[1];
@@ -435,7 +435,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 fits in 127 bits
       // calculate C* and f*
       // C* is actually floor(C*) in this case
@@ -450,7 +450,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // C* = floor(C*) (logical right shift; C has p decimal digits,
       //       correct by Property 1)
       // if (0 < f* < 10^(-x)) then the result is exact
-      // n = C* * 10^(e+x)  
+      // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
 	res = P128.w[1];
@@ -505,11 +505,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
     if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
       x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
     else
-      x = x & 0xfe03ffffffffffffull;	// clear G6-G12 
-    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN 
-      // set invalid flag 
+      x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN
+      // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
-      // return quiet (SNaN) 
+      // return quiet (SNaN)
       res = x & 0xfdffffffffffffffull;
     } else {	// QNaN
       res = x;
@@ -570,7 +570,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
   } else if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
     // need to shift right -exp digits from the coefficient; the exp will be 0
     ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-    // chop off ind digits from the lower part of C1 
+    // chop off ind digits from the lower part of C1
     // C1 = C1 + 1/2 * 10^x where the result C1 fits in 64 bits
     // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
     C1 = C1 + bid_midpoint64[ind - 1];
@@ -589,10 +589,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
     //       shift; C* has p decimal digits, correct by Prop. 1)
     //   else if floor(C*) is odd C* = floor(C*)-1 (logical right
     //       shift; C* has p decimal digits, correct by Pr. 1)
-    // else  
+    // else
     //   C* = floor(C*) (logical right shift; C has p decimal digits,
     //       correct by Property 1)
-    // n = C* * 10^(e+x)  
+    // n = C* * 10^(e+x)
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
       res = P128.w[1];
@@ -645,11 +645,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
     if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
       x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
     else
-      x = x & 0xfe03ffffffffffffull;	// clear G6-G12 
-    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN 
-      // set invalid flag 
+      x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN
+      // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
-      // return quiet (SNaN) 
+      // return quiet (SNaN)
       res = x & 0xfdffffffffffffffull;
     } else {	// QNaN
       res = x;
@@ -714,7 +714,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
   } else if ((q + exp) > 0) {	// exp < 0 and 1 <= -exp < q
     // need to shift right -exp digits from the coefficient; the exp will be 0
     ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-    // chop off ind digits from the lower part of C1 
+    // chop off ind digits from the lower part of C1
     // C1 fits in 64 bits
     // calculate C* and f*
     // C* is actually floor(C*) in this case
@@ -729,7 +729,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
     // C* = floor(C*) (logical right shift; C has p decimal digits,
     //       correct by Property 1)
     // if (0 < f* < 10^(-x)) then the result is exact
-    // n = C* * 10^(e+x)  
+    // n = C* * 10^(e+x)
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
       res = P128.w[1];
@@ -786,11 +786,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
     if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
       x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
     else
-      x = x & 0xfe03ffffffffffffull;	// clear G6-G12 
-    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN 
-      // set invalid flag 
+      x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN
+      // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
-      // return quiet (SNaN) 
+      // return quiet (SNaN)
       res = x & 0xfdffffffffffffffull;
     } else {	// QNaN
       res = x;
@@ -855,7 +855,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
   } else if ((q + exp) > 0) {	// exp < 0 and 1 <= -exp < q
     // need to shift right -exp digits from the coefficient; the exp will be 0
     ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-    // chop off ind digits from the lower part of C1 
+    // chop off ind digits from the lower part of C1
     // C1 fits in 64 bits
     // calculate C* and f*
     // C* is actually floor(C*) in this case
@@ -870,7 +870,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
     // C* = floor(C*) (logical right shift; C has p decimal digits,
     //       correct by Property 1)
     // if (0 < f* < 10^(-x)) then the result is exact
-    // n = C* * 10^(e+x)  
+    // n = C* * 10^(e+x)
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
       res = P128.w[1];
@@ -926,11 +926,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
     if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
       x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
     else
-      x = x & 0xfe03ffffffffffffull;	// clear G6-G12 
-    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN 
-      // set invalid flag 
+      x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN
+      // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
-      // return quiet (SNaN) 
+      // return quiet (SNaN)
       res = x & 0xfdffffffffffffffull;
     } else {	// QNaN
       res = x;
@@ -991,7 +991,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
   } else if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
     // need to shift right -exp digits from the coefficient; the exp will be 0
     ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-    // chop off ind digits from the lower part of C1 
+    // chop off ind digits from the lower part of C1
     // C1 fits in 127 bits
     // calculate C* and f*
     // C* is actually floor(C*) in this case
@@ -1006,7 +1006,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
     // C* = floor(C*) (logical right shift; C has p decimal digits,
     //       correct by Property 1)
     // if (0 < f* < 10^(-x)) then the result is exact
-    // n = C* * 10^(e+x)  
+    // n = C* * 10^(e+x)
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
       res = P128.w[1];
@@ -1055,11 +1055,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
     if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
       x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
     else
-      x = x & 0xfe03ffffffffffffull;	// clear G6-G12 
-    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN 
-      // set invalid flag 
+      x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    if ((x & MASK_SNAN) == MASK_SNAN) {	// SNaN
+      // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
-      // return quiet (SNaN) 
+      // return quiet (SNaN)
       res = x & 0xfdffffffffffffffull;
     } else {	// QNaN
       res = x;
@@ -1120,7 +1120,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
   } else if ((q + exp) >= 0) {	// exp < 0 and 1 <= -exp <= q
     // need to shift right -exp digits from the coefficient; the exp will be 0
     ind = -exp;	// 1 <= ind <= 16; ind is a synonym for 'x'
-    // chop off ind digits from the lower part of C1 
+    // chop off ind digits from the lower part of C1
     // C1 = C1 + 1/2 * 10^x where the result C1 fits in 64 bits
     // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
     C1 = C1 + bid_midpoint64[ind - 1];
@@ -1135,7 +1135,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
     __mul_64x64_to_128 (P128, C1, bid_ten2mk64[ind - 1]);
 
     // if (0 < f* < 10^(-x)) then the result is a midpoint
-    //   C* = floor(C*) - logical right shift; C* has p decimal digits, 
+    //   C* = floor(C*) - logical right shift; C* has p decimal digits,
     //       correct by Prop. 1)
     // else
     //   C* = floor(C*) (logical right shift; C has p decimal digits,

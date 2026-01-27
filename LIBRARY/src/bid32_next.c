@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -35,13 +35,13 @@
 
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_nextup (BID_UINT32 * pres, BID_UINT32 * px 
+bid32_nextup (BID_UINT32 * pres, BID_UINT32 * px
     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 DFP_WRAPFN_DFP(32, bid32_nextup, 32)
 BID_UINT32
-bid32_nextup (BID_UINT32 x 
+bid32_nextup (BID_UINT32 x
     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT32 res;
@@ -148,7 +148,7 @@ bid32_nextup (BID_UINT32 x
       // assemble the result
       // if significand has 24 bits
       if (C1 & MASK_BINARY_OR2_32) {
-	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
+	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 |
             (C1 & MASK_BINARY_SIG2_32);
       } else {	// significand fits in 23 bits
 	res = x_sign | (x_exp << 23) | C1;
@@ -164,13 +164,13 @@ bid32_nextup (BID_UINT32 x
 
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_nextdown (BID_UINT32 * pres, BID_UINT32 * px 
+bid32_nextdown (BID_UINT32 * pres, BID_UINT32 * px
     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 DFP_WRAPFN_DFP(32, bid32_nextdown, 32)
 BID_UINT32
-bid32_nextdown (BID_UINT32 x 
+bid32_nextdown (BID_UINT32 x
     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT32 res;
@@ -182,17 +182,17 @@ bid32_nextdown (BID_UINT32 x
   BID_UINT32 C1; // C1 represents x_signif (BID_UINT32)
 
   // check for NaNs and infinities
-  if ((x & MASK_NAN32) == MASK_NAN32) {	// check for NaN 
+  if ((x & MASK_NAN32) == MASK_NAN32) {	// check for NaN
     if ((x & 0x000fffff) > 999999)
-      x = x & 0xfe000000; // clear G6-G10 and the payload bits 
+      x = x & 0xfe000000; // clear G6-G10 and the payload bits
     else
-      x = x & 0xfe0fffff; // clear G6-G10 
-    if ((x & MASK_SNAN32) == MASK_SNAN32) { // SNaN 
+      x = x & 0xfe0fffff; // clear G6-G10
+    if ((x & MASK_SNAN32) == MASK_SNAN32) { // SNaN
       // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (SNaN)
       res = x & 0xfdffffff;
-    } else { // QNaN 
+    } else { // QNaN
       res = x;
     }
     BID_RETURN (res);
@@ -277,7 +277,7 @@ bid32_nextdown (BID_UINT32 x
       // assemble the result
       // if significand has 24 bits
       if (C1 & MASK_BINARY_OR2_32) {
-	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
+	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 |
             (C1 & MASK_BINARY_SIG2_32);
       } else {	// significand fits in 23 bits
 	res = x_sign | (x_exp << 23) | C1;
@@ -359,7 +359,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
 	// non-canonical
 	x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
       }
-    } else { 
+    } else {
       // if ((x & MASK_STEERING_BITS32) != MASK_STEERING_BITS32) x is unchanged
       ;	// canonical
     }
@@ -369,14 +369,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
   // neither x nor y is NaN
   tmp_fpsf = *pfpsf; // save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
-  bid32_quiet_equal (&res1, &x, &y 
+  bid32_quiet_equal (&res1, &x, &y
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
-  bid32_quiet_greater (&res2, &x, &y 
+  bid32_quiet_greater (&res2, &x, &y
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
-  res1 = bid32_quiet_equal (x, y 
+  res1 = bid32_quiet_equal (x, y
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
-  res2 = bid32_quiet_greater (x, y 
+  res2 = bid32_quiet_greater (x, y
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
   *pfpsf = tmp_fpsf; // restore fpsf
@@ -405,19 +405,19 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
     *pfpsf |= BID_OVERFLOW_EXCEPTION;
   }
   // if the result is in (-10^emin, 10^emin), and is different from the
-  // operand x, signal underflow and inexact 
+  // operand x, signal underflow and inexact
   tmp1 = 0x0f4240; // +1000000 * 10^emin
   tmp2 = res & 0x7fffffff;
   tmp_fpsf = *pfpsf; // save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
-  bid32_quiet_greater (&res1, &tmp1, &tmp2 
+  bid32_quiet_greater (&res1, &tmp1, &tmp2
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
-  bid32_quiet_not_equal (&res2, &x, &res 
+  bid32_quiet_not_equal (&res2, &x, &res
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
-  res1 = bid32_quiet_greater (tmp1, tmp2 
+  res1 = bid32_quiet_greater (tmp1, tmp2
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
-  res2 = bid32_quiet_not_equal (x, res 
+  res2 = bid32_quiet_not_equal (x, res
       _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
   *pfpsf = tmp_fpsf; // restore fpsf

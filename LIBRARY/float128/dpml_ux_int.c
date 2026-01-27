@@ -76,7 +76,7 @@
 **
 ** The above table gives rise to bit vectors, one per rounding mode, that
 ** determines I as a function of index = 8*S + 4*K + 2*L + R
-** 
+**
 **	#define RZ_BIT_VECTOR	0x0000	(* 0000 0000 0000 0000 *)
 **	#define RP_BIT_VECTOR	0x00fa	(* 0000 0000 1111 1010 *)
 **	#define RM_BIT_VECTOR	0xfa00	(* 1111 1010 0000 0000 *)
@@ -157,7 +157,7 @@ get_LR:
     new_digit = 2*current_digit;
 
     if (mask == 0)
-        { /* The L and R bits straddle a digit.  Get them back together */ 
+        { /* The L and R bits straddle a digit.  Get them back together */
         LR = (new_digit & 2) | ((UX_SIGNED_FRACTION_DIGIT_TYPE) sticky < 0);
         sticky += sticky;
         lsd = current_digit;
@@ -171,7 +171,7 @@ get_LR:
                (current_digit >> shift);
         }
 
-    SKLR = 
+    SKLR =
         ((G_UX_SIGN(unpacked_argument) >> (BITS_PER_UX_SIGN_TYPE - 3)) & 0x8)
           + (((sticky != 0) << 2) + LR);
 
@@ -248,9 +248,9 @@ C_UX_RND_TO_INT( _X_FLOAT * packed_argument, U_WORD const * class_to_action_map,
         return;
         }
 
-    (void) UX_RND_TO_INT( &unpacked_argument, flags, &unpacked_result, 
+    (void) UX_RND_TO_INT( &unpacked_argument, flags, &unpacked_result,
               &unpacked_fraction );
-            
+
     if (flags & INTEGER_RESULT)
         PACK(
             & unpacked_result,
@@ -459,7 +459,7 @@ X_XXptr_PROTO(F_ENTRY_NAME, packed_result, packed_argument, packed_n)
             CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_VALUE,     0) );
 
     /*
-    ** the trunc class to action mapping is used by trunc, nint, rint and 
+    ** the trunc class to action mapping is used by trunc, nint, rint and
     ** modf.  In order to accommodate returns for both results in modf, there
     ** are actually two mappings, the first one is for the integer result, and
     ** the second one is for the fraction result.
@@ -487,7 +487,7 @@ X_XXptr_PROTO(F_ENTRY_NAME, packed_result, packed_argument, packed_n)
             CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_VALUE,     0) +
             CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_VALUE,     0) +
             CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_VALUE,     0) );
-    
+
     TABLE_COMMENT("data for the above class to action mappings");
        PRINT_U_TBL_ITEM( /* data 1 */ ZERO );
        PRINT_U_TBL_ITEM( /* data 2 */  ONE );

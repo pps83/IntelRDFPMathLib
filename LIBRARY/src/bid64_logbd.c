@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -53,7 +53,7 @@ if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
 	res = (coefficient_x) & QUIET_MASK64;
-if ((x & 0x7c00000000000000ull) == 0x7800000000000000ull) 
+if ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
     res &= 0x7fffffffffffffffull;
 	BID_RETURN (res);
 }
@@ -67,8 +67,8 @@ if ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
 
   BIDECIMAL_CALL1_NORND (bid64_ilogb, ires, x);
   if (ires & 0x80000000)
-    res = 0xb1c0000000000000ull | (BID_UINT64)(-ires); 
+    res = 0xb1c0000000000000ull | (BID_UINT64)(-ires);
   else
-    res = 0x31c0000000000000ull | (BID_UINT64)ires; 
+    res = 0x31c0000000000000ull | (BID_UINT64)ires;
   BID_RETURN (res);
 }

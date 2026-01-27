@@ -1,17 +1,17 @@
 /******************************************************************************
   Copyright (c) 2007-2024, Intel Corp.
-  All rights reserved. 
+  All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without  
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -625,7 +625,7 @@ if (strcmp(func, "bid64_to_string") == 0) {
         GETTEST1(OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1_NORND_RESREF (bid64_to_string, convstr, A64); 
+            	BIDECIMAL_CALL1_NORND_RESREF (bid64_to_string, convstr, A64);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -634,7 +634,7 @@ if (strcmp(func, "bid128_to_string") == 0) {
         GETTEST1(OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1_NORND_RESREF (bid128_to_string, convstr, A); 
+            	BIDECIMAL_CALL1_NORND_RESREF (bid128_to_string, convstr, A);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -4383,7 +4383,7 @@ if (strcmp(func, "bid32_to_binary128") == 0) {
         check_results(CMP_FUZZYSTATUS);
     }
 }
-#if __ENABLE_BINARY80__  
+#if __ENABLE_BINARY80__
 if (strcmp(func, "bid128_to_binary80") == 0) {
         GETTEST1(OP_BIN80, OP_DEC128);
         {
@@ -4520,7 +4520,7 @@ if (strcmp(func, "binary32_to_bid32") == 0) {
         check_results(CMP_FUZZYSTATUS);
     }
 }
-#if __ENABLE_BINARY80__  
+#if __ENABLE_BINARY80__
 if (strcmp(func, "binary80_to_bid128") == 0) {
         GETTEST1(OP_DEC128, OP_BIN80);
         {
@@ -4589,7 +4589,7 @@ if (strcmp (func, "bid_testFlags") == 0) {
 if (strcmp (func, "bid_lowerFlags") == 0) {
   GETTEST2 (OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
   {
-    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0; 
+    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0;
     BIDECIMAL_CALL1_NORND_NOMASK_NOINFO_RESVOID (bid_lowerFlags, AUI32);
     fpsf_0 = 0;
     check_results (CMP_FUZZYSTATUS);
@@ -4655,7 +4655,7 @@ if (strcmp (func, "bid_setDecimalRoundingDirection") == 0) {
 					   *(_IDEC_flags *) & i2,
 					   AUI32);
 #if DECIMAL_GLOBAL_ROUNDING || DECIMAL_CALL_BY_REFERENCE
-	 i2 = rnd_mode;	
+	 i2 = rnd_mode;
 #endif
     fpsf_0 = 0;
     check_results (CMP_FUZZYSTATUS);
@@ -4818,7 +4818,7 @@ if (strcmp(func, "bid32_to_string") == 0) {
         GETTEST1(OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1_NORND_RESREF (bid32_to_string, convstr, A32); 
+            	BIDECIMAL_CALL1_NORND_RESREF (bid32_to_string, convstr, A32);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -5178,7 +5178,7 @@ if (strcmp(func, "bid32_asinh") == 0) {
         GETTEST1(OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid32_asinh, Q32, A32); 
+            	BIDECIMAL_CALL1 (bid32_asinh, Q32, A32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5192,7 +5192,7 @@ if (strcmp(func, "bid32_acosh") == 0) {
         GETTEST1(OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid32_acosh, Q32, A32); 
+            	BIDECIMAL_CALL1 (bid32_acosh, Q32, A32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5201,7 +5201,7 @@ if (strcmp(func, "bid32_atanh") == 0) {
         GETTEST1(OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid32_atanh, Q32, A32); 
+            	BIDECIMAL_CALL1 (bid32_atanh, Q32, A32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5210,7 +5210,7 @@ if (strcmp(func, "bid32_atan2") == 0) {
         GETTEST2(OP_DEC32, OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid32_atan2, Q32, A32, B32); 
+            	BIDECIMAL_CALL2 (bid32_atan2, Q32, A32, B32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5219,7 +5219,7 @@ if (strcmp(func, "bid32_fmod") == 0) {
         GETTEST2(OP_DEC32, OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2_NORND (bid32_fmod, Q32, A32, B32); 
+            	BIDECIMAL_CALL2_NORND (bid32_fmod, Q32, A32, B32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5228,7 +5228,7 @@ if (strcmp(func, "bid32_hypot") == 0) {
         GETTEST2(OP_DEC32, OP_DEC32, OP_DEC32);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid32_hypot, Q32, A32, B32); 
+            	BIDECIMAL_CALL2 (bid32_hypot, Q32, A32, B32);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5436,7 +5436,7 @@ if (strcmp(func, "bid64_asinh") == 0) {
         GETTEST1(OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid64_asinh, Q64, A64); 
+            	BIDECIMAL_CALL1 (bid64_asinh, Q64, A64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5450,7 +5450,7 @@ if (strcmp(func, "bid64_acosh") == 0) {
        GETTEST1(OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid64_acosh, Q64, A64); 
+            	BIDECIMAL_CALL1 (bid64_acosh, Q64, A64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5459,7 +5459,7 @@ if (strcmp(func, "bid64_atanh") == 0) {
         GETTEST1(OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid64_atanh, Q64, A64); 
+            	BIDECIMAL_CALL1 (bid64_atanh, Q64, A64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5468,7 +5468,7 @@ if (strcmp(func, "bid64_atan2") == 0) {
         GETTEST2(OP_DEC64, OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid64_atan2, Q64, A64, B64); 
+            	BIDECIMAL_CALL2 (bid64_atan2, Q64, A64, B64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5477,7 +5477,7 @@ if (strcmp(func, "bid64_fmod") == 0) {
         GETTEST2(OP_DEC64, OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2_NORND (bid64_fmod, Q64, A64, B64); 
+            	BIDECIMAL_CALL2_NORND (bid64_fmod, Q64, A64, B64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5486,7 +5486,7 @@ if (strcmp(func, "bid64_hypot") == 0) {
         GETTEST2(OP_DEC64, OP_DEC64, OP_DEC64);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid64_hypot, Q64, A64, B64); 
+            	BIDECIMAL_CALL2 (bid64_hypot, Q64, A64, B64);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5694,7 +5694,7 @@ if (strcmp(func, "bid128_asinh") == 0) {
         GETTEST1(OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid128_asinh, Q, A); 
+            	BIDECIMAL_CALL1 (bid128_asinh, Q, A);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5703,7 +5703,7 @@ if (strcmp(func, "bid128_acosh") == 0) {
         GETTEST1(OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid128_acosh, Q, A); 
+            	BIDECIMAL_CALL1 (bid128_acosh, Q, A);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5712,7 +5712,7 @@ if (strcmp(func, "bid128_atanh") == 0) {
         GETTEST1(OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL1 (bid128_atanh, Q, A); 
+            	BIDECIMAL_CALL1 (bid128_atanh, Q, A);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5721,7 +5721,7 @@ if (strcmp(func, "bid128_atan2") == 0) {
         GETTEST2(OP_DEC128, OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid128_atan2, Q, A, B); 
+            	BIDECIMAL_CALL2 (bid128_atan2, Q, A, B);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5730,7 +5730,7 @@ if (strcmp(func, "bid128_fmod") == 0) {
         GETTEST2(OP_DEC128, OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2_NORND (bid128_fmod, Q, A, B); 
+            	BIDECIMAL_CALL2_NORND (bid128_fmod, Q, A, B);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5739,7 +5739,7 @@ if (strcmp(func, "bid128_hypot") == 0) {
         GETTEST2(OP_DEC128, OP_DEC128, OP_DEC128);
         {
         *pfpsf = fpsf_0; save_binary_status();
-            	BIDECIMAL_CALL2 (bid128_hypot, Q, A, B); 
+            	BIDECIMAL_CALL2 (bid128_hypot, Q, A, B);
         fpsf_0 = 0;
         check_results(CMP_RELATIVEERR);
     }
@@ -5852,7 +5852,7 @@ if (strcmp(func, "bid128_lgamma") == 0) {
             	BIDECIMAL_CALL1 (bid128_lgamma, Q, A);
 
 				// deal with overflow flag (8) for inaccurate lgamma
-				if((expected_status^(*pfpsf))&8) { 
+				if((expected_status^(*pfpsf))&8) {
 					BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isInf, t3, Q);
 					if((expected_status & 8) && (!t3)) { expected_status ^= 8; }
 					else if((!(expected_status & 8)) && (t3)) {expected_status ^= 8; }
@@ -6142,7 +6142,7 @@ if (strcmp(func, "bid_strtod32") == 0) {
             	Q32 = bid_strtod32(istr1, &endptr);
 	} else {
             	Q32 = bid_strtod32(istr1, &endptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6163,7 +6163,7 @@ if (strcmp(func, "bid_strtod64") == 0) {
             	Q64 = bid_strtod64(istr1, &endptr);
 	} else {
             	Q64 = bid_strtod64(istr1, &endptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6184,7 +6184,7 @@ if (strcmp(func, "bid_strtod128") == 0) {
             	Q = bid_strtod128(istr1, &endptr);
 	} else {
             	Q = bid_strtod128(istr1, &endptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6208,7 +6208,7 @@ if (strcmp(func, "bid_wcstod32") == 0) {
             	Q32 = bid_wcstod32(wistr1, &wendptr);
 	} else {
             	Q32 = bid_wcstod32(wistr1, &wendptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6232,7 +6232,7 @@ if (strcmp(func, "bid_wcstod64") == 0) {
             	Q64 = bid_wcstod64(wistr1, &wendptr);
 	} else {
             	Q64 = bid_wcstod64(wistr1, &wendptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6256,7 +6256,7 @@ if (strcmp(func, "bid_wcstod128") == 0) {
             	Q = bid_wcstod128(wistr1, &wendptr);
 	} else {
             	Q = bid_wcstod128(wistr1, &wendptr);
-	}    
+	}
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6264,7 +6264,7 @@ if (strcmp(func, "bid_wcstod128") == 0) {
 if (strcmp(func, "bid_feclearexcept") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
-	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0; 
+	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0;
             	bid_feclearexcept(AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
@@ -6273,7 +6273,7 @@ if (strcmp(func, "bid_feclearexcept") == 0) {
 if (strcmp(func, "bid_fegetexceptflag") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
-	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status();  
+	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status();
 		fp_fl = (fexcept_t)i2;
             	bid_fegetexceptflag(&fp_fl, AUI32 _EXC_FLAGS_ARG);
 		i2 = (int)fp_fl;
@@ -6284,7 +6284,7 @@ if (strcmp(func, "bid_fegetexceptflag") == 0) {
 if (strcmp(func, "bid_feraiseexcept") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
-	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0; 
+	    *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0;
            	bid_feraiseexcept(AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);

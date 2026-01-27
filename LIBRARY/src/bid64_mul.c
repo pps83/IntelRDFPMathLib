@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,9 +40,9 @@
  *  else
  *      get long product: coefficient_x*coefficient_y
  *      determine number of digits to round off (extra_digits)
- *      rounding is performed as a 128x128-bit multiplication by 
+ *      rounding is performed as a 128x128-bit multiplication by
  *         2^M[extra_digits]/10^extra_digits, followed by a shift
- *         M[extra_digits] is sufficiently large for required accuracy 
+ *         M[extra_digits] is sufficiently large for required accuracy
  *
  ****************************************************************************/
 
@@ -51,7 +51,7 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_UINT64, y)
   BID_UINT128 P, C128, Q_high, Q_low, Stemp;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
   BID_UINT128 PU;
 #endif
   BID_UINT64 sign_x, sign_y, coefficient_x, coefficient_y;
@@ -156,7 +156,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
   tempy.d = (double) coefficient_y;
   bin_expon_cy = ((tempy.i & MASK_BINARY_EXPONENT) >> 52);
 
-  // magnitude estimate for coefficient_x*coefficient_y is 
+  // magnitude estimate for coefficient_x*coefficient_y is
   //        2^(unbiased_bin_expon_cx + unbiased_bin_expon_cx)
   bin_expon_product = bin_expon_cx + bin_expon_cy;
 
@@ -219,7 +219,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
 	}
 
 	uf_status = BID_UNDERFLOW_EXCEPTION;
-#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
+#if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
 	if (final_exponent == -1) {
 	  __add_128_64 (PU, P, bid_round_const_table[rmode][extra_digits]);
 	  if (__unsigned_compare_ge_128
@@ -290,9 +290,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
       if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
 	if ((C64 & 1) && !round_up) {
-	  // check whether fractional part of initial_P/10^extra_digits 
+	  // check whether fractional part of initial_P/10^extra_digits
 	  // is exactly .5
-	  // this is the same as fractional part of 
+	  // this is the same as fractional part of
 	  // (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
 	  // get remainder

@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -57,7 +57,7 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX, BID_
       return;
     } else if(CY.w[0]<0xd000000000000000ull) {
 
-      // This path works for CX<2^116 only 
+      // This path works for CX<2^116 only
 
       // 2^64
       d64.i = 0x43f0000000000000ull;
@@ -78,7 +78,7 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX, BID_
       pCR->w[0] = Rh - Ql2 * CY.w[0];
       __add_carry_out ((pCQ->w[0]), carry, Ql, Ql2);
       pCQ->w[1] = Qh + carry;
-    
+
 	  return;
     }
   }
@@ -333,7 +333,7 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX0, BID
 
   if (CY.w[1] < (BID_UINT64) (1 << (64 - 51))
       && (__unsigned_compare_gt_128 (CX, CY51))) {
-    // Q > 2^51 
+    // Q > 2^51
 
     // 2^(-49)*CX/CY
     d49.i = 0x3ce0000000000000ull;
@@ -402,7 +402,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
   int_double t64, d49, d60;
   double lx, ly, lq, d128, d192;
 
-  // the quotient is assumed to be at most 113 bits, 
+  // the quotient is assumed to be at most 113 bits,
   // as needed by BID128 divide routines
 
   // initial dividend
@@ -472,7 +472,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
 			       &&
 			       (__unsigned_compare_gt_128 (CA4, CY51))))
   {
-    // Q > 2^51 
+    // Q > 2^51
 
     // 2^(-49)*CA4/CY
     d49.i = 0x3ce0000000000000ull;

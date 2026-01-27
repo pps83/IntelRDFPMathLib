@@ -33,7 +33,7 @@ double fabs(double);
 double log(double);
 double sin(double);
 
-#define BID32_INF 0x78000000ul 
+#define BID32_INF 0x78000000ul
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_lgamma, BID_UINT32, x)
 

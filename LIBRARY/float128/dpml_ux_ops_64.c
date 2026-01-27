@@ -155,7 +155,7 @@ EXTENDED_MULTIPLY(UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * hi, UX_FLOAT * lo)
 
 
 static const UX_FLOAT __ux_one__ = { 0, 1, ((U_WORD) 1 << 63), 0 };
-	
+
 void
 DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     {
@@ -172,7 +172,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     ** schedule the code after the check.
     */
 
-    bPtr = (bPtr == 0) ? (UX_FLOAT *)&__ux_one__ : bPtr;	
+    bPtr = (bPtr == 0) ? (UX_FLOAT *)&__ux_one__ : bPtr;
     aPtr = (aPtr == 0) ? (UX_FLOAT *)&__ux_one__ : aPtr;
     B1 = G_UX_MSD(bPtr);
     B2 = G_UX_LSD(bPtr);
@@ -197,7 +197,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
 
     /*
     ** The first step is to estimate 1/b in double precsion to more then 70
-    ** bits. This is done by getting an initial estimate to 1/b and use a 
+    ** bits. This is done by getting an initial estimate to 1/b and use a
     ** variation of Newton's iteration to improve the accuracy.  The basic
     ** approach is
     **
@@ -323,10 +323,10 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     **
     ** Recall that in the original computation of r_hi, we previously computed
     ** the integer value R as 2^61*r_hi', so that we can now compute
-    ** 
-    **		R <-- 4*R + 2^62 * r_lo 
     **
-    ** Note that for b very close to 1/2, R will be 2^64 which can't be 
+    **		R <-- 4*R + 2^62 * r_lo
+    **
+    ** Note that for b very close to 1/2, R will be 2^64 which can't be
     ** represented in 64 bits.  In this case, we take R = 2^64 - 1 which is
     ** close enough and can be represented in 64 bits.
     */
@@ -428,7 +428,7 @@ pack_it:
     return;
     }
 
-    
+
 /*
 **
 ** The following two routines evaluate polynomials, P(x), via Horner's
@@ -544,8 +544,8 @@ p_shift_64_to_127:
 
     /* Set carry out from last add */
     s_hi = (s_lo < p1);
-        
-    /* 
+
+    /*
     ** When shift = 0, the complementary shift is 64.  ANSI C does not
     ** specify the result of a shift by 64, so we need to handle this as
     ** a special case.
@@ -655,7 +655,7 @@ p_shift_64_to_127:
                 goto p_shift_1_to_63;
             }
         }
-        
+
     P_UX_LSD(p, s_lo);
     P_UX_MSD(p, s_hi);
     P_UX_EXPONENT(p, exponent);
@@ -728,7 +728,7 @@ __eval_neg_poly(UX_FLOAT * x, WORD shift, FIXED_128 * coef, WORD cnt,
         s_lo = c_lo - p1;
         if (shift >= 64) goto n_shift_64_to_127;
 
-    /* 
+    /*
      * When shift = 0, the complementary shift is 64.  ANSI C does not
      * specify the result of a shift by 64, so we need to handle this as
      * a special case.
@@ -915,7 +915,7 @@ EVALUATE_RATIONAL(
 	    first_result);
  		//printf("f_result= (%x %x) %llx %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
 
- //printf("fl & NUMERATOR_FLAGS(POST_MULTIPLY) = %llx (%llx)\n", flags & NUMERATOR_FLAGS(POST_MULTIPLY), flags); 
+ //printf("fl & NUMERATOR_FLAGS(POST_MULTIPLY) = %llx (%llx)\n", flags & NUMERATOR_FLAGS(POST_MULTIPLY), flags);
         if (flags & NUMERATOR_FLAGS(POST_MULTIPLY))
             MULTIPLY(argument, first_result, first_result);
  		//printf("result..= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
@@ -974,7 +974,7 @@ EVALUATE_RATIONAL(
 U_INT_64 __umulh( U_INT_64 i, U_INT_64 j ) {
     U_INT_64 k;
         {
-	U_INT_64 iLo, iHi, jLo, jHi, p0, p1, p2; 
+	U_INT_64 iLo, iHi, jLo, jHi, p0, p1, p2;
         iLo = __LO(i); iHi = __HI(i);
         jLo = __LO(j); jHi = __HI(j);
 	p0  = iLo * jLo;

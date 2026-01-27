@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -60,7 +60,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_nearest_e
   BIDECIMAL_CALL1_NORND (bid32_to_bid64, x64, x);
   BIDECIMAL_CALL1_NORND (bid64_round_integral_nearest_even, res64, x64);
   BIDECIMAL_CALL1 (bid64_to_bid32, res, res64);
- 
+
   BID_RETURN (res);
 }
 
@@ -75,11 +75,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_negative,
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
 #endif
- 
+
   BIDECIMAL_CALL1_NORND (bid32_to_bid64, x64, x);
   BIDECIMAL_CALL1_NORND (bid64_round_integral_negative, res64, x64);
   BIDECIMAL_CALL1 (bid64_to_bid32, res, res64);
- 
+
   BID_RETURN (res);
 }
 
@@ -94,11 +94,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_positive,
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
 #endif
- 
+
   BIDECIMAL_CALL1_NORND (bid32_to_bid64, x64, x);
   BIDECIMAL_CALL1_NORND (bid64_round_integral_positive, res64, x64);
   BIDECIMAL_CALL1 (bid64_to_bid32, res, res64);
- 
+
   BID_RETURN (res);
 }
 
@@ -113,11 +113,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_zero, BID
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
 #endif
- 
+
   BIDECIMAL_CALL1_NORND (bid32_to_bid64, x64, x);
   BIDECIMAL_CALL1_NORND (bid64_round_integral_zero, res64, x64);
   BIDECIMAL_CALL1 (bid64_to_bid32, res, res64);
- 
+
   BID_RETURN (res);
 }
 
@@ -135,6 +135,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_nearest_a
   BIDECIMAL_CALL1_NORND (bid32_to_bid64, x64, x);
   BIDECIMAL_CALL1_NORND (bid64_round_integral_nearest_away, res64, x64);
   BIDECIMAL_CALL1 (bid64_to_bid32, res, res64);
- 
+
   BID_RETURN (res);
 }

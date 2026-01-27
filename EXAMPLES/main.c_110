@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,7 +30,7 @@
 // 110:
 // 1 arguments passed by reference
 // 1 rounding mode passed in a global variable
-// 0 pointer to status flags passed as argument 
+// 0 pointer to status flags passed as argument
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +44,7 @@ main () {
   printf ("Begin Decimal Floating-Point Sanity Check\n");
 
   // 2 * 3 = 6
-  __bid_IDEC_glbround = _IDEC_nearesteven; my_fpsf = _IDEC_allflagsclear; 
+  __bid_IDEC_glbround = _IDEC_nearesteven; my_fpsf = _IDEC_allflagsclear;
   z.w[HIGH_128W] = 0xbaddbaddbaddbaddull; z.w[LOW_128W] = 0xbaddbaddbaddbaddull;
   x.w[HIGH_128W] = 0x3040000000000000ull; x.w[LOW_128W] = 0x0000000000000002ull; // x = 2
   y.w[HIGH_128W] = 0x3040000000000000ull; y.w[LOW_128W] = 0x0000000000000003ull; // y = 3
@@ -70,7 +70,7 @@ main () {
     // 9999999999999999340001 * 10^100 * 999999999999999923000111 * 10^100 =(RN)
     //  9999999999999998570002110000000051 * 10^200
   if (z.w[HIGH_128W] != 0x31e9ed09bead87c0ull || z.w[LOW_128W] != 0x23b52ee2d8fdec33ull ||
-      my_fpsf != _IDEC_inexact) { 
+      my_fpsf != _IDEC_inexact) {
     // 9999999999999998570002110000000051 * 10^212, inexact
     printf ("RECEIVED z="LX" "LX" my_fpsf=%x\n", z.w[HIGH_128W], z.w[LOW_128W], my_fpsf);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec33 my_fpsf=00000020\n");
@@ -91,7 +91,7 @@ main () {
     // 9999999999999999340001 * 10^100 * 999999999999999923000111 * 10^100 =(RN)
     //  9999999999999998570002110000000050 * 10^200
   if (z.w[HIGH_128W] != 0x31e9ed09bead87c0ull || z.w[LOW_128W] != 0x23b52ee2d8fdec32ull ||
-      my_fpsf != _IDEC_inexact) { 
+      my_fpsf != _IDEC_inexact) {
     // 9999999999999998570002110000000050 * 10^212, inexact
     printf ("RECEIVED z="LX" "LX" my_fpsf=%x\n", z.w[HIGH_128W], z.w[LOW_128W], my_fpsf);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec32 my_fpsf=00000020\n");

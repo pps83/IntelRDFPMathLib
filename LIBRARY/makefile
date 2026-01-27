@@ -3,16 +3,16 @@
 #  Copyright (c) 2007-2024, Intel Corp.
 #  All rights reserved.
 #
-#  Redistribution and use in source and binary forms, with or without 
+#  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
 #
-#    * Redistributions of source code must retain the above copyright notice, 
+#    * Redistributions of source code must retain the above copyright notice,
 #      this list of conditions and the following disclaimer.
-#    * Redistributions in binary form must reproduce the above copyright 
-#      notice, this list of conditions and the following disclaimer in the 
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#    * Neither the name of Intel Corporation nor the names of its contributors 
-#      may be used to endorse or promote products derived from this software 
+#    * Neither the name of Intel Corporation nor the names of its contributors
+#      may be used to endorse or promote products derived from this software
 #      without specific prior written permission.
 #
 #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -101,15 +101,15 @@ RES_DIR      := $(RES_DIR)
 %.o : %.c
 
 # =============================================================================
-# Set up the default compilation and preprocessing flags. 
+# Set up the default compilation and preprocessing flags.
 # =============================================================================
 
 _CFLAGS_INC    := -I$(SRC_DIR)
-_CFLAGS_CONFIG := 
+_CFLAGS_CONFIG :=
 _CFLAGS_OS     := $(call HostOsTypeSelect, -DLINUX, -DWINDOWS)
 _CFLAGS_ARCH   := $(call HostArchTypeSelect,-Dia32,-DITANIUM -Dia64, -Defi2)
 _CFLAGS_CC     :=
-_CFLAGS_OPT    := 
+_CFLAGS_OPT    :=
 
 ifeq ($(BID_BIG_ENDIAN),true)
     _CFLAGS_CONFIG += -DBID_BIG_ENDIAN=1
@@ -132,7 +132,7 @@ endif
 ifeq ($(IS_INTEL_CC),true)
     _USE_COMPILER_F128_TYPE := true
     _USE_COMPILER_F80_TYPE  := true
-else 
+else
     _USE_COMPILER_F80_TYPE  := false
     _USE_COMPILER_F128_TYPE := false
 
@@ -206,7 +206,7 @@ endif
 
 ifeq ($(IS_INTEL_CC),true)
 ifeq ($(DFP_WRAP),1)
-    BID_BLD_FLAGS += -D__DFP_WRAPPERS_ON=1              
+    BID_BLD_FLAGS += -D__DFP_WRAPPERS_ON=1
 endif
 endif
 
@@ -236,7 +236,7 @@ top : $(TOP)
 
 # =============================================================================
 # The BID transcendental functions assume the existence of a corresponding
-# binary transcendental function. If such a function is not available on the 
+# binary transcendental function. If such a function is not available on the
 # target system, then we need to provide it as part of the the BID library.
 # If the binary functions are missing, it is usually the 128-bit quad precision
 # routines. Below, we create the list of quad functions that are required by
@@ -255,7 +255,7 @@ F128_OBJS  := $(call PrefixSuffix, $(OBJ_DIR)/, $(F128_NAMES), .$O )
 # missing. Again, here we create the list of missing functions
 # =============================================================================
 
-ifeq ($(IML_HOST_OS)_$(CC_NAME),WINNT_cl) 
+ifeq ($(IML_HOST_OS)_$(CC_NAME),WINNT_cl)
 
     F53_NAMES  := $(call PrefixSuffix,dpml_, asinh acosh cbrt erf erfc expm1 \
                     exp10 exp2 lgamma log1p tgamma rt_lgamma,_t) \
@@ -280,7 +280,7 @@ endif
 #                          32, 64 and 128 bit forms but don't have a 'bid'
 #                          prefix
 #	BID_<n>		Routines that are supported in only <n> bit forms
-#	BID		Generic bid routines not specifically related to 
+#	BID		Generic bid routines not specifically related to
 #                          data type length
 #       BID_MISC	Required files that don't begin with the 'bid'
 #                       prefix
@@ -302,9 +302,9 @@ BID_COMMON_OPS := \
 COMMON  := strtod wcstod
 
 BID_32  := sub to_bid128 to_bid64
- 
+
 BID_64  := to_bid128
- 
+
 BID_128 := 2_str_tables
 
 BID     := \
@@ -326,7 +326,7 @@ BID_INTERNAL_OBJS := \
 	$(call CrossCat3, $(OBJ_DIR)/bid128_,$(BID_128),.$O)                \
 	$(call CrossCat3, $(OBJ_DIR)/bid_,   $(BID),.$O)                    \
 	$(call CrossCat3, $(OBJ_DIR)/,       $(BID_MISC),.$O)
-       
+
 ALL_BID_OBJS := $(BID_TRANS_OBJS) $(BID_INTERNAL_OBJS)
 
 ifneq ($(strip $(USE_COMPILER_F128_TYPE)),true)
@@ -447,7 +447,7 @@ $(F53_OBJS) :: $(F128_DIR)/dpml_private.h $(F128_DIR)/dpml_globals.h \
 BUILD_FILE_NAME = $(basename $(notdir $@)).h
 D_F_NAME          = -D$(call ToUpper,$(W2))
 D_F_TYPE          = -D$(call ToUpper,$(W3))_FLOAT
- 
+
 $(OBJ_DIR)/dpml_asinh_t.$O  :: $(F128_DIR)/sqrt_tab_t.c
 
 $(OBJ_DIR)/dpml_erf_t.$O \
@@ -455,34 +455,34 @@ $(OBJ_DIR)/dpml_asinh_t.$O  :: $(OBJ_DIR)/dpml_%_t.$O : $(F128_DIR)/dpml_%.c \
                                $(F128_DIR)/dpml_%_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $(D_F_NAME) \
              -DBUILD_FILE_NAME=$(BUILD_FILE_NAME) $<
- 
+
 $(OBJ_DIR)/dpml_rt_lgamma_t.$O :: $(F128_DIR)/dpml_lgamma.c \
                                   $(F128_DIR)/dpml_lgamma_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) -DT_FLOAT -DBUILD_FILE_NAME=dpml_lgamma_t.h $<
- 
+
 $(OBJ_DIR)/dpml_lgamma_t.$O :: $(F128_DIR)/dpml_lgamma.c \
                                   $(F128_DIR)/dpml_lgamma_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) -DDO_LGAMMA -DHACK_GAMMA_INLINE=0 \
              -DBUILD_FILE_NAME=dpml_lgamma_t.h $<
- 
+
 $(OBJ_DIR)/dpml_acosh_t.$O :: $(F128_DIR)/dpml_asinh.c $(F128_DIR)/dpml_acosh_t.h \
                               $(F128_DIR)/sqrt_tab_t.c
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
- 
+
 $(OBJ_DIR)/dpml_erfc_t.$O  :: $(F128_DIR)/dpml_erf.c   $(F128_DIR)/dpml_erf_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
         -DBUILD_FILE_NAME=dpml_erf_t.h $<
- 
+
 $(OBJ_DIR)/dpml_log1p_t.$O :: $(F128_DIR)/dpml_log.c $(F128_DIR)/dpml_log_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
- 
+
 $(OBJ_DIR)/dpml_log2_t.$O :: $(F128_DIR)/dpml_log.c $(F128_DIR)/dpml_log_t.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
- 
+
 $(OBJ_DIR)/dpml_cbrt_t.$O :: $(F128_DIR)/dpml_cbrt.c $(F128_DIR)/dpml_cbrt_t_table.c
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
         -DBUILD_FILE_NAME=dpml_cbrt_t_table.c $<
- 
+
 $(OBJ_DIR)/dpml_exp10_t.$O \
 $(OBJ_DIR)/dpml_exp2_t.$O  :: $(F128_DIR)/dpml_exp.c $(F128_DIR)/dpml_pow_t_table.c
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) -DUSE_CONTROL87 $<
@@ -492,17 +492,17 @@ $(OBJ_DIR)/dpml_expm1_t.$O :: $(F128_DIR)/dpml_expm1.c $(F128_DIR)/dpml_pow_t_ta
 
 $(OBJ_DIR)/dpml_tgamma_t.$O :: $(F128_DIR)/dpml_tgamma.c $(F128_DIR)/dpml_special_exp.h
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
- 
+
 $(OBJ_DIR)/dpml_special_exp_t.$O :: $(F128_DIR)/dpml_exp.c \
                                   $(F128_DIR)/dpml_pow_t_table.c
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) -DSPECIAL_EXP -DT_FLOAT $<
- 
- 
+
+
 $(OBJ_DIR)/dpml_pow_t_table.$O \
 $(OBJ_DIR)/dpml_cbrt_t_table.$O :: $(OBJ_DIR)/%.$O : $(F128_DIR)/%.c
 	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) $<
 
-                                                           
+
 cleanBinary :
 	$(RM) $(F128_OBJS) $(F53_OBJS)
 
@@ -521,7 +521,7 @@ cleanBinary :
 # Clean targets
 # =============================================================================
 
-clean : 
+clean :
 	$(RM) $(BID_LIB) *.$O
 
 

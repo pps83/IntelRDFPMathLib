@@ -447,7 +447,7 @@
 #endif
 
 #ifndef CMP_BASE_NAME
-#   define CMP_BASE_NAME cmp 
+#   define CMP_BASE_NAME cmp
 #endif
 
 #ifndef LOG_TABLE_BASE_NAME
@@ -575,7 +575,7 @@
 #endif
 
 #ifndef FMAX_BASE_NAME
-#    define FMAX_BASE_NAME  fmax 
+#    define FMAX_BASE_NAME  fmax
 #endif
 
 #ifndef FMIN_BASE_NAME
@@ -1195,7 +1195,7 @@
 #endif
 
 #ifndef F_NXTAFTR_NAME
-#    define F_NXTAFTR_NAME __F_USER_NAME(NXTAFTR_BASE_NAME) 
+#    define F_NXTAFTR_NAME __F_USER_NAME(NXTAFTR_BASE_NAME)
 #endif
 
 #ifndef F_POW_NAME
@@ -1219,7 +1219,7 @@
 #endif
 
 #if !defined(SPECIAL_EXP_HEADER)
-#   define SPECIAL_EXP_HEADER	ADD_EXTENSION(ADD_BUILD_PREFIX(special_exp),h)  
+#   define SPECIAL_EXP_HEADER	ADD_EXTENSION(ADD_BUILD_PREFIX(special_exp),h)
 #endif
 
 #ifndef F_RANDOM_NAME
@@ -2331,7 +2331,7 @@
 
 #ifndef POW_ANSI_C_ERROR_BUILD_FILE_NAME
 #    define POW_ANSI_C_ERROR_BUILD_FILE_NAME \
-        ADD_EXTENSION(ADD_BUILD_PREFIX(pow_ansi_c_error),c)  
+        ADD_EXTENSION(ADD_BUILD_PREFIX(pow_ansi_c_error),c)
 #endif
 
 #ifndef POW_FORTRAN_ERROR_BUILD_FILE_NAME

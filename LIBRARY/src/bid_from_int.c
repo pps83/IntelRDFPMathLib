@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -111,15 +111,15 @@ bid64_from_int64 (BID_SINT64 x
       res =
 	x_sign | 0x6c70000000000000ull | (C & 0x0007ffffffffffffull);
     }
-  } else {	// |C| >= 10^16 and the result may be inexact 
+  } else {	// |C| >= 10^16 and the result may be inexact
     // the smallest |C| is 10^16 which has 17 decimal digits
     // the largest |C| is 0x8000000000000000 = 9223372036854775808 w/ 19 digits
-    if (C < 0x16345785d8a0000ull) {	// x < 10^17 
+    if (C < 0x16345785d8a0000ull) {	// x < 10^17
       q = 17;
       ind = 1;	// number of digits to remove for q = 17
     } else if (C < 0xde0b6b3a7640000ull) {	// C < 10^18
       q = 18;
-      ind = 2;	// number of digits to remove for q = 18 
+      ind = 2;	// number of digits to remove for q = 18
     } else {	// C < 10^19
       q = 19;
       ind = 3;	// number of digits to remove for q = 19
@@ -171,7 +171,7 @@ bid64_from_int64 (BID_SINT64 x
     }
     if (res < 0x0020000000000000ull) {	// res < 2^53
       res = x_sign | (((BID_UINT64) ind + 398) << 53) | res;
-    } else {	// res >= 2^53 
+    } else {	// res >= 2^53
       res =
 	x_sign | 0x6000000000000000ull | (((BID_UINT64) ind + 398) << 51) |
 	(res & 0x0007ffffffffffffull);
@@ -210,15 +210,15 @@ bid64_from_uint64 (BID_UINT64 x
     } else {	// x >= 2^53
       res = 0x6c70000000000000ull | (x & 0x0007ffffffffffffull);
     }
-  } else {	// x >= 10^16 and the result may be inexact 
+  } else {	// x >= 10^16 and the result may be inexact
     // the smallest x is 10^16 which has 17 decimal digits
     // the largest x is 0xffffffffffffffff = 18446744073709551615 w/ 20 digits
-    if (x < 0x16345785d8a0000ull) {	// x < 10^17 
+    if (x < 0x16345785d8a0000ull) {	// x < 10^17
       q = 17;
       ind = 1;	// number of digits to remove for q = 17
     } else if (x < 0xde0b6b3a7640000ull) {	// x < 10^18
       q = 18;
-      ind = 2;	// number of digits to remove for q = 18 
+      ind = 2;	// number of digits to remove for q = 18
     } else if (x < 0x8ac7230489e80000ull) {	// x < 10^19
       q = 19;
       ind = 3;	// number of digits to remove for q = 19
@@ -272,7 +272,7 @@ bid64_from_uint64 (BID_UINT64 x
     }
     if (res < 0x0020000000000000ull) {	// res < 2^53
       res = (((BID_UINT64) ind + 398) << 53) | res;
-    } else {	// res >= 2^53 
+    } else {	// res >= 2^53
       res = 0x6000000000000000ull | (((BID_UINT64) ind + 398) << 51) |
 	(res & 0x0007ffffffffffffull);
     }
@@ -399,10 +399,10 @@ bid32_from_int32 (BID_SINT32 x
     } else { // C >= 2^23
       res = x_sign | 0x6ca00000 | (C & 0x001fffff);
     }
-  } else { // |C| >= 10^7 and the result may be inexact 
+  } else { // |C| >= 10^7 and the result may be inexact
     // the smallest |C| is 10^7 which has 8 decimal digits
     // the largest |C| is 0x80000000 = 2147483648 w/ 10 digits
-    if (C < 0x05f5e100) { // x < 10^8 
+    if (C < 0x05f5e100) { // x < 10^8
       q = 8;
       ind = 1;	// number of digits to remove for q = 8
     } else if (C < 0x3b9aca00) { // C < 10^9
@@ -459,7 +459,7 @@ bid32_from_int32 (BID_SINT32 x
     }
     if (res < 0x00800000) { // res < 2^23
       res = x_sign | ((ind + 101) << 23) | res;
-    } else { // res >= 2^23 
+    } else { // res >= 2^23
       res = x_sign | 0x60000000 | ((ind + 101) << 21) | (res & 0x001fffff);
     }
   }
@@ -495,7 +495,7 @@ bid32_from_uint32 (BID_UINT32 x
     } else { // x >= 2^23
       res = 0x6ca00000 | (x & 0x001fffff);
     }
-  } else { // x >= 10^7 and the result may be inexact 
+  } else { // x >= 10^7 and the result may be inexact
     // the smallest x is 10^7 which has 8 decimal digits
     // the largest x is 0xffffffff = 4294967295 w/ 10 digits
     if (x < 0x05f5e100) { // x < 10^8
@@ -546,7 +546,7 @@ bid32_from_uint32 (BID_UINT32 x
     }
     if (res < 0x00800000) { // res < 2^23
       res = ((ind + 101) << 23) | res;
-    } else { // res >= 2^23 
+    } else { // res >= 2^23
       res = 0x60000000 | ((ind + 101) << 21) | (res & 0x001fffff);
     }
   }
@@ -591,10 +591,10 @@ bid32_from_int64 (BID_SINT64 x
     } else { // C >= 2^23
       res = x_sign32 | 0x6ca00000 | (BID_UINT32)(C & 0x001fffff);
     }
-  } else { // |C| >= 10^7 and the result may be inexact 
+  } else { // |C| >= 10^7 and the result may be inexact
     // the smallest |C| is 10^7 which has 8 decimal digits
     // the largest |C| is 0x8000000000000000 = 9223372036854775808 w/ 19 digits
-    if (C < (BID_UINT64)0x05f5e100) { // x < 10^8 
+    if (C < (BID_UINT64)0x05f5e100) { // x < 10^8
       q = 8;
       ind = 1;	// number of digits to remove for q = 8
     } else if (C < (BID_UINT64)0x3b9aca00) { // C < 10^9
@@ -679,7 +679,7 @@ bid32_from_int64 (BID_SINT64 x
     }
     if (res < 0x00800000) { // res < 2^23
       res = x_sign32 | ((ind + 101) << 23) | res;
-    } else { // res >= 2^23 
+    } else { // res >= 2^23
       res = x_sign32 | 0x60000000 | ((ind + 101) << 21) | (res & 0x001fffff);
     }
   }
@@ -716,7 +716,7 @@ bid32_from_uint64 (BID_UINT64 x
     } else { // x >= 2^23
       res = 0x6ca00000 | (BID_UINT32)(x & 0x001fffff);
     }
-  } else { // x >= 10^7 and the result may be inexact 
+  } else { // x >= 10^7 and the result may be inexact
     // the smallest x is 10^7 which has 8 decimal digits
     // the largest x is 0xffffffffffffffff = 18446744073709551615 w/ 20 digits
     if (x < (BID_UINT64)0x05f5e100) { // x < 10^8
@@ -806,7 +806,7 @@ bid32_from_uint64 (BID_UINT64 x
     }
     if (res < 0x00800000) { // res < 2^23
       res = ((ind + 101) << 23) | res;
-    } else { // res >= 2^23 
+    } else { // res >= 2^23
       res = 0x60000000 | ((ind + 101) << 21) | (res & 0x001fffff);
     }
   }

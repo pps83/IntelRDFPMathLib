@@ -40,7 +40,7 @@
 
 #if !TABLE_IS_EXTERNAL
 
-    const unsigned int CBRT_TABLE_NAME[] = { 
+    const unsigned int CBRT_TABLE_NAME[] = {
 
 	/* 1.0 in double precision */
 	/* 000 */ DATA_1x2( 0x00000000, 0x3ff00000 ),
@@ -90,14 +90,14 @@
 
 #else
 
- extern const TABLE_UNION CBRT_TABLE_NAME[66]; 
+ extern const TABLE_UNION CBRT_TABLE_NAME[66];
 
 #endif
 
 #define	ONE_D	*((double *) ((char *)CBRT_TABLE_NAME + 0))
 #define	CBRT_POLY_ADDR	((double *) ((char *)CBRT_TABLE_NAME + 8))
 #define	REC_CBRT_POLY_ADDR	((double *) ((char *)CBRT_TABLE_NAME + 88))
-#define OFFSET_OF_CBRTS_OF_2  160 
+#define OFFSET_OF_CBRTS_OF_2  160
 #define	BIG_QUAD	*((double *) ((char *)CBRT_TABLE_NAME + 208))
 #define	SEVEN_NINTHS	*((double *) ((char *)CBRT_TABLE_NAME + 216))
 #define	ONE_SEVENTH	*((double *) ((char *)CBRT_TABLE_NAME + 224))

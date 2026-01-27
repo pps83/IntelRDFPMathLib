@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -124,7 +124,7 @@ bid32_isNormal (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 // return 1 iff x is not zero, NaN, normal, or infinity
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_isSubnormal (int *pres, BID_UINT32 * px 
+bid32_isSubnormal (int *pres, BID_UINT32 * px
     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
@@ -343,9 +343,9 @@ bid32_abs (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_RETURN (res);
 }
 
-// copies operand x to destination in the same format as x, but 
+// copies operand x to destination in the same format as x, but
 // with the sign of y
-DFP_WRAPFN_DFP_DFP(32, bid32_copySign, 32, 32);   
+DFP_WRAPFN_DFP_DFP(32, bid32_copySign, 32, 32);
 
 #if DECIMAL_CALL_BY_REFERENCE
 void
@@ -432,12 +432,12 @@ bid32_class (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 }
 
 // true if the exponents of x and y are the same, false otherwise.
-// The special cases of sameQuantum (NaN, NaN) and sameQuantum (Inf, Inf) are 
+// The special cases of sameQuantum (NaN, NaN) and sameQuantum (Inf, Inf) are
 // true.
 // If exactly one operand is infinite or exactly one operand is NaN, then false
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_sameQuantum (int *pres, BID_UINT32 * px, BID_UINT32 * py 
+bid32_sameQuantum (int *pres, BID_UINT32 * px, BID_UINT32 * py
     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
   BID_UINT32 y = *py;
@@ -476,7 +476,7 @@ bid32_sameQuantum (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
 
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_totalOrder (int *pres, BID_UINT32 * px, BID_UINT32 * py 
+bid32_totalOrder (int *pres, BID_UINT32 * px, BID_UINT32 * py
     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
   BID_UINT32 y = *py;
@@ -510,7 +510,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       } else { // if y and x are both -NaN
 	// if x and y are both -sNaN or both -qNaN, we have to compare payloads
 	// this xnor statement evaluates to true if both are sNaN or qNaN
-	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
+	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^
             ((x & MASK_SNAN32) == MASK_SNAN32))) {
 	  // it comes down to the payload.  we want to return true if x has a
 	  // larger payload, or if the payloads are equal (canonical forms
@@ -544,17 +544,17 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 	res = 0; // y is a number, return 1
 	BID_RETURN (res);
       } else {
-	// x and y are both +NaN; 
+	// x and y are both +NaN;
 	// must investigate payload if both quiet or both signaling
 	// this xnor statement will be true if both x and y are +qNaN or +sNaN
-	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
+	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^
             ((x & MASK_SNAN32) == MASK_SNAN32))) {
 	  // it comes down to the payload.  we want to return true if x has a
 	  // smaller payload, or if the payloads are equal (canonical forms
 	  // are bitwise identical)
 	  pyld_y = y & 0x000fffff;
 	  pyld_x = x & 0x000fffff;
-	  // if x is zero and y isn't, x has the smaller 
+	  // if x is zero and y isn't, x has the smaller
 	  // payload definitely (since we know y isn't 0 at this point)
 	  if (pyld_x > 999999 || pyld_x == 0) {
 	    res = 1;
@@ -568,7 +568,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 	  res = (pyld_x <= pyld_y);
 	  BID_RETURN (res);
 	} else {
-	  // return true if y is +qNaN and x is +sNaN 
+	  // return true if y is +qNaN and x is +sNaN
 	  // (we know they're different bc of xor if_stmt above)
 	  res = ((x & MASK_SNAN32) == MASK_SNAN32);
 	  BID_RETURN (res);
@@ -588,9 +588,9 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     BID_RETURN (res);
   }
   // OPPOSITE SIGNS (CASE 3)
-  // if signs are opposite, return 1 if x is negative 
+  // if signs are opposite, return 1 if x is negative
   // (if x<y, totalOrder is true)
-  if (((x & MASK_SIGN32) == MASK_SIGN32) ^ 
+  if (((x & MASK_SIGN32) == MASK_SIGN32) ^
         ((y & MASK_SIGN32) == MASK_SIGN32)) {
     res = (x & MASK_SIGN32) == MASK_SIGN32;
     BID_RETURN (res);
@@ -602,7 +602,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       res = 1;
       BID_RETURN (res);
     } else {
-      // x is positive infinity, only return1 if y 
+      // x is positive infinity, only return1 if y
       // is positive infinity as well
       // (we know y has same sign as x)
       res = ((y & MASK_INF32) == MASK_INF32);
@@ -646,7 +646,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   }
 
   // ZERO (CASE 5)
-  // if x and y represent the same entities, and 
+  // if x and y represent the same entities, and
   // both are negative , return true iff exp_x <= exp_y
   if (x_is_zero && y_is_zero) {
     // the signs are the same:
@@ -670,7 +670,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     BID_RETURN (res);
   }
   // REDUNDANT REPRESENTATIONS (CASE6)
-  // if both components are either bigger or smaller, 
+  // if both components are either bigger or smaller,
   // it is clear what needs to be done
   if (sig_x > sig_y && exp_x >= exp_y) {
     res = ((x & MASK_SIGN32) == MASK_SIGN32);
@@ -680,28 +680,28 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     res = ((x & MASK_SIGN32) != MASK_SIGN32);
     BID_RETURN (res);
   }
-  // if exp_x is 6 greater than exp_y, it is 
+  // if exp_x is 6 greater than exp_y, it is
   // definitely larger, so no need for compensation
   if (exp_x - exp_y > 6) {
     // difference cannot be greater than 10^6
     res = ((x & MASK_SIGN32) == MASK_SIGN32);
     BID_RETURN (res);
   }
-  // if exp_x is 6 less than exp_y, it is 
+  // if exp_x is 6 less than exp_y, it is
   // definitely smaller, no need for compensation
   if (exp_y - exp_x > 6) {
     res = ((x & MASK_SIGN32) != MASK_SIGN32);
     BID_RETURN (res);
   }
-  // if |exp_x - exp_y| < 6, it comes down 
+  // if |exp_x - exp_y| < 6, it comes down
   // to the compensated significand
   if (exp_x > exp_y) {
     // otherwise adjust the x significand upwards
     sig_n_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x - exp_y];
-    // if x and y represent the same entities, 
+    // if x and y represent the same entities,
     // and both are negative, return true iff exp_x <= exp_y
     if (sig_n_prime == (BID_UINT64)sig_y) {
-      // case cannot occur, because all bits must 
+      // case cannot occur, because all bits must
       // be the same - would have been caught if (x==y)
       res = (exp_x <= exp_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32);
       BID_RETURN (res);
@@ -713,15 +713,15 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   // adjust the y significand upwards
   sig_n_prime = (BID_UINT64)sig_y * (BID_UINT64)bid_mult_factor[exp_y - exp_x];
 
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative, return true iff exp_x <= exp_y
   if (sig_n_prime == (BID_UINT64)sig_x) {
-    // Cannot occur, because all bits must be the same. 
+    // Cannot occur, because all bits must be the same.
     // Case would have been caught if (x==y)
     res = (exp_x <= exp_y) ^ ((x & MASK_SIGN32) == MASK_SIGN32);
     BID_RETURN (res);
   }
-  // values are not equal, for positive numbers return 1 
+  // values are not equal, for positive numbers return 1
   // if x is less than y.  0 otherwise
   res = ((BID_UINT64)sig_x < sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32);
   BID_RETURN (res);
@@ -731,7 +731,7 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 // totalOrderMag is TotalOrder(abs(x), abs(y))
 #if DECIMAL_CALL_BY_REFERENCE
 void
-bid32_totalOrderMag (int *pres, BID_UINT32 * px, BID_UINT32 * py 
+bid32_totalOrderMag (int *pres, BID_UINT32 * px, BID_UINT32 * py
     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
   BID_UINT32 y = *py;
@@ -763,17 +763,17 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
 
     } else {
 
-      // x and y are both +NaN; 
+      // x and y are both +NaN;
       // must investigate payload if both quiet or both signaling
       // this xnor statement will be true if both x and y are +qNaN or +sNaN
-      if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
+      if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^
           ((x & MASK_SNAN32) == MASK_SNAN32))) {
 	// it comes down to the payload.  we want to return true if x has a
 	// smaller payload, or if the payloads are equal (canonical forms
 	// are bitwise identical)
 	pyld_y = y & 0x000fffff;
 	pyld_x = x & 0x000fffff;
-	// if x is zero and y isn't, x has the smaller 
+	// if x is zero and y isn't, x has the smaller
 	// payload definitely (since we know y isn't 0 at this point)
 	if (pyld_x > 999999 || pyld_x == 0) {
 	  res = 1;
@@ -789,7 +789,7 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
 	BID_RETURN (res);
 
       } else {
-	// return true if y is +qNaN and x is +sNaN 
+	// return true if y is +qNaN and x is +sNaN
 	// (we know they're different bc of xor if_stmt above)
 	res = ((x & MASK_SNAN32) == MASK_SNAN32);
 	BID_RETURN (res);
@@ -803,7 +803,7 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
     BID_RETURN (res);
   }
   // SIMPLE (CASE2)
-  // if all the bits (except sign bit) are the same, 
+  // if all the bits (except sign bit) are the same,
   // these numbers are equal.
   if ((x & ~MASK_SIGN32) == (y & ~MASK_SIGN32)) {
     res = 1;
@@ -811,7 +811,7 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
   }
   // INFINITY (CASE3)
   if ((x & MASK_INF32) == MASK_INF32) {
-    // x is positive infinity; return 1 only 
+    // x is positive infinity; return 1 only
     // if y is positive infinity as well
     res = ((y & MASK_INF32) == MASK_INF32);
     BID_RETURN (res);
@@ -856,7 +856,7 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
   }
 
   // ZERO (CASE 5)
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative , return true iff exp_x <= exp_y
   if (x_is_zero && y_is_zero) {
     // totalOrder(x,y) iff exp_x <= exp_y for positive numbers
@@ -883,19 +883,19 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
     res = 1;
     BID_RETURN (res);
   }
-  // if exp_x is 6 greater than exp_y, it is definitely 
+  // if exp_x is 6 greater than exp_y, it is definitely
   // larger, so no need for compensation
   if (exp_x - exp_y > 6) {
     res = 0;	// difference cannot be greater than 10^6
     BID_RETURN (res);
   }
-  // if exp_x is 6 less than exp_y, it is definitely 
+  // if exp_x is 6 less than exp_y, it is definitely
   // smaller, no need for compensation
   if (exp_y - exp_x > 6) {
     res = 1;
     BID_RETURN (res);
   }
-  // if |exp_x - exp_y| < 6, it comes down 
+  // if |exp_x - exp_y| < 6, it comes down
   // to the compensated significand
   if (exp_x > exp_y) {
     // adjust the x significand upwards
@@ -903,7 +903,7 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
     // if x and y represent the same entities
     // and both are negative, return true iff exp_x <= exp_y
     if (sig_n_prime == (BID_UINT64)sig_y) {
-      // case cannot occur, because all bits 
+      // case cannot occur, because all bits
       // must be the same - would have been caught if (x==y)
       res = 0; // res = (exp_x <= exp_y); but 0 < exp_x - exp_y <= 5
       BID_RETURN (res);
@@ -915,13 +915,13 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
   // adjust the y significand upwards
   sig_n_prime = (BID_UINT64)sig_y * (BID_UINT64)bid_mult_factor[exp_y - exp_x];
 
-  // if x and y represent the same entities, 
+  // if x and y represent the same entities,
   // and both are negative, return true iff exp_x <= exp_y
   if (sig_n_prime == (BID_UINT64)sig_x) {
     res = 1; // res = (exp_x <= exp_y); but -5 <= exp_x - exp_y <= 0
     BID_RETURN (res);
   }
-  // values are not equal, for positive numbers 
+  // values are not equal, for positive numbers
   // return 1 if x is less than y, and 0 otherwise
   res = ((BID_UINT64)sig_x < sig_n_prime);
   BID_RETURN (res);
@@ -950,8 +950,8 @@ void bid32_inf (BID_UINT32 *pres) {
 #else
 BID_UINT32 bid32_inf (void) {
 #endif
- 
-  BID_UINT32 res; 
+
+  BID_UINT32 res;
   res = 0x78000000; // + inf
   BID_RETURN(res);
 }
@@ -964,7 +964,7 @@ void bid32_nan (BID_UINT32 *pres, const char *tagp) {
 #else
 BID_UINT32 bid32_nan (const char *tagp) {
 #endif
- 
+
   BID_UINT32 res, x;
 
 #if !DECIMAL_GLOBAL_ROUNDING
@@ -980,7 +980,7 @@ BID_UINT32 bid32_nan (const char *tagp) {
 
 #if DECIMAL_CALL_BY_REFERENCE
   bid32_from_string (&x, (char *)tagp _RND_MODE_ARG _EXC_FLAGS_ARG);
-#else      
+#else
   x = bid32_from_string ((char *)tagp _RND_MODE_ARG _EXC_FLAGS_ARG);
 #endif
   x = x & 0x000fffff; // valid values fit in 20 bits

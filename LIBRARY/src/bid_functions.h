@@ -116,7 +116,7 @@ typedef BID_UINT128 _Quad;
   #define SQRT80 sqrtl
 #else
   #define BINARY80 __float80
-  //#define BINARY128 __float128 
+  //#define BINARY128 __float128
   #define BINARY128 BID_UINT128
   #define SQRT80 sqrtw
 #endif

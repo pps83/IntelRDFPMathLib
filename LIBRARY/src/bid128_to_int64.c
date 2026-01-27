@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -147,7 +147,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x50000000000000005, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0000000000000005ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -180,14 +180,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1/2 <= n < 2^63-1/2
@@ -440,7 +440,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x50000000000000005, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0000000000000005ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -473,14 +473,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1/2 <= n < 2^63-1/2
@@ -800,7 +800,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x50000000000000000, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x0000000000000000ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -833,14 +833,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n < 2^63
@@ -1081,7 +1081,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x50000000000000000, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x0000000000000000ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -1114,14 +1114,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n < 2^63
@@ -1370,7 +1370,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x5000000000000000a, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x000000000000000aull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -1403,14 +1403,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] > C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n <= 2^63 - 1
@@ -1650,7 +1650,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 > 0x5000000000000000a, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x000000000000000aull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -1683,14 +1683,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] > C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n <= 2^63 - 1
@@ -1938,7 +1938,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 >= 0x5000000000000000a, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x000000000000000aull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -1971,14 +1971,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n < 2^63
@@ -2168,7 +2168,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 >= 0x5000000000000000a, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0x000000000000000aull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -2201,14 +2201,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1 < n < 2^63
@@ -2437,7 +2437,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 >= 0x50000000000000005, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0000000000000005ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -2470,14 +2470,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1/2 <= n < 2^63-1/2
@@ -2710,7 +2710,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // <=> 0.c(0)c(1)...c(q-1) * 10^20 >= 0x50000000000000005, 1<=q<=34
       C.w[1] = 0x0000000000000005ull;
       C.w[0] = 0000000000000005ull;
-      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 => 
+      if (q <= 19) {	// 1 <= q <= 19 => 1 <= 20-q <= 19 =>
 	// 10^(20-q) is 64-bit, and so is C1
 	__mul_64x64_to_128MACH (C1, C1.w[0], bid_ten2k64[20 - q]);
       } else if (q == 20) {
@@ -2743,14 +2743,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 	__mul_128x64_to_128 (C, bid_ten2k64[q - 20], C);	// max 47-bit x 67-bit
       }
       if (C1.w[1] > C.w[1] || (C1.w[1] == C.w[1] && C1.w[0] >= C.w[0])) {
-	// set invalid flag 
+	// set invalid flag
 	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
+	// return Integer Indefinite
 	res = 0x8000000000000000ull;
 	BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
-      // to '1 <= q + exp <= 19' 
+      // to '1 <= q + exp <= 19'
     }
   }
   // n is not too large to be converted to int64: -2^63-1/2 <= n < 2^63-1/2

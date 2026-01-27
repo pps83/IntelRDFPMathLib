@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -79,7 +79,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
         // return +inf
         res.w[1] = 0x7800000000000000ull;
         res.w[0] = 0x0000000000000000ull;
-      } else {                  // x is -inf 
+      } else {                  // x is -inf
         // return -inf
         res.w[1] = 0xf800000000000000ull;
         res.w[0] = 0x0000000000000000ull;
@@ -215,7 +215,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
     if ((q + exp) >= 0) {       // exp < 0 and 1 <= -exp <= q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 127 bits
       tmp64 = C1.w[0];
       if (ind <= 19) {
@@ -305,7 +305,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
     if ((q + exp) >= 0) {       // exp < 0 and 1 <= -exp <= q
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 127 bits
       tmp64 = C1.w[0];
       if (ind <= 19) {
@@ -366,9 +366,9 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
   case BID_ROUNDING_DOWN:
     if ((q + exp) > 0) {        // exp < 0 and 1 <= -exp < q
       // need to shift right -exp digits from the coefficient; exp will be 0
-      ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x' 
+      ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
       // (number of digits to be chopped off)
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
       // FOR ROUND_TO_ZERO, WE DON'T NEED TO ADD 1/2 ULP
       // FOR ROUND_TO_POSITIVE_INFINITY, WE TRUNCATE, THEN ADD 1 IF POSITIVE
@@ -467,9 +467,9 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
   case BID_ROUNDING_UP:
     if ((q + exp) > 0) {        // exp < 0 and 1 <= -exp < q
       // need to shift right -exp digits from the coefficient; exp will be 0
-      ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x' 
+      ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
       // (number of digits to be chopped off)
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
       // FOR ROUND_TO_ZERO, WE DON'T NEED TO ADD 1/2 ULP
       // FOR ROUND_TO_POSITIVE_INFINITY, WE TRUNCATE, THEN ADD 1 IF POSITIVE
@@ -481,7 +481,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       //   C1.w[0] = C1.w[0] + bid_midpoint128[ind - 20].w[0];
       //   C1.w[1] = C1.w[1] + bid_midpoint128[ind - 20].w[1];
       // }
-      // if (C1.w[0] < tmp64) C1.w[1]++;  
+      // if (C1.w[0] < tmp64) C1.w[1]++;
       // if carry-out from C1.w[0], increment C1.w[1]
       // calculate C* and f*
       // C* is actually floor(C*) in this case
@@ -497,9 +497,9 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
         res.w[0] = P256.w[2];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
-        // redundant fstar.w[1] = P256.w[1]; 
+        // redundant fstar.w[1] = P256.w[1];
         // redundant fstar.w[0] = P256.w[0];
-        // f* is in the right position to be compared with 
+        // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
         if ((P256.w[1] > bid_ten2mk128[ind - 1].w[1])
             || (P256.w[1] == bid_ten2mk128[ind - 1].w[1]
@@ -519,7 +519,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
         fstar.w[2] = P256.w[2] & bid_maskhigh128[ind - 1];
         fstar.w[1] = P256.w[1];
         fstar.w[0] = P256.w[0];
-        // f* is in the right position to be compared with 
+        // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
         if (fstar.w[2] || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
             || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1] && fstar.w[0] >= bid_ten2mk128[ind - 1].w[0])) {
@@ -538,7 +538,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
         fstar.w[2] = P256.w[2];
         fstar.w[1] = P256.w[1];
         fstar.w[0] = P256.w[0];
-        // f* is in the right position to be compared with 
+        // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
         if (fstar.w[3] || fstar.w[2]
             || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
@@ -570,7 +570,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       // need to shift right -exp digits from the coefficient; exp will be 0
       ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
       // (number of digits to be chopped off)
-      // chop off ind digits from the lower part of C1 
+      // chop off ind digits from the lower part of C1
       // FOR ROUND_TO_NEAREST, WE ADD 1/2 ULP(y) then truncate
       // FOR ROUND_TO_ZERO, WE DON'T NEED TO ADD 1/2 ULP
       // FOR ROUND_TO_POSITIVE_INFINITY, WE TRUNCATE, THEN ADD 1 IF POSITIVE
@@ -582,7 +582,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       //   C1.w[0] = C1.w[0] + bid_midpoint128[ind - 20].w[0];
       //   C1.w[1] = C1.w[1] + bid_midpoint128[ind - 20].w[1];
       // }
-      // if (C1.w[0] < tmp64) C1.w[1]++;  
+      // if (C1.w[0] < tmp64) C1.w[1]++;
       // if carry-out from C1.w[0], increment C1.w[1]
       // calculate C* and f*
       // C* is actually floor(C*) in this case
@@ -598,7 +598,7 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
         res.w[0] = P256.w[2];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
-        // redundant fstar.w[1] = P256.w[1]; 
+        // redundant fstar.w[1] = P256.w[1];
         // redundant fstar.w[0] = P256.w[0];
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 3 <= shift <= 63

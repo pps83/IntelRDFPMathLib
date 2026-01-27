@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -159,7 +159,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 	  tempx.d = (double) coefficient_a;
 	  bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
 	  scale_ca = bid_estimate_decimal_digits[bin_expon];
-      
+
 	  d2 = 16 - scale_ca;
 	  if(diff_dec_expon > d2)
 	  {
@@ -246,5 +246,5 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 	  res = get_BID32 (sign_a, exponent_b+extra_digits, Q, rnd_mode, pfpsf);
 
     BID_RETURN (res);
-  
+
 }

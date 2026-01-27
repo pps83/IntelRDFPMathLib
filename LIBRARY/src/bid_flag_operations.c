@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -36,7 +36,7 @@
 // Note the following definitions from bid_conf.h: if the status flags are
 // global, they have a fixed name recognized by the library functions:
 // _IDEC_glbflags; pfpsf, defined as &_IDEC_glbflags, can be used instead; no
-// argument is passed for the status flags to the library functions; if the 
+// argument is passed for the status flags to the library functions; if the
 // status flags are local then they are passed as an arument, always by
 // reference, to the library functions
 //
@@ -73,7 +73,7 @@ void
 bid_lowerFlags (_IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
   // *pflagsmask is the logical OR of the flags to be cleared, e.g.
   // *pflagsmask =BID_INVALID_EXCEPTION | BID_ZERO_DIVIDE_EXCEPTION | BID_OVERFLOW_EXCEPTION
-  // BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION to clear all five IEEE 754 
+  // BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION to clear all five IEEE 754
   // exception flags
   *pfpsf = *pfpsf & ~(*pflagsmask & BID_IEEE_FLAGS);
 }
@@ -81,8 +81,8 @@ bid_lowerFlags (_IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
 void
 bid_lowerFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
   // flagsmask is the logical OR of the flags to be cleared, e.g.
-  // flagsmask = BID_INVALID_EXCEPTION | BID_ZERO_DIVIDE_EXCEPTION | BID_OVERFLOW_EXCEPTION 
-  // BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION to clear all five IEEE 754    
+  // flagsmask = BID_INVALID_EXCEPTION | BID_ZERO_DIVIDE_EXCEPTION | BID_OVERFLOW_EXCEPTION
+  // BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION to clear all five IEEE 754
   // exception flags
   *pfpsf = *pfpsf & ~(flagsmask & BID_IEEE_FLAGS);
 }
@@ -92,10 +92,10 @@ bid_lowerFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
 void
 bid_testFlags (_IDEC_flags * praised,
 	   _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
-  // *praised is a pointer to the result, i.e. the logical OR of the flags 
+  // *praised is a pointer to the result, i.e. the logical OR of the flags
   // selected by *pflagsmask that are set; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
-  // and only the invalid and inexact flags are raised (set) then upon return 
+  // and only the invalid and inexact flags are raised (set) then upon return
   // *praised = BID_INVALID_EXCEPTION | BID_INEXACT_EXCEPTION
   *praised = *pfpsf & (*pflagsmask & BID_IEEE_FLAGS);
 }
@@ -103,7 +103,7 @@ bid_testFlags (_IDEC_flags * praised,
 _IDEC_flags
 bid_testFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
   _IDEC_flags raised;
-  // the raturn value raised is the logical OR of the flags  
+  // the raturn value raised is the logical OR of the flags
   // selected by flagsmask, that are set; e.g. if
   // flagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION and
   // only the invalid and inexact flags are raised (set) then the return value
@@ -162,9 +162,9 @@ void
 bid_restoreFlags (_IDEC_flags flagsvalues,
 	      _IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
   // restore the status flags selected by flagsmask to the values speciafied
-  // (as a logical OR) in flagsvalues; e.g. if 
+  // (as a logical OR) in flagsvalues; e.g. if
   // flagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
-  // and only the invalid and inexact flags are raised (set) in flagsvalues 
+  // and only the invalid and inexact flags are raised (set) in flagsvalues
   // then upon return the invalid status flag will be set, the underflow status
   // flag will be clear, and the inexact status flag will be set
   *pfpsf = *pfpsf & ~(flagsmask & BID_IEEE_FLAGS);
@@ -182,7 +182,7 @@ bid_saveFlags (_IDEC_flags * pflagsvalues,
   // *pflagsmask; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
   // and only the invalid and inexact flags are raised (set) in the status word,
-  // then upon return the value in *pflagsvalues will have the invalid status 
+  // then upon return the value in *pflagsvalues will have the invalid status
   // flag set, the underflow status flag clear, and the inexact status flag set
   *pflagsvalues = *pfpsf & (*pflagsmask & BID_IEEE_FLAGS);
 }
@@ -190,11 +190,11 @@ bid_saveFlags (_IDEC_flags * pflagsvalues,
 _IDEC_flags
 bid_saveFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
   _IDEC_flags flagsvalues;
-  // return the status flags specified (as a logical OR) in flagsmask; e.g. if 
+  // return the status flags specified (as a logical OR) in flagsmask; e.g. if
   // flagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
   // and only the invalid and inexact flags are raised (set) in the status word,
-  // then the return value will have the invalid status  flag set, the 
-  // underflow status flag clear, and the inexact status flag set 
+  // then the return value will have the invalid status  flag set, the
+  // underflow status flag clear, and the inexact status flag set
   flagsvalues = *pfpsf & (flagsmask & BID_IEEE_FLAGS);
   return (flagsvalues);
 }

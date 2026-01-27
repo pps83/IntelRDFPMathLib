@@ -81,13 +81,13 @@
 		( (l) = _F2, \
 		  _F2 = _F1, \
 		  _F1 = (m), \
-		  (m) = 0 ) 	
+		  (m) = 0 )
 
 #   define DIGIT_SHIFT_FRACTION_LEFT(l,m) \
 		( (m) = _F1, \
 		  _F1 = _F2, \
 		  _F2 = (l), \
-		  (l) = 0 ) 	
+		  (l) = 0 )
 
 #   define BIT_SHIFT_FRACTION_RIGHT(l,m,s,c)	\
 		( (l) = ((l) >> (s)) | (_F1 << (c)), \
@@ -136,7 +136,7 @@
 					 P_UX_FRACTION_DIGIT(p, 1, 0))
 
 #   define OTHER_DIGITS
-#   define G_UX_OTHER_DIGITS(p)	
+#   define G_UX_OTHER_DIGITS(p)
 #   define DIGIT_SHIFT_FRACTION_RIGHT(l,m)	( (l) = (m), (m) = 0 )
 #   define DIGIT_SHIFT_FRACTION_LEFT(l,m)	( (m) = (l), (l) = 0 )
 #   define BIT_SHIFT_FRACTION_RIGHT(l,m,s,c)	\
@@ -145,7 +145,7 @@
 #   define BIT_SHIFT_FRACTION_LEFT(l,m,s,c)	\
 					( (m) = ((m) << (s)) | ((l) >> (c)), \
 					  (l) <<= (s) )
-#   define PROPAGATE_CARRY(c)		
+#   define PROPAGATE_CARRY(c)
 #   define P_UX_OTHER_DIGITS(p)
 
 #else

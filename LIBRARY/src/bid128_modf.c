@@ -47,7 +47,7 @@ bid128_modf (BID_UINT128 x, BID_UINT128 *pint _EXC_FLAGS_PARAM
 BID_UINT128 res, xi;
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = 0;
-#else 
+#else
   rnd_mode=0;
 #endif
 

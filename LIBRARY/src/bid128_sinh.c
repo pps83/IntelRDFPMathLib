@@ -51,10 +51,10 @@ static BID_UINT128 BID128_EXP_11000 =
 static BID_UINT128 BID128_SHIFTER =
   {BID128_LH_INIT( 0xbe00000000000000ull, 0x3040363bf3b1ceeeull )};
 
-// +Infinity                                                             
-                                                                          
-static BID_UINT128 BID128_INF =                                                  
-  {BID128_LH_INIT( 0x0000000000000000ull, 0x7800000000000000ull )};                      
+// +Infinity
+
+static BID_UINT128 BID128_INF =
+  {BID128_LH_INIT( 0x0000000000000000ull, 0x7800000000000000ull )};
 
 BID_F128_CONST_DEF(c_1em40,      3f7a16c262777579, c58c46475896767b); // 1e-40
 BID_F128_CONST_DEF(c_one,        3fff000000000000, 0000000000000000); // 1
@@ -106,7 +106,7 @@ BID128_FUNCTION_ARG1 (bid128_sinh, x)
 // If the input is really small, the result is about x + x^3/3, which
 // we do weakly just to make sure all the directed roundings are OK.
 
-   __bid_f128_fabs(abs_xd, xd);  
+   __bid_f128_fabs(abs_xd, xd);
   if (__bid_f128_le(abs_xd, c_1em40.v))
    { BIDECIMAL_CALL3(bid128_fma,res,x,BID128_10PM40,x);
      BID_RETURN(res);

@@ -38,10 +38,10 @@ static BID_UINT128 BID128_MINUS1 =
 static BID_UINT128 BID128_10PM40 =
   {BID128_LH_INIT( 0x0000000000000001ull, 0x2ff0000000000000ull )};
 
-// NaN for inputs |x| > 1                                                   
-                                                                          
-static BID_UINT128 BID128_NAN =                                          
-  {BID128_LH_INIT( 0x0000000000000000ull, 0x7c00000000000000ull )};                   
+// NaN for inputs |x| > 1
+
+static BID_UINT128 BID128_NAN =
+  {BID128_LH_INIT( 0x0000000000000000ull, 0x7c00000000000000ull )};
 
 BID_F128_CONST_DEF( c_1em40, 3f7a16c262777579, c58c46475896767b); // 1e-40
 BID_F128_CONST_DEF( c_7_10ths, 3ffe666666666666, 6666666666666666); // .7
@@ -100,22 +100,22 @@ BID128_FUNCTION_ARG1 (bid128_asin, x)
      BID_RETURN (res);
    }
 
-// If the input is > 1 in magnitude, fail                      
-                                                                             
-  else if (__bid_f128_gt(abs_xd, c_one.v))                                             
-   { res = BID128_NAN;                                                      
-     #ifdef BID_SET_STATUS_FLAGS                                              
-     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);                  
-     #endif                                                           
-     BID_RETURN(res)                                                      
-   }                                                              
+// If the input is > 1 in magnitude, fail
+
+  else if (__bid_f128_gt(abs_xd, c_one.v))
+   { res = BID128_NAN;
+     #ifdef BID_SET_STATUS_FLAGS
+     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+     #endif
+     BID_RETURN(res)
+   }
 
 // Otherwise compute sqrt(1 - x^2) accurately and use acos instead.
 
   else
    { BIDECIMAL_CALL3(bid128_fma,t,x,x,tm1);
      BIDECIMAL_CALL1(bid128_to_binary128,td,t);
-     __bid_f128_neg(yd, td); 
+     __bid_f128_neg(yd, td);
      __bid_f128_sqrt(yd, yd);
      __bid_f128_acos(yd, yd);
      if (__bid_f128_lt(xd, c_zero.v)) __bid_f128_neg(yd, yd);

@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -50,7 +50,7 @@ main () {
   __bid128_mul (&z, &x, &y);
   if (z.w[HIGH_128W] != 0x3040000000000000ull || z.w[LOW_128W] != 0x0000000000000006ull ||
       __bid_IDEC_glbflags != _IDEC_allflagsclear) {
-    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n", 
+    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n",
         z.w[HIGH_128W], z.w[LOW_128W], __bid_IDEC_glbflags);
     printf ("EXPECTED z=3040000000000000 0000000000000006 "
         "__bid_IDEC_glbflags=00000000\n");
@@ -71,9 +71,9 @@ main () {
     // 9999999999999999340001 * 10^100 * 999999999999999923000111 * 10^100 =(RN)
     //  9999999999999998570002110000000051 * 10^200
   if (z.w[HIGH_128W] != 0x31e9ed09bead87c0ull || z.w[LOW_128W] != 0x23b52ee2d8fdec33ull ||
-      __bid_IDEC_glbflags != _IDEC_inexact) { 
+      __bid_IDEC_glbflags != _IDEC_inexact) {
     // 9999999999999998570002110000000051 * 10^212, inexact
-    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n", 
+    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n",
         z.w[HIGH_128W], z.w[LOW_128W], __bid_IDEC_glbflags);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec33 "
         "__bid_IDEC_glbflags=00000020\n");
@@ -94,9 +94,9 @@ main () {
     // 9999999999999999340001 * 10^100 * 999999999999999923000111 * 10^100 =(RN)
     //  9999999999999998570002110000000050 * 10^200
   if (z.w[HIGH_128W] != 0x31e9ed09bead87c0ull || z.w[LOW_128W] != 0x23b52ee2d8fdec32ull ||
-      __bid_IDEC_glbflags != _IDEC_inexact) { 
+      __bid_IDEC_glbflags != _IDEC_inexact) {
     // 9999999999999998570002110000000050 * 10^212, inexact
-    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n", 
+    printf ("RECEIVED z="LX" "LX" __bid_IDEC_glbflags=%x\n",
         z.w[HIGH_128W], z.w[LOW_128W], __bid_IDEC_glbflags);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec32 "
         "__bid_IDEC_glbflags=00000020\n");

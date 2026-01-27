@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -63,18 +63,18 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   }
     // x is 0
 }
-           
+
 	 // calculate asinh(sqrt(x*x-1)) for x near 1 (x<1+1/32 = (10^5 + 5^5)/10^5 )
 	 near_one.w[BID_LOW_128W] = 103125;
 	 near_one.w[BID_HIGH_128W] = 0x3036000000000000ull;
 
-	 BIDECIMAL_CALL2_NORND (bid128_quiet_less, 
+	 BIDECIMAL_CALL2_NORND (bid128_quiet_less,
             cmp_res, x, near_one);
 	 if(cmp_res) {
 		 // x<1+1/32
 		one.w[BID_HIGH_128W] = 0x3040000000000000ull;  one.w[BID_LOW_128W]=1;
 
-		BIDECIMAL_CALL2_NORND (bid128_quiet_greater, 
+		BIDECIMAL_CALL2_NORND (bid128_quiet_greater,
             cmp_res, one, x);
 		if(cmp_res) {
 			// x < 1
@@ -108,7 +108,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 		__bid_f128_itof(yq, exponent_x-DECIMAL_EXPONENT_BIAS_128);
 		__bid_f128_log(rq, xq);
 		__bid_f128_mul(rt, yq, c_log10.v);
-		__bid_f128_add(rq, rq, rt); 
+		__bid_f128_add(rq, rq, rt);
 		BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
 	    BID_RETURN (res);

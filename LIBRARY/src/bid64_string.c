@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -148,10 +148,10 @@ bid64_to_string (char *ps, BID_UINT64 x
       ps[istart++] = '0';
     } else {
       /* ****************************************************
-       This takes a bid coefficient in C1.w[1],C1.w[0] 
-       and put the converted character sequence at location 
+       This takes a bid coefficient in C1.w[1],C1.w[0]
+       and put the converted character sequence at location
        starting at &(str[k]). The function returns the number
-       of MiDi returned. Note that the character sequence 
+       of MiDi returned. Note that the character sequence
        does not have leading zeros EXCEPT when the input is of
        zero value. It will then output 1 character '0'
        The algorithm essentailly tries first to get a sequence of
@@ -169,7 +169,7 @@ bid64_to_string (char *ps, BID_UINT64 x
        18 digits,  we set hi = 0, and lo = d to begin with.
        We then retrieve from a table, for j = 0, 1, ..., 8
        that gives us A and B where c_j 2^(59+6j) = A * 10^18 + B.
-       hi += A ; lo += B; After each accumulation into lo, we normalize 
+       hi += A ; lo += B; After each accumulation into lo, we normalize
        immediately. So at the end, we have the decomposition as we need. */
 
       Tmp = coefficient_x >> 59;
@@ -245,13 +245,13 @@ bid64_to_string (char *ps, BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_string (BID_UINT64 * pres, char *ps
-                   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+                   _RND_MODE_PARAM _EXC_FLAGS_PARAM
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #else
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_string, char*)
 BID_UINT64
 bid64_from_string (char *ps
-                   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+                   _RND_MODE_PARAM _EXC_FLAGS_PARAM
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT64 sign_x, coefficient_x = 0, rounded = 0, res;
@@ -279,18 +279,18 @@ bid64_from_string (char *ps
   // detect special cases (INF or NaN)
   if (!c || (c != '.' && c != '-' && c != '+' && (c < '0' || c > '9'))) {
     // Infinity?
-    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'f') && (!ps[3] || 
-        (tolower_macro (ps[3]) == 'i' && 
-        tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' && 
-        tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' && 
+    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' &&
+        tolower_macro (ps[2]) == 'f') && (!ps[3] ||
+        (tolower_macro (ps[3]) == 'i' &&
+        tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' &&
+        tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' &&
         !ps[8]))) {
       res = 0x7800000000000000ull;
       BID_RETURN (res);
     }
     // return sNaN
-    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') { 
+    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' &&
+        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') {
         // case insensitive check for snan
       res = 0x7e00000000000000ull;
       BID_RETURN (res);
@@ -301,10 +301,10 @@ bid64_from_string (char *ps
     }
   }
   // detect +INF or -INF
-  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' && 
-      tolower_macro (ps[3]) == 'f') && (!ps[4] || 
-      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' && 
-      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' && 
+  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' &&
+      tolower_macro (ps[3]) == 'f') && (!ps[4] ||
+      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' &&
+      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' &&
       tolower_macro (ps[8]) == 'y' && !ps[9]))) {
     if (c == '+')
       res = 0x7800000000000000ull;
@@ -354,17 +354,17 @@ bid64_from_string (char *ps
     // should catch cases such as: 000.0
     while (*ps == '0') {
       ps++;
-      // for numbers such as 0.0000000000000000000000000000000000001001, 
+      // for numbers such as 0.0000000000000000000000000000000000001001,
       // we want to count the leading zeros
       if (rdx_pt_enc) {
         right_radix_leading_zeros++;
       }
-      // if this character is a radix point, make sure we haven't already 
+      // if this character is a radix point, make sure we haven't already
       // encountered one
       if (*(ps) == '.') {
 	if (rdx_pt_enc == 0) {
 	  rdx_pt_enc = 1;
-	  // if this is the first radix point, and the next character is NULL, 
+	  // if this is the first radix point, and the next character is NULL,
           // we have a zero
 	  if (!*(ps + 1)) {
 	    res =
@@ -412,8 +412,8 @@ bid64_from_string (char *ps
       // coefficient rounding
       switch(rnd_mode){
 	case BID_ROUNDING_TO_NEAREST:
-	  midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0; 
-          // if coefficient is even and c is 5, prepare to round up if 
+	  midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0;
+          // if coefficient is even and c is 5, prepare to round up if
           // subsequent digit is nonzero
 	  // if str[MAXDIG+1] > 5, we MUST round up
 	  // if str[MAXDIG+1] == 5 and coefficient is ODD, ROUND UP!
@@ -457,8 +457,8 @@ bid64_from_string (char *ps
           rounded_up = 1;
 
           if (coefficient_x == 10000000000000000ull) {
-            coefficient_x = 1000000000000000ull; 
-            add_expon = 1; 
+            coefficient_x = 1000000000000000ull;
+            add_expon = 1;
 	  }
 	}
       }

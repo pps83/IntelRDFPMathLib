@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -147,25 +147,25 @@ bid32_to_string (char *ps, BID_UINT32 x
 
 	istart0 = istart;
 	ps[istart]=bid_midi_tbl[exponent_x][0];   if(ps[istart]!='0') istart++;
-	ps[istart]=bid_midi_tbl[exponent_x][1]; 
+	ps[istart]=bid_midi_tbl[exponent_x][1];
 	if((ps[istart]!='0') || (istart!=istart0)) istart++;
 	ps[istart++]=bid_midi_tbl[exponent_x][2];
 	ps[istart]=0;
 	return;
 
 }
- 
+
 
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_from_string (BID_UINT32 * pres, char *ps
-		   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+		   _RND_MODE_PARAM _EXC_FLAGS_PARAM
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #else
 DFP_WRAPFN_OTHERTYPE(32, bid32_from_string, char*)
 BID_UINT32
 bid32_from_string (char *ps
-		   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+		   _RND_MODE_PARAM _EXC_FLAGS_PARAM
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT64 sign_x, coefficient_x = 0, rounded = 0, res;
@@ -193,18 +193,18 @@ bid32_from_string (char *ps
   // detect special cases (INF or NaN)
   if (!c || (c != '.' && c != '-' && c != '+' && (c < '0' || c > '9'))) {
     // Infinity?
-    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'f') && (!ps[3] || 
-        (tolower_macro (ps[3]) == 'i' && 
-        tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' && 
-        tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' && 
+    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' &&
+        tolower_macro (ps[2]) == 'f') && (!ps[3] ||
+        (tolower_macro (ps[3]) == 'i' &&
+        tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' &&
+        tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' &&
         !ps[8]))) {
       res = 0x78000000ull;
       BID_RETURN (res);
     }
     // return sNaN
-    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') { 
+    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' &&
+        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') {
         // case insensitive check for snan
       res = 0x7e000000ul;
       BID_RETURN (res);
@@ -215,10 +215,10 @@ bid32_from_string (char *ps
     }
   }
   // detect +INF or -INF
-  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' && 
-      tolower_macro (ps[3]) == 'f') && (!ps[4] || 
-      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' && 
-      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' && 
+  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' &&
+      tolower_macro (ps[3]) == 'f') && (!ps[4] ||
+      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' &&
+      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' &&
       tolower_macro (ps[8]) == 'y' && !ps[9]))) {
     if (c == '+')
       res = 0x78000000ul;
@@ -268,17 +268,17 @@ bid32_from_string (char *ps
     // should catch cases such as: 000.0
     while (*ps == '0') {
       ps++;
-      // for numbers such as 0.0000000000000000000000000000000000001001, 
+      // for numbers such as 0.0000000000000000000000000000000000001001,
       // we want to count the leading zeros
       if (rdx_pt_enc) {
 	right_radix_leading_zeros++;
       }
-      // if this character is a radix point, make sure we haven't already 
+      // if this character is a radix point, make sure we haven't already
       // encountered one
       if (*(ps) == '.') {
 	if (rdx_pt_enc == 0) {
 	  rdx_pt_enc = 1;
-	  // if this is the first radix point, and the next character is NULL, 
+	  // if this is the first radix point, and the next character is NULL,
           // we have a zero
 	  if (!*(ps + 1)) {
 		  right_radix_leading_zeros = DECIMAL_EXPONENT_BIAS_32 - right_radix_leading_zeros;
@@ -332,8 +332,8 @@ bid32_from_string (char *ps
       // coefficient rounding
 		switch(rnd_mode){
 	case BID_ROUNDING_TO_NEAREST:
-      midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0; 
-          // if coefficient is even and c is 5, prepare to round up if 
+      midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0;
+          // if coefficient is even and c is 5, prepare to round up if
           // subsequent digit is nonzero
       // if str[MAXDIG+1] > 5, we MUST round up
       // if str[MAXDIG+1] == 5 and coefficient is ODD, ROUND UP!
@@ -445,7 +445,7 @@ bid32_from_string (char *ps
   if (expon_x < 0) {
     if (rounded_up)
       coefficient_x--;
-    rnd_mode = 0; 
+    rnd_mode = 0;
     res =
       get_BID32_UF (sign_x, expon_x, coefficient_x, rounded, rnd_mode,
 		    pfpsf);

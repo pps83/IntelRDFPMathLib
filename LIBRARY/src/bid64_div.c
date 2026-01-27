@@ -2,16 +2,16 @@
   Copyright (c) 2007-2024, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,7 +40,7 @@
  *    CA= A*10^(15+j), j=0 for A>=B, 1 otherwise
  *    Q = 0
  *  else
- *    get Q=(int)(coefficient_x/coefficient_y) 
+ *    get Q=(int)(coefficient_x/coefficient_y)
  *        (based on double precision divide)
  *    check for exact divide case
  *    Let R = coefficient_x - Q*coefficient_y
@@ -50,8 +50,8 @@
  *  endif
  *    if (CA<2^64)
  *      Q += CA/B  (64-bit unsigned divide)
- *    else 
- *      get final Q using double precision divide, followed by 3 integer 
+ *    else
+ *      get final Q using double precision divide, followed by 3 integer
  *          iterations
  *    if exact result, eliminate trailing zeros
  *    check for underflow
@@ -110,7 +110,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     if ((x & INFINITY_MASK64) == INFINITY_MASK64) {
       // check if y is Inf or NaN
       if ((y & INFINITY_MASK64) == INFINITY_MASK64) {
-	// y==Inf, return NaN 
+	// y==Inf, return NaN
 	if ((y & NAN_MASK64) == INFINITY_MASK64) {	// Inf/Inf
 #ifdef BID_SET_STATUS_FLAGS
 	  __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -530,7 +530,7 @@ if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], (x))) {
   if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // check if y is Inf.
     if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
-      // return NaN 
+      // return NaN
     {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -674,7 +674,7 @@ if (!done) {
   bid___div_256_by_128 (&CQ, &CA4, CY);
 }
 
- 
+
 
 #ifdef BID_SET_STATUS_FLAGS
   if (CA4.w[0] || CA4.w[1]) {
@@ -845,11 +845,11 @@ if (!done) {
     CQ.w[0]++;
     if (!CQ.w[0])
       CQ.w[1]++;
-    break; 
+    break;
   }
 #endif
 #endif
-  
+
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
 			       pfpsf);
@@ -920,7 +920,7 @@ if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
   if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // check if y is Inf.
     if (((y & 0x7c00000000000000ull) == 0x7800000000000000ull))
-      // return NaN 
+      // return NaN
     {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -1065,7 +1065,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
     CQ.w[1] = 0;
 //printf("CQ=%016I64x,%016I64x, CR=%016I64x %016I64x, p=%I64x\n",CQ.w[1], CQ.w[0],CR.w[1],CR.w[0],power10_table_128[0].w[0]);
 
-    __mul_64x64_to_128 (CQ2, CQ.w[0], (bid_power10_table_128[ed2].w[0])); 
+    __mul_64x64_to_128 (CQ2, CQ.w[0], (bid_power10_table_128[ed2].w[0]));
 
     __mul_64x64_to_128 (QB256, CQ2.w[0], CY.w[0]);
     QB256.w[1] += CQ2.w[0] * CY.w[1] + CQ2.w[1] * CY.w[0];
@@ -1098,7 +1098,7 @@ if (!done) {
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #ifndef LEAVE_TRAILING_ZEROS
-  else 
+  else
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
@@ -1273,7 +1273,7 @@ if (!done) {
   }
 #endif
 #endif
- 
+
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
 			       pfpsf);
@@ -1309,7 +1309,7 @@ BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
 
-//BID_UINT64* bid64_div128x128(BID_UINT64 res, BID_UINT128 *px, BID_UINT128 *py, unsigned rnd_mode, unsigned *pfpsf) 
+//BID_UINT64* bid64_div128x128(BID_UINT64 res, BID_UINT128 *px, BID_UINT128 *py, unsigned rnd_mode, unsigned *pfpsf)
 
 BID_TYPE0_FUNCTION_ARG128_ARG128 (BID_UINT64, bid64qq_div, x, y)
      BID_UINT256 CA4 =
@@ -1349,7 +1349,7 @@ if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
   if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // check if y is Inf.
     if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
-      // return NaN 
+      // return NaN
     {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -1518,7 +1518,7 @@ if (!done) {
   bid___div_256_by_128 (&CQ, &CA4, CY);
 }
 
- 
+
 
 #ifdef BID_SET_STATUS_FLAGS
   if (CA4.w[0] || CA4.w[1]) {
@@ -1526,7 +1526,7 @@ if (!done) {
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #ifndef LEAVE_TRAILING_ZEROS
-  else 
+  else
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
@@ -1701,7 +1701,7 @@ if (!done) {
 #endif
 #endif
 
-  
+
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
 			       pfpsf);

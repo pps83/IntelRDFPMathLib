@@ -116,7 +116,7 @@ FFS_AND_SHIFT ( UX_FLOAT * argument, U_WORD flags)
        cnt += BITS_PER_UX_FRACTION_DIGIT_TYPE;
        } while (--num_digits);
 
-    /* 
+    /*
     ** If we get here, we had a zero fraction.  Set the exponent field
     ** accordingly, force the sign to positive and return.
     */
@@ -253,7 +253,7 @@ ADDSUB ( UX_FLOAT * x, UX_FLOAT *y, U_WORD flags, UX_FLOAT * result)
 
     UX_COPY(x, result);
     P_UX_SIGN(result, sign);
- 
+
     if ((flags & 0x2))
         {
         result++;
@@ -385,7 +385,7 @@ bit_shift:
                     carry = (_F3 == 0) ? carry : -1;
 
 #           endif
-                    
+
                 msd = carry - msd;
                 }
 
@@ -408,7 +408,7 @@ bit_shift:
         /* This is a dual op.  Do the second part */
 
         op = 1 - op;
-        flags ^= 0x2; 
+        flags ^= 0x2;
         result ++;
         msd = G_UX_MSD(&ux_save);
         lsd = G_UX_LSD(&ux_save);
@@ -531,7 +531,7 @@ UNPACK_X_OR_Y(
 
     if ((WORD) (inf_nan ^ zero_denorm) < 0 )
         { /* Input argument is +/-0, +/-denorm, +/- Infinity, [SQ]NaN */
-        if ((WORD) (zero_denorm ^ exponent_digit) < 0) 
+        if ((WORD) (zero_denorm ^ exponent_digit) < 0)
             { /* argument was +/- zero or +/- denorm */
             if (!fract_bits)
                 fp_class = F_C_POS_ZERO;
@@ -636,16 +636,16 @@ UNPACK_X_OR_Y(
             case RETURN_NEGATIVE:
                 exponent_digit ^= (F_SIGN_BIT_MASK);
                 break;
- 
+
             case RETURN_ABSOLUTE:
                 exponent_digit &= (~F_SIGN_BIT_MASK);
                 break;
- 
+
             case RETURN_CPYSN_ARG_0:
                 exponent_digit = (exponent_digit & (~F_SIGN_BIT_MASK)) |
                    (G_X_DIGIT(packed_x, MSD_NUM) & F_SIGN_BIT_MASK);
                 break;
- 
+
             case RETURN_VALUE:
             default:
                break;
@@ -669,7 +669,7 @@ UNPACK_X_OR_Y(
 
 /*
 ** UNPACK2 is an interface layer that deals with processing the input
-** arguments for 2 argument functions.  Basicly, this routine call 
+** arguments for 2 argument functions.  Basicly, this routine call
 ** UNPACK_X_OR_Y twice and processes the more complicated class_to_action
 ** mappings associated with two argument functions.
 */
@@ -687,7 +687,7 @@ UNPACK2(
     WORD fp_class_x, fp_class_y, disp, shift;
     IF_OPTNL_ERROR_INFO( U_WORD arg_classes; )
 
-    
+
     fp_class_x = UNPACK(
         packed_x,
         unpacked_x,
@@ -712,7 +712,7 @@ UNPACK2(
 
         disp = (U_WORD) class_to_action_map[1];
 
-#   else 
+#   else
 
         if (fp_class_x < (BITS_PER_WORD/F_C_CLASS_BIT_WIDTH))
             disp = (U_WORD) class_to_action_map[2];
@@ -773,8 +773,8 @@ PACK (
 
 #       if (NUM_UX_DIGITS == 4)
 
-            packed_result->digit[2] = 0; 
-            packed_result->digit[3] = 0; 
+            packed_result->digit[2] = 0;
+            packed_result->digit[3] = 0;
 
 #       else
 
@@ -823,7 +823,7 @@ PACK (
     tmp_digit = G_UX_2nd_LSD(unpacked_result);
     next_digit = tmp_digit + incr;
     incr = (next_digit < incr);
-    current_digit |= (next_digit << CSHIFT); 
+    current_digit |= (next_digit << CSHIFT);
     P_X_DIGIT(packed_result, LSD_NUM, current_digit);
     current_digit = (next_digit >> SHIFT);
 
@@ -833,14 +833,14 @@ PACK (
         tmp_digit = G_UX_FRACTION_DIGIT(unpacked_result, 1);
         next_digit = tmp_digit + incr;
         incr = (next_digit < incr);
-        current_digit |= (next_digit << CSHIFT); 
+        current_digit |= (next_digit << CSHIFT);
         P_X_DIGIT(packed_result, 2, current_digit);
         current_digit = (next_digit >> SHIFT);
 
         tmp_digit = G_UX_FRACTION_DIGIT(unpacked_result, 0);
         next_digit = tmp_digit + incr;
         incr = (next_digit < incr);
-        current_digit |= (next_digit << CSHIFT); 
+        current_digit |= (next_digit << CSHIFT);
         P_X_DIGIT(packed_result, 1, current_digit);
         current_digit = (next_digit >> SHIFT);
 
@@ -878,7 +878,7 @@ PACK (
         return;
 
     /* Check for denorm and overflow/underflow processing */
-    
+
     if ( ++tmp_digit == 0 )
         {
 
@@ -892,7 +892,7 @@ PACK (
 		((EXCPTN_INFO->arg_classes & IEEE_SPECIAL_ENCODING_MASK) != 0)
 
 
-        if ( 
+        if (
           IF_OPTNL_ERROR_INFO( INPUT_WAS_IEEE_SPECIAL_ENCODING || )
           PROCESS_DENORMS )
              return;
@@ -909,7 +909,7 @@ PACK (
 ** For very ill behaved polynomial evaluations, we introduce a "packed" form
 ** of the coefficients to be used by a less efficient evaluation routine
 ** that unpacks the coefficients and evaluates the polynomial via Horner's
-** scheme by calling the add/sub and multiply routines.  
+** scheme by calling the add/sub and multiply routines.
 **
 ** The special format used looks like:
 **

@@ -97,7 +97,7 @@
         #define _Quad   long double
         #define __int64 long long
 
-        #define HYPOT_BASE_NAME     hypot 
+        #define HYPOT_BASE_NAME     hypot
         #define NEXTAFTER_BASE_NAME nextafter
 
         #ifndef F_NAME_SUFFIX

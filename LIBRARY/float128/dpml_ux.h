@@ -45,7 +45,7 @@
 #if !defined(HPUX_OS)
     #define F128_ALIGN_16 __attribute__((aligned(16)))
 #else
-    #define F128_ALIGN_16 
+    #define F128_ALIGN_16
 #endif
 #endif
 
@@ -98,7 +98,7 @@ typedef struct {
 	} FIXED_128;
 
 #define UX_SIGN_SHIFT  (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE)
-#define UX_PRECISION	128 
+#define UX_PRECISION	128
 
 #define	LSD_NUM			(NUM_UX_FRACTION_DIGITS - 1)
 #define	MSD_NUM			0
@@ -129,7 +129,7 @@ typedef struct {
 #define UX_OVERFLOW_EXPONENT  (1 << F_EXP_WIDTH)
 #define UX_UNDERFLOW_EXPONENT (- UX_OVERFLOW_EXPONENT)
 #define UX_ZERO_EXPONENT      (MINUS_ONE << (F_EXP_WIDTH + 2))
-#define UX_INFINITY_EXPONENT  (-(UX_ZERO_EXPONENT + 1)) 
+#define UX_INFINITY_EXPONENT  (-(UX_ZERO_EXPONENT + 1))
 
 
 #define AS_DIGIT(p,n)	(((UX_FRACTION_DIGIT_TYPE *)(p))[n])
@@ -159,25 +159,25 @@ typedef U_WORD	ERROR_CODE;
 /******************************************************************************/
 /******************************************************************************/
 
-/* 
+/*
 ** Following macros are defined to modify the interface of X_FLOAT routines
 ** for different architectures variants at compile time.  The macros are
-** defined as returnType_Arg1Arg2_PROTO. For example X_X_PROTO defines a 
-** function which takes X_FLOAT argument and result is X_FLOAT argument. 
+** defined as returnType_Arg1Arg2_PROTO. For example X_X_PROTO defines a
+** function which takes X_FLOAT argument and result is X_FLOAT argument.
 **
 ** X_FLOAT_RES_OR_VOID defines what functions is returning. It can be void,
-** X_FLOAT or X_FLOAT *. 
-** 
-** X_FLOAT_RET_TYPE(x) defines the return type when result is part of the 
-** argument list i.e a pointer is provided in the argument list to 
-** put the result. It can be Nothing or X_FLOAT *x.    
-** 
+** X_FLOAT or X_FLOAT *.
+**
+** X_FLOAT_RET_TYPE(x) defines the return type when result is part of the
+** argument list i.e a pointer is provided in the argument list to
+** put the result. It can be Nothing or X_FLOAT *x.
+**
 ** X_FLOAT_ARG_TYPE(x) defines  the argument type. It can be X_FLOAT *x, or
-** X_FLOAT x. 
-** 
+** X_FLOAT x.
+**
 ** X_FLOAT_INT_TYPE defines the integer type in the argument list. This should
-** be int in case of intel compilers. 
-**  
+** be int in case of intel compilers.
+**
 ** RETURN_X_FLOAT(x) defines the return statement of the function. It can be
 ** be Nothing, return *x or return x
 */
@@ -195,36 +195,36 @@ typedef U_WORD	ERROR_CODE;
 #   define PACKED_ARG_IS_NEG(p)        ((WORD)((_X_FLOAT *)(&p))->DIGIT(0) < 0)
 
 #elif defined(X_NONVOID_RES_VAL_ARG_VAL)
-#   define X_FLOAT_RET_TYPE(x)          
-#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT x 
+#   define X_FLOAT_RET_TYPE(x)
+#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT x
 #   define X_FLOAT_INT_TYPE            int
 #   define X_FLOAT_RES_OR_VOID         _X_FLOAT
-#   define DECLARE_X_FLOAT(res)        _X_FLOAT res; 
+#   define DECLARE_X_FLOAT(res)        _X_FLOAT res;
 #   define PASS_RET_X_FLOAT(x)             &x
 #   define PASS_ARG_X_FLOAT(x)             &x
-#   define RETURN_X_FLOAT(x)           return x; 
+#   define RETURN_X_FLOAT(x)           return x;
 #   define PACKED_ARG_IS_NEG(p)	       ((WORD)((_X_FLOAT *)(&p))->DIGIT(0) < 0)
 
 #elif defined(X_VOID_RES_REF_ARG_VAL)
 #   define X_FLOAT_RET_TYPE(x)         _X_FLOAT *x,
-#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT x 
+#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT x
 #   define X_FLOAT_INT_TYPE            int
 #   define X_FLOAT_RES_OR_VOID         void
-#   define DECLARE_X_FLOAT(res)   
+#   define DECLARE_X_FLOAT(res)
 #   define PASS_RET_X_FLOAT(x)          x
 #   define PASS_ARG_X_FLOAT(x)          &x
-#   define RETURN_X_FLOAT(x)            return; 
+#   define RETURN_X_FLOAT(x)            return;
 #   define PACKED_ARG_IS_NEG(p)	       ((WORD)((_X_FLOAT *)(&p))->DIGIT(0) < 0)
 
 #else
 #   define X_FLOAT_RET_TYPE(x)         _X_FLOAT *x,
-#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT *x 
+#   define X_FLOAT_ARG_TYPE(x)         _X_FLOAT *x
 #   define X_FLOAT_INT_TYPE            WORD
 #   define X_FLOAT_RES_OR_VOID         void
-#   define DECLARE_X_FLOAT(res)   
+#   define DECLARE_X_FLOAT(res)
 #   define PASS_RET_X_FLOAT(x)         x
 #   define PASS_ARG_X_FLOAT(x)         x
-#   define RETURN_X_FLOAT(x)           return; 
+#   define RETURN_X_FLOAT(x)           return;
 #   define PACKED_ARG_IS_NEG(p)	       ((WORD)((_X_FLOAT *)(p))->DIGIT(0) < 0)
 #endif
 
@@ -592,7 +592,7 @@ extern FIXED_128 sincos_coef_array[2*SINCOS_COEF_ARRAY_LENGTH];
 #endif
 
 extern void UX_LOG(
-	UX_FLOAT *,	/* Argument				*/ 
+	UX_FLOAT *,	/* Argument				*/
 	UX_FLOAT *,	/* scale - LOG(x) = scale*log2(x)	*/
 	UX_FLOAT *);	/* Result				*/
 
@@ -604,7 +604,7 @@ extern void UX_LOG(
 #endif
 
 extern void UX_LOG_POLY(
-	UX_FLOAT *,	/* Argument				*/ 
+	UX_FLOAT *,	/* Argument				*/
 	UX_FLOAT *);	/* Result				*/
 
 /******************************************************************************/
@@ -670,7 +670,7 @@ extern void EXTENDED_MULTIPLY(
 
 
 extern void UX_SQRT_EVALUATION(
-	UX_FLOAT *,	/* Argument				*/ 
+	UX_FLOAT *,	/* Argument				*/
         WORD,		/* evaluation type - sqrt or rsqrt	*/
 	UX_FLOAT *);	/* Result				*/
 
@@ -682,8 +682,8 @@ extern void UX_SQRT_EVALUATION(
 #endif
 
 extern void HYPOT(
-	UX_FLOAT *,	/* Argument 1				*/ 
-	UX_FLOAT *,	/* Argument 2				*/ 
+	UX_FLOAT *,	/* Argument 1				*/
+	UX_FLOAT *,	/* Argument 2				*/
 	UX_FLOAT *);	/* Result				*/
 
 
@@ -769,7 +769,7 @@ extern void HYPOT(
     function print_ux_fraction_digits(value)
         {
         auto hi, i;
-        
+
         if (value >= 1)
             {
             printf("ERROR: value out of range in print_ux_fraction_digits\n");
@@ -795,7 +795,7 @@ extern void HYPOT(
     function print_ux_table_value(value, offset)
         {
         auto exponent, hi, sign_bit, i;
-        
+
         sign_bit = 0;
         if (value == 0)
             exponent = bldexp(-1, F_EXP_WIDTH + 2);
@@ -856,7 +856,7 @@ extern void HYPOT(
         index += degree;
         for (i = degree; i >= 0; i--)
             {
-	    printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET), 
+	    printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET),
                 abs(nint(bldexp(ux_rational_coefs[index], scale ))));
             MP_BIT_OFFSET += 128;
             index--;
@@ -879,7 +879,7 @@ extern void HYPOT(
         }
 
     /*
-    ** This routine finds the "width" and "bias" for converting MP numbers 
+    ** This routine finds the "width" and "bias" for converting MP numbers
     ** to a special 128 bit packed format used for special polynomial
     ** evaluations. The coefficients are contained in the global array
     ** ux_rational_coef and the both the width and the bias are returned
@@ -889,7 +889,7 @@ extern void HYPOT(
     procedure find_exponent_width_and_bias(degree, base_index)
         {
         auto i, top, _diff, min_diff, max_diff, old_exp, new_exp, width;
-    
+
         top = base_index + degree;
         min_diff = max_diff = 0;
         old_exp = 0;
@@ -903,7 +903,7 @@ extern void HYPOT(
                 max_diff = _diff;
             old_exp = new_exp;
             }
-    
+
         _diff = max_diff - min_diff + 1;
         width = bexp(_diff);
         if (bldexp(.5, width) == _diff)
