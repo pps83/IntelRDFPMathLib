@@ -428,7 +428,7 @@ unsigned int *pfpsf = &pfpsf_value;
 
 #ifndef __COMPAR_FN_T
 # define __COMPAR_FN_T
-#if !defined(WINDOWS)
+#if !(defined(WINDOWS) || defined(_WIN32))
 typedef int (*__compar_fn_t) (__const void *, __const void *);
 #endif
 #endif
@@ -1830,7 +1830,7 @@ main (int argc, char *argv[]) {
     if (feof (stdin))
       break;
 
-    // printf("Read line: %s", line);
+    // printf("Read line: %s\n", line);
     p = strstr (line, "--");
     if ( p ) *p = 0; // Remove comment
     strRemoveTrailingSpaces(line);

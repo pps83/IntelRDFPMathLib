@@ -67,7 +67,7 @@
 #	define OP_SYSTEM vms
 
 
-#elif ( defined(wnt) || defined(WNT) || defined(winnt))
+#elif (defined(wnt) || defined(WNT) || defined(winnt) || (defined(_WIN32) && !defined(_WIN64)))
 
 #	undef  dos
 #	undef  vms
@@ -176,7 +176,7 @@
 #	define OP_SYSTEM ultrix
 
 
-#elif (defined(win64) || defined(WIN64))
+#elif (defined(win64) || defined(WIN64) || defined(_WIN64))
 #       undef  dos
 #       undef  vms
 #       undef  wnt
