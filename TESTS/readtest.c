@@ -1958,9 +1958,12 @@ main (int argc, char *argv[]) {
       if (!skip_test) printf ("SKIPPED (line %d): %s\n", line_counter,line);
     }
   }
-
-  printf ("Total tests: %d, failed result: %d, failed status: %d\n",
-	  tests, fail_res, fail_status);
+  if (fail_res || fail_status) {
+      printf ("Total tests: %d, failed result: %d, failed status: %d\n",
+	      tests, fail_res, fail_status);
+  } else {
+      printf ("Total tests: %d\n", tests);
+  }
   return 0;
 
 }
