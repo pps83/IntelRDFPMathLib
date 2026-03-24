@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -458,7 +458,7 @@ bid64_from_string (char *ps
 
           if (coefficient_x == 10000000000000000ull) {
             coefficient_x = 1000000000000000ull; 
-            add_expon = 1; 
+            add_expon++;
 	  }
 	}
       }

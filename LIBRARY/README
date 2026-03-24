@@ -1,8 +1,8 @@
-To build the Intel(R) Decimal Floating-Point Math Library V2.3 (Version 2, Update 3)
+To build the Intel(R) Decimal Floating-Point Math Library V2.4 (Version 2, Update 4)
 (conforming to the IEEE Standard 754-2019 for Floating-Point Arithmetic) 
 on processors that are implementations of the Intel(R) 64 Architecture:
 
-  In Linux* with icx (Intel(R) Compiler 2024.2 or newer) or gcc:
+  In Linux* with the icx (Intel(R) Compiler 2025.0 or newer) or gcc:
 
     make clean  
     make CC=icx CALL_BY_REF=0 GLOBAL_RND=0 GLOBAL_FLAGS=0 UNCHANGED_BINARY_FLAGS=0
@@ -11,7 +11,7 @@ on processors that are implementations of the Intel(R) 64 Architecture:
 
   Big-endian builds are possible, but will require additional command line parameters
    
-  In Windows** with icx (Intel(R) C++ Compiler 2024.2 or newer) or cl (Microsoft
+  In Windows** with icx (Intel(R) C++ Compiler 2025.0 or newer) or cl (Microsoft
   Visual C++ Compiler**):
 
     nmake clean 
@@ -31,18 +31,18 @@ on processors that are implementations of the Intel(R) 64 Architecture:
 
 Note:
 =====
-  For some other operating systems and architecture combinations see the
-  following command files, as well as any command files invoked from these ones:
-        RUNWINDOWS_nmake.bat
-        RUNOSXINTEL64
-  These command files build the Intel(R) Decimal Floating-Point Math Library,
-  possibly using more than one compiler. Changes may be necessary in certain
-  environments. Note that all the necessary versions of the Intel(R) Decimal 
-  Floating-Point Math Library have to be built in this directory prior to
-  executing the similar RUN* command in either of ../LIBRARY/ or ../TESTS/.
-  Check that all the expected *.a files (or *.lib in Windows) have been created
-  prior to building and running the tests or examples from ../LIBRARY/ or 
-  ../TESTS/.
+  For other operating systems and architecture combinations see for example the following
+  command files (or other RUN* command files provided here), as well as any command files
+  invoked from these ones:
+        RUNLINUXINTEL64_ICX
+        RUNWINDOWSINTEL64_CL.bat
+  These command files build the Intel(R) Decimal Floating-Point Math Library.
+  Changes may be necessary in certain environments. Note that all the necessary
+  versions of the Intel(R) Decimal Floating-Point Math Library have to be built in
+  this directory prior to executing the similar RUN* command in either of ../TESTS/
+  or ../EXAMPLES/. Check that all the expected *.a files (or *.lib in Windows) have
+  been created prior to building and running the tests or examples from ../TESTS/ or 
+  ../EXAMPLES/.
 
 Note:
 =====

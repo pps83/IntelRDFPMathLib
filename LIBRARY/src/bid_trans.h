@@ -1,7 +1,7 @@
 // bid_trans.h
 // ============================================================================
 /*
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -166,7 +166,11 @@ typedef unsigned bid__int64 fexcept_t;
 #ifdef __QNX__
 #include <fenv.h>
 #else
+#if (defined(_WIN32) || defined(_WIN64))
+typedef unsigned long fexcept_t;
+#else
 typedef unsigned short int fexcept_t;
+#endif
 #endif
 #endif
 #endif

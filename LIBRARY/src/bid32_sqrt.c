@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -48,6 +48,7 @@
 #define BID_FUNCTION_SETS_BINARY_FLAGS
 #include "bid_internal.h"
 #include "bid_sqrt_macros.h"
+#include <fenv.h>
 
 BID_EXTERN_C double sqrt (double);
 
@@ -61,8 +62,15 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
   int exponent_x, exponent_q, bin_expon_cx;
   int digits_x;
   int scale;
+  int old_rm, rm_changed=0;
 
   BID_OPT_SAVE_BINARY_FLAGS()
+
+  // Set it to round-to-nearest (if different)
+  if ((old_rm=fegetround()) != FE_TONEAREST) {
+    rm_changed=1;
+    fesetround(FE_TONEAREST);
+  }
 
   // unpack arguments, check for NaN or Infinity
   if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
@@ -80,11 +88,15 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
       if ((x & SNAN_MASK32) == SNAN_MASK32)	// sNaN
 	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
+      // restore the rounding mode back if it has been changed
+      if (rm_changed) fesetround(old_rm);
       BID_RETURN (res & QUIET_MASK32);
     }
     // x is 0
     exponent_x = (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1;
     res = sign_x | (( exponent_x) << 23);
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // x<0?
@@ -93,6 +105,8 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -122,6 +136,8 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // if exponent is odd, scale coefficient by 10
@@ -171,6 +187,8 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
 

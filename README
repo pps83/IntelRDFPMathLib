@@ -3,10 +3,10 @@
 
 
      ==================================================================
-     ======= Intel(R) Decimal Floating-Point Math Library v2.3 ========
+     ======= Intel(R) Decimal Floating-Point Math Library v2.4 ========
      ==================================================================
 
-                                                     	April 30, 2023
+                                                      December 2, 2025
 
 
      ******************************************************************
@@ -37,14 +37,13 @@
                    for the bid128_nan function in bid128_noncomp.c.
                    4. A few unused variables were removed in order to eliminate 
                    potential build warnings.
-                   5. The __NO_BINARY80__ option was added (NO_BINARY80 should be 
-                   set to zero in the makefile in order to use 80-bit).
+                   5. The __NO_BINARY80__ macro was added to LIBRARY/src/bid_functions.h
+                   to address a decimal library build fail on ARM32.
                    6. The bid{64,32}_pow functions were updated so that powers 
-		   of 10 are now rounded correctly. For example,  bid64_pow(10,-398) 
+                   of 10 are now rounded correctly. For example,  bid64_pow(10,-398)
                    returns +1E-398 (and it returned zero before).
-                   7. The bid128_pow function was updated to use volatile for a 
-                   certain variable, in order to work correctly with Intel Compiler 
-                   optimization.
+                   7. The bid128_pow function was updated to use volatile for a certain
+                   variable, in order to work correctly with Intel Compiler optimizations.
                    8. The bid128_hypot function was updated for the case when the 
                    exponent of one input value is much smaller than the exponent of 
                    the other one (it was being done without checking the mantissas.
@@ -55,29 +54,58 @@
                    switch statements, to avoid compiler warnings.
                    10. The ASCII value of 0x30 for zero was replaced with '0' in 
                    bid128_to_string function.
-                   11. The bid{32,64}_from_string functions were updated, as the 
-                   result was not correct for certain inputs when the rounding mode 
-                   was set to 'rounding up'. For example, bid32_from_string function 
-                   with input value "10000000" returns +1000000E+1 now, instead 
-                   of +1000001E+1.
+                   11. The bid{32,64}_from_string functions were updated, as the result
+                   was not correct for certain inputs when the rounding mode was set to
+                   'rounding up'. For example, the bid32_from_string function with input
+                   value "10000000" returns +1000000E+1 now, instead of +1000001E+1.
 
                    The updated library was tested in Linux and in Windows, compiled with 
                    the Intel ICX (new) and ICC/ICL (classic) compilers, and also with 
                    the GCC 13.1 and Clang 17.0 compilers.
                    Testing was also performed with the Apple Clang compiler 14.0.0 on Mac.
 
+        Dec 2025 - Version 2.0 Update 4 - Three issues and one warning were fixed. An outdated
+                   command file was also removed.
+                   1. The bid128_from_string function was updated to handle very long input
+                   strings correctly, and new tests were added for that. Errors could have
+                   occurred only for input strings longer than 100 digits. As an example,
+                   the result for the input +1.000000000000000000000000000000000000000000000 \
+                   00000000000000000000000000000000000000000000000000000000000000000000000000
+                   (119 zeros in this example) was incorrect as
+                   +1000000000000000000000000000000001E-33 (34 digits in the coefficient) with
+                   rounding-up rounding mode, and after the fix we get the correct result of
+                   +1000000000000000000000000000000000E-33.
+                   2. The bid64_from_string function was updated to fix incorrect handling of
+                   the exponent. The issue occurred only in rounding-down or rounding-up rounding
+                   modes, and for input strings with more than 17 coefficient digits. For example,
+                   for input +9.99999999999999900000000005 (27 digits), the result was incorrect
+                   as +1000000000000000E-25 with rounding-up rounding mode before the fix, and
+                   the correct result of 1000000000000000E-14 is computed after the fix.
+                   3. The wcstod_conversion function was updated for possible buffer overrun.
+                   A buffer overrun of one byte could occur before this update in some cases,
+                   caused by incorrect accounting of the sign character.
+                   4. Several division, sqrt, fmod, and remainder functions that rely on binary
+                   floating-point computation were updated to ensure the computation is performed
+                   in round-to-nearest mode. Inaccurate results could potentially occur prior to
+                   this update if the user changed the rounding mode to something other than
+                   the assumed default (round-to-nearest-even rounding mode).
+                   5. Warnings for printf when building EXAMPLES in MacOS were eliminated.
+                   6. RUNOSXINTEL64 was removed.
+                   The library was tested in Linux, Windows, and MacOS.
+
+
 1. INTRODUCTION
   ===============
 
-  This package contains the release 2.0 Update 3 (or V2.3) of the Intel(R) Decimal
+  This package contains the release 2.0 Update 4 (or V2.4) of the Intel(R) Decimal
 Floating-Point Math Library, conforming to the IEEE Standard 754-2019 for Floating-
-Point Arithmetic. This is an extension of Release 2.0 Update 2 (or V2.2) of 2018.
+Point Arithmetic. This is an update of Release 2.0 Update 3 (or V2.3) of 2024.
 
   The library implements the functions defined for decimal floating-point
 arithmetic operations in the IEEE Standard 754-2019 for Floating-Point
-Arithmetic, which is a revision of the IEEE Standard 754-2019 for Floating-Point Arithmetic. 
+Arithmetic, which is a revision of the IEEE Standard 754-2008 for Floating-Point Arithmetic. 
 However, there were no changes in what is mandated for decimal floating-point arithmetic
-in the IEEE Standard 754-2019, compared to the IEEE Standard 754-2019.
+in the IEEE Standard 754-2019, compared to the IEEE Standard 754-2008.
 
 The IEEE Standard 754-2019 for Floating-Point Arithmetic supports two
 encoding formats: the decimal encoding format, and the binary encoding format.
@@ -86,10 +114,10 @@ encoding format for decimal floating-point values, but the decimal encoding
 format is supported too in the library, by means of conversion functions
 between the two encoding formats.
 
-  Release 2.3 of the library contained in this package implements all
+  Release 2.4 of the library contained in this package implements all
 the operations mandated by the IEEE Standard 754-2019. Alternate exception
 handling (not a mandatory feature) is not supported currently in the library,
-but the design facilitates adding it in the future. It is worth noting that
+but the design facilitates adding it if necessary. It is worth noting that
 several useful functions (not part of the IEEE 754-2019 definition) are
 provided in LIBRARY/src/bid_round.c. They can be used to round a q-digit decimal
 integer number represented in binary to q - x digits (1 <= x <= q - 1).
@@ -118,8 +146,8 @@ not correctly rounded either).
 
   - the LIBRARY subdirectory with all the source files necessary to build the
     library, and a README file which specifies how to build the library
-    in Linux**, HP-UX**, Windows***, and other operating systems; a small set
-    of command files (RUNLINUX_GCC, RUNWINDOWSINTEL64_ICX.bat, etc.) can be used to build the
+    in Linux**, Windows***, or MacOS**; a small set
+    of command files (RUNLINUX*, RUNWINDOWS*) can be used to build the
     library with different options
 
   - the TESTS subdirectory with source and input files necessary to build and
@@ -129,14 +157,15 @@ not correctly rounded either).
     note that tests involving 80-bit binary floating-point values (these are
     only conversions to and from decimal floating-point formats) are skipped
     if the 80-bit floating-point data type is not supported; a small set
-    of command files (RUNLINUX_GCC, RUNWINDOWSINTEL64_ICX.bat, etc.) can be used to build and
+    of command files (RUNLINUX*, RUNWINDOW*) can be used to build and
     run the tests with different options
 
   - the EXAMPLES subdirectory containing eight examples of calls to library
     functions with various combinations of build options (see Section 8
-    below); a README file is included; a small set of command files (RUNLINUX_GCC,
-    RUNWINDOWSINTEL64_ICX.bat, etc.) can be used to build and run the examples with different
+    below); a README file is included; a small set of command files (RUNLINUX*,
+    RUNWINDOWS*) can be used to build and run the examples with different
     options
+
 
   3. FUNCTION NAMES
   =================
@@ -220,11 +249,12 @@ decimal operations will not change the inexact binary status flag.
   If 80-bit long double precision is not supported then you can simply set
 NO_BINARY80 macro to '1' in the LIBRARY/makefile and TESTS/makefile.
 
+
   5. FUNCTION PROTOTYPES
   ======================
 
   Function prototypes are provided in LIBRARY/src/bid_functions.h (starting at
-line 413 if parameters are passed by reference, and at line 3011 if they
+line 417 if parameters are passed by reference, and at line 3015 if they
 are passed by value).
 
 
@@ -232,19 +262,11 @@ are passed by value).
   ==========
 
   The library was tested on several different platforms (Intel(R)64 Architecture
-running Linux**, Windows*** and OSX**).  For example in Linux** the 
-oneAPI DPC++/C++ Compiler 2024.2.0, Clang**, and gcc** were used. In Windows***, 
-the oneAPI DPC++/C++ Compiler 2024.2.0  and the Microsoft*** Visual C++ Compiler 
+running Linux**, Windows*** and MacOS**). For example in Linux** the 
+oneAPI DPC++/C++ Compiler 2025.0, Clang**, and gcc** were used. In Windows***, 
+the oneAPI DPC++/C++ Compiler 2025.0 and the Microsoft*** Visual C++ Compiler 
 were used. For each of these combinations, eight combinations of parameter passing 
 method and global or local rounding mode and status flags were tested.
-
-  In limited situations, it is possible for incorrect compiler behavior to 
-lead to incorrect results in the Intel(r) Decimal Floating-Point Math Library. 
-For example, results of round-to-integer functions are incorrect when the 
-library is built using gcc 4.2/4.3. Also, some gcc versions in an IA-32 
-Linux environment cause slightly incorrect results in a few corner cases for 
-the 64-bit decimal square root. (This is not an exhaustive list.) Such errors
-should be caught by the tests provided with the library.
 
 
   7. USAGE EXAMPLES
@@ -269,6 +291,7 @@ functions):
 
 Such an example is represented by the readtest program in TESTS/readtest.c.
 
+
   8. DECIMAL AND BINARY STATUS FLAGS
   ==================================
 
@@ -286,6 +309,7 @@ is inexact. In order to avoid setting the binary inexact flag by decimal
 functions, uncomment the following line in bid_conf.h
 prior to building the library:
         // #define UNCHANGED_BINARY_STATUS_FLAGS
+
 
   9. MAPPING OF IEEE 754-2019 NAMES TO INTEL (R) DECIMAL FLOATING-POINT MATH
                           LIBRARY FUNCTION NAMES
@@ -835,10 +859,11 @@ setDecimalRoundingDirection         _IDEC_round
                                            __bid_setDecimalRoundingDirection
 
 
+
   10. DESCRIPTION OF THE INTEL(R) DECIMAL FP MATH LIBRARY FUNCTIONS
 
 This section gives brief descriptions of the functions available in the
-Intel(R) Decimal Floating-Point Math Library v2.3. The prototypes are
+Intel(R) Decimal Floating-Point Math Library v2.4. The prototypes are
 shown assuming all arguments are passed by value; the rounding mode variable is
 passed as an argument to each function that requires it; a pointer to a
 variable containing the status flags is passed to each function that requires

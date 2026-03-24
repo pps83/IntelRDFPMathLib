@@ -29,16 +29,17 @@ $ rm main.c decimal.h a.out
         moving files from Windows to Linux, running dos2unix on the Linux 
         script files may be necessary.
 
-Note: For some other operating systems and architecture combinations see the 
-  following command files, as well as any command files invoked from these ones:
-        RUNWINDOWS_nmake.bat
-        RUNOSXINTEL64
+  Note: For other operating systems and architecture combinations see for example the following
+  command files (or other RUN* command files provided here), as well as any command files
+  invoked from these ones:
+        RUNLINUXINTEL64_ICX
+        RUNWINDOWSINTEL64_CL.bat
   These command files build and run all eight examples from this directory,
   possibly using more than one compiler. Changes may be needed for certain
   environments. However, prior to building these examples the similar RUN*
   command has to be executed in ../LIBRARY/ in order to build all the
   necessary versions of the Intel(R) Decimal Floating-Point Math Library
-  V2.3 (Version 2, Update 3).
+  V2.4 (Version 2, Update 4).
   The tests [when built correctly] pass if the word FAIL does not appear in
   the output.
 

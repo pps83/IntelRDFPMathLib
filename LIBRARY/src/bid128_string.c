@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -36,6 +36,8 @@
 #include "bid_internal.h"
 #include "bid128_2_str.h"
 #include "bid128_2_str_macros.h"
+
+#define MIN_DIGITS(a,b) ((a) < (b) ? (a) : (b))
 
 BID_EXTERN_C int bid128_bid_coeff_2_string (BID_UINT64 X_hi, BID_UINT64 X_lo,
 				  char *char_ptr);
@@ -296,7 +298,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   char c, buffer[MAX_STRING_DIGITS_128];
   int save_rnd_mode;
   int save_fpsf;
-
+  int min_digits, sticky_bit=0;
+  
 #if DECIMAL_CALL_BY_REFERENCE
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = *prnd_mode;
@@ -462,7 +465,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
            /*&& ndigits_before < MAX_STRING_DIGITS_128*/) {
       if(ndigits_before < MAX_FORMAT_DIGITS_128) buffer[ndigits_before] = c; 
       else if(ndigits_before < MAX_STRING_DIGITS_128) { buffer[ndigits_before] = c; if(c>'0') set_inexact=1; }
-	  else if(c>'0') set_inexact=1;
+      else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
       ps++;
       c = *ps;
       ndigits_before++;
@@ -478,7 +481,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
                /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
           if(ndigits_total < MAX_FORMAT_DIGITS_128) buffer[ndigits_total] = c;
           else if(ndigits_total < MAX_STRING_DIGITS_128) { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
-	      else if(c>'0') set_inexact=1;
+          else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
           ps++;
           c = *ps;
           ndigits_total++;
@@ -497,7 +500,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
            /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
       if(ndigits_total < MAX_FORMAT_DIGITS_128)  buffer[ndigits_total] = c; 
 	  else if(ndigits_total < MAX_STRING_DIGITS_128)  { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
-	  else if(c>'0') set_inexact=1;
+	  else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
       ps++;
       c = *ps;
       ndigits_total++;
@@ -624,12 +627,13 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     switch(rnd_mode) {
     case BID_ROUNDING_TO_NEAREST:
       carry = ((unsigned) ('4' - buffer[i])) >> 31;
-      if ((buffer[i] == '5' && !(coeff_low & 1)) || dec_expon < 0) {
+      if ((buffer[i] == '5' && !(coeff_low & 1) && !sticky_bit) || dec_expon < 0) {
         if (dec_expon >= 0) {
           carry = 0;
           i++;
         }
-        for (; i < ndigits_total; i++) {
+        min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+	for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
           if (buffer[i] > '0') {
             carry = 1;
             break;
@@ -639,22 +643,26 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       break;
 
     case BID_ROUNDING_DOWN:
-      if(sign_x) 
-        for (; i < ndigits_total; i++) {
-          if (buffer[i] > '0') {
+      if(sign_x) {
+        min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+        for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+	  if (buffer[i] > '0') {
             carry = 1;
             break;
           }
         }
+      }
       break;
     case BID_ROUNDING_UP:
-      if(!sign_x) 
-        for (; i < ndigits_total; i++) {
+      if(!sign_x) { 
+        min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+	for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
           if (buffer[i] > '0') {
             carry = 1;
             break;
           }
         }
+      }
       break;
     case BID_ROUNDING_TO_ZERO:
       carry=0;
@@ -662,8 +670,9 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     case BID_ROUNDING_TIES_AWAY:
       carry = ((unsigned) ('4' - buffer[i])) >> 31;
       if (dec_expon < 0) {
-        for (; i < ndigits_total; i++) {
-          if (buffer[i] > '0') {
+        min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+        for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+	  if (buffer[i] > '0') {
             carry = 1;
             break;
           }

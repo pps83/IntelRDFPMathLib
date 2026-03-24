@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2024, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -32,13 +32,17 @@
 // 0 rounding mode passed as argument
 // 1 status flags in global variable
 
-#ifdef WINDOWS
-  #define LX "%I64x"
+#if defined(__clang__)
+  #define LX "%llx"
 #else
-  #ifdef HPUX_OS
-    #define LX "%llx"
+  #ifdef WINDOWS
+    #define LX "%I64x"
   #else
-    #define LX "%Lx"
+    #if defined(HPUX_OS)
+      #define LX "%llx"
+    #else
+      #define LX "%Lx"
+    #endif
   #endif
 #endif
 
