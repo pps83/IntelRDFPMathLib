@@ -578,7 +578,7 @@ void strRemove0D0A(char* s) {
 void strRemoveTrailingSpaces(char* s) {
     int i=0;
     while( s[i]!=0 ) i++; i--;
-    while( (s[i]==' ') && (i>=0) ) { s[i]=0; i--; }
+    while( (i>=0) && (s[i]==' ') ) { s[i]=0; i--; }
 }
 
 int
