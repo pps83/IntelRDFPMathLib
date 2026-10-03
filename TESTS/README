@@ -1,5 +1,5 @@
 To build readtest - the tests for the Intel(R) Decimal Floating-Point Math 
-Library V2.4 (Version 2, Update 4) on processors that are implementations of the
+Library V2.5 (Version 2, Update 5) on processors that are implementations of the
 Intel(R) 64 Architecture:  
 
   In Linux* with icx (Intel(R) C++ Compiler 2025.0 or newer) or gcc:

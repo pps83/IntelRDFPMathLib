@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,8 @@
 #define GLOBAL_TABLE_VALUES
 #include "dpml_private.h"
 #include "dpml_error_codes.h"
+
+#include <stdint.h>
 
 /*
  * Include platform specific headers.  Anything not defined in them will
@@ -249,7 +251,7 @@ extern int raise(int);
         DPML_GET_ENVIRONMENT(p);
         if (err < 0)
             /* Just a request for info */
-            return (void *) G_EXCPT_REC_ENVIRONMENT(p);
+            return (void *)(uintptr_t) G_EXCPT_REC_ENVIRONMENT(p);
 
         GET_DPML_EXCEPTION_AND_VALUE(p);
 

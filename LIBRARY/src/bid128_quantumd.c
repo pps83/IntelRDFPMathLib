@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -57,6 +57,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_quantum, x)
   }
   else if ((x.w[1] & NAN_MASK64) == NAN_MASK64) {
     res.w[1] = x.w[1] & QUIET_MASK64;
+    res.w[0] = x.w[0];
     BID_RETURN (res);
   }
 
@@ -69,7 +70,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_quantum, x)
   }
 
   // Form 10^new_exponent*1  
-  res.w[1] = (((long long int) int_exp) << 49 ) + 0x3040000000000000ull;
+  res.w[1] = (((BID_UINT64) int_exp) << 49 ) + 0x3040000000000000ull;
   res.w[0] = 0x0000000000000001ull;
 
   BID_RETURN (res);

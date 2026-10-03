@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -879,7 +879,8 @@
 #if defined(WINDOWS)
 #define BID_SIZE_LONG 4
 #else
-#if defined(__x86_64__) || defined (__ia64__)  || defined(HPUX_OS_64)
+#if defined(__x86_64__) || defined (__ia64__)  || defined(HPUX_OS_64) \
+  || defined(__LP64__)   || defined (_LP64)
 #define BID_SIZE_LONG 8
 #else
 #define BID_SIZE_LONG 4

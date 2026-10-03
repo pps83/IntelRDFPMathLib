@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -664,7 +664,10 @@ UNPACK_X_OR_Y(
 
         P_X_DIGIT(packed_result, LSD_NUM, G_X_DIGIT(digit_ptr, LSD_NUM));
         }
-    return fp_class | ((WORD) 1 << (BITS_PER_WORD - 1));
+    /* Shift in the unsigned word type to avoid signed left-shift UB (the 1
+    ** would otherwise be shifted into the sign bit); the cast back to WORD
+    ** reproduces the identical bit pattern. */
+    return fp_class | (WORD)((U_WORD) 1 << (BITS_PER_WORD - 1));
     }
 
 /*

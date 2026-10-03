@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -2184,7 +2184,7 @@ __BID_INLINE__ BID_UINT128 *
 bid_get_BID128_string (BID_UINT128 * pres, BID_UINT64 sgn, int expon, BID_UINT128 coeff) {
   BID_UINT128 D2, D8;
   BID_UINT64 tmp;
-  unsigned rmode = 0, status;
+  unsigned rmode=0, status=0;
 
   // coeff==10^34?
   if (coeff.w[1] == 0x0001ed09bead87c0ull

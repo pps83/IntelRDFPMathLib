@@ -39,7 +39,7 @@ $ rm main.c decimal.h a.out
   environments. However, prior to building these examples the similar RUN*
   command has to be executed in ../LIBRARY/ in order to build all the
   necessary versions of the Intel(R) Decimal Floating-Point Math Library
-  V2.4 (Version 2, Update 4).
+  V2.5 (Version 2, Update 5).
   The tests [when built correctly] pass if the word FAIL does not appear in
   the output.
 

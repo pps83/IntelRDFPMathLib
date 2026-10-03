@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -677,8 +677,11 @@ C_UX_MOD(_X_FLOAT * packed_x, _X_FLOAT * packed_y, U_WORD bit_vector,
 ** (referred to at B above) to the flags used by UX_MOD (referred to at B' above)
 */
 
+/* Perform the shift in the unsigned word type: for i==15 the value 3 shifted
+** by 30 would overflow a signed int (signed left-shift UB).  The extracted
+** 2-bit rounding flags are unaffected by the wider unsigned result. */
 #define R_minus_2B(B,i)		\
-		((2 + ((i & 1) - (((2*B) >> i) & 2))) << (i * FLAGS_BIT_WIDTH))
+		((U_WORD)(2 + ((i & 1) - (((2*B) >> i) & 2))) << (i * FLAGS_BIT_WIDTH))
 
 #define CVT_B_TO_B_PRIME(B)	( R_minus_2B(B, 0) | R_minus_2B(B, 1) | \
 				  R_minus_2B(B, 2) | R_minus_2B(B, 3) | \

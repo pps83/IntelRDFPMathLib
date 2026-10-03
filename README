@@ -3,10 +3,10 @@
 
 
      ==================================================================
-     ======= Intel(R) Decimal Floating-Point Math Library v2.4 ========
+     ======= Intel(R) Decimal Floating-Point Math Library v2.5 ========
      ==================================================================
 
-                                                      December 2, 2025
+                                                    September 28, 2026
 
 
      ******************************************************************
@@ -93,13 +93,92 @@
                    6. RUNOSXINTEL64 was removed.
                    The library was tested in Linux, Windows, and MacOS.
 
+        Sep 2026 - Version 2.0 Update 5 - Three functions were updated, and several
+                   portability, undefined behavior, and build warning issues were
+                   addressed. New tests were added.
+                   1. The bid128_scalbn function was updated to return the correct
+                   finite result for certain large values near the overflow boundary.
+                   In certain corner cases where the iteratively scaled decimal exponent
+                   was exactly one above the maximum and the coefficient was very large
+                   but could still be scaled by 10 and remain representable, the function
+                   incorrectly signaled overflow and returned infinity. For example,
+                   bid128_scalbn (999999999999999999999999999999999 x 10^6111, 1) now
+                   returns 9999999999999999999999999999999990 x 10^6111 instead of +Infinity.
+                   New test inputs were added. For the example above:
+                   Input: ([5ffe314dc6448d9338c15b09ffffffff], 1)
+                   Output: [5fffed09bead87c0378d8e63fffffff6]
+                   2. The bid128_ldexp function was updated with the same fix as
+                   bid128_scalbn for large values near the overflow boundary (the two
+                   functions share this logic). For a finite input whose scaled exponent
+                   is one above the maximum but whose coefficient can be rescaled by 10,
+                   it now returns the correct finite result instead of infinity. New test
+                   inputs were added. Note: The ldexp function is not defined in the IEEE
+                   Std 754-2019. It is defined in the C and C++ language standards.
+                   3. The bid128_quantum function was updated so that, for a NaN input,
+                   the low 64 bits of the NaN payload are preserved in the result. The NaN
+                   branch assigned only the high result word and left the low word unset,
+                   so the low 64 payload bits were returned uninitialized (the result was
+                   still a NaN of the correct kind and sign, but with a corrupted payload).
+                   New tests using NaN inputs with non-trivial payloads in both words were
+                   added.
+                   4. The bid64_from_int32 and bid128_from_int64 functions were updated
+                   to avoid signed integer overflow (undefined behavior) when the input
+                   is the most negative value (INT32_MIN = -2147483648 and INT64_MIN =
+                   -9223372036854775808, respectively). The two's-complement negation
+                   ~x + 1 was being done in signed arithmetic and is now done in unsigned
+                   arithmetic. The computed result is unchanged; the update only removes
+                   the undefined behavior. New tests for INT32_MIN and INT64_MIN were added.
+                   Note: This update was made out of caution, as no error was observed in
+                   testing with the compilers used.
+                   5. The BID_SIZE_LONG configuration in bid_conf.h was updated to also
+                   select an 8-byte long when __LP64__ or _LP64 is defined on Linux.
+                   Previously, on 64-bit LP64 targets that do not define __x86_64__ or
+                   __ia64__, BID_SIZE_LONG defaulted to 4, which caused the bid{32,64,128}_lrint
+                   and bid{32,64,128}_lround functions to clamp their results to the 32-bit
+                   long range instead of the full 64-bit range. Note: This update was made out
+                   of caution, as no error was observed in testing with the compilers used.
+                   6. The bid_get_BID128_string function in bid_internal.h was updated to
+                   initialize its local 'status' variable to zero, preventing a read of an
+                   uninitialized value on the underflow path (where the variable is passed
+                   to the status-flag handler). Note: This function is currently not called;
+                   the change is a defensive/static-analysis cleanup and does not affect any
+                   result.
+                   7. Three signed left-shift expressions in the internal 128-bit float
+                   emulation sources (dpml_ux_ops.c, dpml_ux_mod.c, and dpml_ux_inv_trig.c)
+                   were updated to perform the shift in the unsigned word type and cast the
+                   result back. These shifts moved a 1 into, or a value past, the sign bit
+                   of a signed integer, which is undefined behavior. The update removes the
+                   undefined behavior with no change to the computed values, and applies
+                   only to builds that use the internal emulation (USE_COMPILER_F128_TYPE
+                   = false). A few regression test inputs were added. Note: This update was
+                   made out of caution, as no error was observed in testing with
+                   the compilers used.
+                   8. The dpml_exception.c file was updated to cast the exception
+                   environment through uintptr_t (and to include <stdint.h>) before
+                   converting it to a pointer. This eliminates an int-to-pointer-cast build
+                   warning that appears in configurations where the internal WORD type is
+                   narrower than a pointer. There is no behavior change. Note: This update
+                   was made out of caution, as no error was observed in testing with
+                   the compilers used.
+                   9. Signed left-shift undefined behavior was removed from seven native
+                   BID functions: bid128_cbrt, bid128_exp10, bid128_quantum, bid32_add,
+                   bid32_fma, bid32_quantum, and bid64_quantum. These functions packed an
+                   exponent, or built a sign mask, using a signed left shift that moved a
+                   value into (or past) the sign bit, or that shifted a negative value;
+                   both are undefined behavior. The shifts are now performed in the
+                   unsigned 64-bit type (BID_UINT64) and the result is used unchanged, so
+                   there is no change in the computed values. Regression test inputs that
+                   exercise these paths were added. Note: This update was made out of caution,
+                   as no error was observed in testing with the compilers used.
+                   The library was tested in Linux, Windows, and MacOS.
+
 
 1. INTRODUCTION
   ===============
 
-  This package contains the release 2.0 Update 4 (or V2.4) of the Intel(R) Decimal
+  This package contains the release 2.0 Update 5 (or V2.5) of the Intel(R) Decimal
 Floating-Point Math Library, conforming to the IEEE Standard 754-2019 for Floating-
-Point Arithmetic. This is an update of Release 2.0 Update 3 (or V2.3) of 2024.
+Point Arithmetic. This is an update of Release 2.0 Update 4 (or V2.4) of 2025.
 
   The library implements the functions defined for decimal floating-point
 arithmetic operations in the IEEE Standard 754-2019 for Floating-Point
@@ -863,7 +942,7 @@ setDecimalRoundingDirection         _IDEC_round
   10. DESCRIPTION OF THE INTEL(R) DECIMAL FP MATH LIBRARY FUNCTIONS
 
 This section gives brief descriptions of the functions available in the
-Intel(R) Decimal Floating-Point Math Library v2.4. The prototypes are
+Intel(R) Decimal Floating-Point Math Library v2.5. The prototypes are
 shown assuming all arguments are passed by value; the rounding mode variable is
 passed as an argument to each function that requires it; a pointer to a
 variable containing the status flags is passed to each function that requires
@@ -3631,6 +3710,13 @@ _Decimal128 frexpd128(_Decimal128 value, int *exp);  // library name: __bid128_f
 _Decimal64 ldexpd64(_Decimal64 x, int exp);  // library name: __bid64_ldexp
 _Decimal32 ldexpd32(_Decimal32 x, int exp);  // library name: __bid32_ldexp
 _Decimal128 ldexpd128(_Decimal128 x, int exp);  // library name: __bid128_ldexp
+// Note: in this library ldexpd (__bid{32,64,128}_ldexp) is identical to scalbn
+// (__bid{32,64,128}_scalbn). Historically ldexp scaled its argument by a power
+// of 2 while scalbn scaled by a power of the radix; for decimal, the C standard
+// defines ldexpd to scale by a power of 10, so for the decimal formats ldexpd
+// and scalbn perform the same operation. Note also that scalbn (scaleB) is an
+// IEEE 754-2019 operation, whereas ldexp is not mandated by IEEE 754 and is
+// provided here as an additional function.
 _Decimal64 logd64(_Decimal64 x);  // library name: __bid64_log
 _Decimal32 logd32(_Decimal32 x);  // library name: __bid32_log
 _Decimal128 logd128(_Decimal128 x);  // library name: __bid128_log

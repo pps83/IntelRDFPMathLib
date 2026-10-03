@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -64,7 +64,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_quantum, BID_UINT64, x)
     int_exp = ((int)(x >> 53) & 0x3ff) - 398;
   }
 
-  res = (((long long int) int_exp) << 53 ) + 0x31c0000000000001ull;
+  res = (((BID_UINT64) int_exp) << 53 ) + 0x31c0000000000001ull;
 
   BID_RETURN (res);
 

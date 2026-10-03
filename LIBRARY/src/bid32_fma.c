@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -307,7 +307,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 		  inexact=1;
   }
 
-    sign_ab = ((BID_SINT64)(sign_a ^ sign_b))<<32;
+    sign_ab = ((BID_UINT64)(sign_a ^ sign_b)) << 32;
     sign_ab = ((BID_SINT64) sign_ab) >> 63;
     CB.w[0] = (coefficient_b + sign_ab) ^ sign_ab;
 	CB.w[1] = ((BID_SINT64)CB.w[0]) >> 63;

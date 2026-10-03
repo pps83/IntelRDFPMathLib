@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2025, Intel Corp.
+  Copyright (c) 2007-2026, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -89,14 +89,24 @@ if (exp64 > MAX_DECIMAL_EXPONENT_128) {
   if (exp64 <= MAX_DECIMAL_EXPONENT_128) {
     bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);
     BID_RETURN (res);
-  } else
-    exponent_x = 0x7fffffff;	// overflow
-}
+  }
+  else {
+    if((exp64 == 1+ MAX_DECIMAL_EXPONENT_128) && (CX.w[1] == 0x314dc6448d93ull) && (CX.w[0] <= 0x38C15B09FFFFFFFFull))
+      {
+        CBID_X8.w[1] = (CX.w[1] << 3) | (CX.w[0] >> 61);    CBID_X8.w[0] = CX.w[0] << 3;
+        CX2.w[1] = (CX.w[1] << 1) | (CX.w[0] >> 63);      CX2.w[0] = CX.w[0] << 1;
+        __add_128_128 (CX, CX2, CBID_X8);
+        exponent_x = MAX_DECIMAL_EXPONENT_128;
+        bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);
+        BID_RETURN (res);
+      }
+    else  exponent_x = 0x7fffffff;        // overflow
+  }
+ }
   // exponent < 0
   // the BID pack routine will round the coefficient
 rmode = rnd_mode;
-bid_get_BID128 (&res, sign_x, exponent_x, CX, (unsigned int *) &rmode,
-	    pfpsf);
+bid_get_BID128 (&res, sign_x, exponent_x, CX, (unsigned int *) &rmode, pfpsf);
 BID_RETURN (res);
 
 }
