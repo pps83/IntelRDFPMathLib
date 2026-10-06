@@ -36,16 +36,8 @@
 #ifndef _BID_FUNCTIONS_H
 #define _BID_FUNCTIONS_H
 
-#if !defined (__GNUC__) || defined(__QNX__)
 #include <wchar.h>
-#endif
 #include <ctype.h>
-
-// Fix system header issue on Sun solaris and define required type by ourselves
-#if !defined(_WCHAR_T) && !defined(_WCHAR_T_DEFINED) && !defined(__QNX__)
-typedef int   wchar_t;
-#endif
-
 
 #ifdef IN_LIBGCC2
 // When we are built as the part of the gcc runtime library, libgcc,
