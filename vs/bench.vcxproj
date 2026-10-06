@@ -71,7 +71,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>../bench/nanobench/src/include;../bench/decimal/include;../bench/double-conversion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../bench/nanobench/src/include;../bench/decimal/include;../bench/double-conversion;../bench/dragonbox/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">

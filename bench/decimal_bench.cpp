@@ -4,6 +4,7 @@
 #include <boost/decimal/charconv.hpp>
 #include <boost/decimal/decimal64_t.hpp>
 #include <double-conversion/double-to-string.h>
+#include <dragonbox/dragonbox.h>
 #include <algorithm>
 #include <random>
 #include <string>
@@ -111,6 +112,15 @@ static NOINLINE bd::decimal64_t googleFromDouble(double value)
     return bd::decimal64_t(coefficient, point - length, negative);
 }
 
+// The same with Dragonbox, whose to_decimal takes finite non-zero values only.
+static NOINLINE bd::decimal64_t dragonboxFromDouble(double value)
+{
+    if (value == 0)
+        return bd::decimal64_t(0);
+    const auto shortest = jkj::dragonbox::to_decimal(value);
+    return bd::decimal64_t(shortest.significand, shortest.exponent, shortest.is_negative);
+}
+
 static NOINLINE double boostToDouble(bd::decimal64_t value)
 {
     return static_cast<double>(value);
@@ -195,6 +205,8 @@ static int checkValues()
         char what[64];
         snprintf(what, sizeof(what), "double-conversion of %s", str);
         expectSameValue(bd::to_bid_d64(googleFromDouble(value)), bd::decimal64_t(value), count, what);
+        snprintf(what, sizeof(what), "Dragonbox of %s", str);
+        expectSameValue(bd::to_bid_d64(dragonboxFromDouble(value)), bd::decimal64_t(value), count, what);
 
         for (const char* rhs : kWireSizes)
         {
@@ -310,6 +322,14 @@ static uint64_t fromDoubleGoogle(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromDoubleDragonbox(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (double value : in.doubles)
+        sum += bd::to_bid_d64(dragonboxFromDouble(value));
+    return sum;
+}
+
 static double toDoubleIntel(const DecimalInputs& in)
 {
     double sum = 0;
@@ -368,6 +388,8 @@ static void compareFromDouble(const DecimalInputs& in)
     bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
     bench.run("double-conversion digits, decimal64_t encoding",
               [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
+    bench.run("Dragonbox digits, decimal64_t encoding",
+              [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
 }
 
 int main()
