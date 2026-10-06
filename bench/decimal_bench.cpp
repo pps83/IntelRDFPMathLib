@@ -31,6 +31,8 @@ unsigned long long __bid64_from_string(char*, unsigned int, unsigned int*);
 void __bid64_to_string(char*, unsigned long long, unsigned int*);
 double __bid64_to_binary64(unsigned long long, unsigned int, unsigned int*);
 unsigned long long __binary64_to_bid64(double, unsigned int, unsigned int*);
+float __bid64_to_binary32(unsigned long long, unsigned int, unsigned int*);
+unsigned long long __binary32_to_bid64(float, unsigned int, unsigned int*);
 }
 
 namespace bd = boost::decimal;
@@ -73,6 +75,18 @@ static double intelToDouble(uint64_t value)
     return __bid64_to_binary64(value, 0, &flags);
 }
 
+static uint64_t intelFromFloat(float value)
+{
+    unsigned flags = 0;
+    return __binary32_to_bid64(value, 0, &flags);
+}
+
+static float intelToFloat(uint64_t value)
+{
+    unsigned flags = 0;
+    return __bid64_to_binary32(value, 0, &flags);
+}
+
 static uint64_t intelBinary(IntelBinaryOp op, uint64_t a, uint64_t b)
 {
     unsigned flags = 0;
@@ -96,24 +110,40 @@ static NOINLINE bd::decimal64_t boostFromDouble(double value)
     return bd::decimal64_t(value);
 }
 
+static NOINLINE bd::decimal64_t boostFromFloat(float value)
+{
+    return bd::decimal64_t(value);
+}
+
 // boost's conversion done differently: double-conversion finds the shortest digits, boost only encodes them.
-static NOINLINE bd::decimal64_t googleFromDouble(double value)
+static bd::decimal64_t googleShortest(double value, double_conversion::DoubleToStringConverter::DtoaMode mode)
 {
     using double_conversion::DoubleToStringConverter;
     char digits[DoubleToStringConverter::kBase10MaximalLength + 1];
     bool negative = false;
     int length = 0;
     int point = 0;
-    DoubleToStringConverter::DoubleToAscii(value, DoubleToStringConverter::SHORTEST, 0, digits,
-                                           static_cast<int>(sizeof(digits)), &negative, &length, &point);
+    DoubleToStringConverter::DoubleToAscii(value, mode, 0, digits, static_cast<int>(sizeof(digits)), &negative, &length,
+                                           &point);
     uint64_t coefficient = 0;
     for (int i = 0; i < length; ++i)
         coefficient = coefficient * 10 + static_cast<uint64_t>(digits[i] - '0');
     return bd::decimal64_t(coefficient, point - length, negative);
 }
 
+static NOINLINE bd::decimal64_t googleFromDouble(double value)
+{
+    return googleShortest(value, double_conversion::DoubleToStringConverter::SHORTEST);
+}
+
+static NOINLINE bd::decimal64_t googleFromFloat(float value)
+{
+    return googleShortest(value, double_conversion::DoubleToStringConverter::SHORTEST_SINGLE);
+}
+
 // The same with Dragonbox, whose to_decimal takes finite non-zero values only.
-static NOINLINE bd::decimal64_t dragonboxFromDouble(double value)
+template <typename Float>
+static bd::decimal64_t dragonboxShortest(Float value)
 {
     if (value == 0)
         return bd::decimal64_t(0);
@@ -121,9 +151,24 @@ static NOINLINE bd::decimal64_t dragonboxFromDouble(double value)
     return bd::decimal64_t(shortest.significand, shortest.exponent, shortest.is_negative);
 }
 
+static NOINLINE bd::decimal64_t dragonboxFromDouble(double value)
+{
+    return dragonboxShortest(value);
+}
+
+static NOINLINE bd::decimal64_t dragonboxFromFloat(float value)
+{
+    return dragonboxShortest(value);
+}
+
 static NOINLINE double boostToDouble(bd::decimal64_t value)
 {
     return static_cast<double>(value);
+}
+
+static NOINLINE float boostToFloat(bd::decimal64_t value)
+{
+    return static_cast<float>(value);
 }
 
 static NOINLINE bd::decimal64_t boostAdd(bd::decimal64_t a, bd::decimal64_t b)
@@ -182,11 +227,12 @@ static void checkBinary(const char* lhs, char op, const char* rhs, uint64_t inte
     expectSameValue(intel, boostValue, count, what);
 }
 
-// Returns the number of results whose values differ; double to decimal differences are listed, not counted.
+// Returns the number of results whose values differ; double and float to decimal differences are listed, not counted.
 static int checkValues()
 {
     SameValueCount count;
     std::string fromDoubleDiffers;
+    std::string fromFloatDiffers;
     for (const char* str : kWireSizes)
     {
         const uint64_t a = intelParse(str);
@@ -208,6 +254,19 @@ static int checkValues()
         snprintf(what, sizeof(what), "Dragonbox of %s", str);
         expectSameValue(bd::to_bid_d64(dragonboxFromDouble(value)), bd::decimal64_t(value), count, what);
 
+        const float single = intelToFloat(a);
+        if (single != static_cast<float>(x))
+        {
+            ++count.differ;
+            printf("different float: %s\n", str);
+        }
+        if (!sameValue(intelFromFloat(single), bd::decimal64_t(single), count))
+            fromFloatDiffers += std::string(" ") + str;
+        snprintf(what, sizeof(what), "double-conversion of float %s", str);
+        expectSameValue(bd::to_bid_d64(googleFromFloat(single)), bd::decimal64_t(single), count, what);
+        snprintf(what, sizeof(what), "Dragonbox of float %s", str);
+        expectSameValue(bd::to_bid_d64(dragonboxFromFloat(single)), bd::decimal64_t(single), count, what);
+
         for (const char* rhs : kWireSizes)
         {
             const uint64_t b = intelParse(rhs);
@@ -223,6 +282,8 @@ static int checkValues()
            count.differ);
     if (!fromDoubleDiffers.empty())
         printf("double to decimal gives a different value for:%s\n", fromDoubleDiffers.c_str());
+    if (!fromFloatDiffers.empty())
+        printf("float to decimal gives a different value for:%s\n", fromFloatDiffers.c_str());
     return count.differ;
 }
 
@@ -232,6 +293,7 @@ struct DecimalInputs
     std::vector<uint64_t> intelLhs, intelRhs;
     std::vector<bd::decimal64_t> boostLhs, boostRhs;
     std::vector<double> doubles;
+    std::vector<float> floats;
 };
 
 // Every size appears about equally often, in a shuffled order that is the same on every run.
@@ -260,6 +322,7 @@ static DecimalInputs makeInputs()
         in.boostLhs.push_back(boostParse(lhs));
         in.boostRhs.push_back(boostParse(rhs));
         in.doubles.push_back(intelToDouble(in.intelLhs.back()));
+        in.floats.push_back(intelToFloat(in.intelLhs.back()));
     }
     return in;
 }
@@ -346,6 +409,54 @@ static double toDoubleBoost(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromFloatIntel(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += intelFromFloat(value);
+    return sum;
+}
+
+static uint64_t fromFloatBoost(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bd::to_bid_d64(boostFromFloat(value));
+    return sum;
+}
+
+static uint64_t fromFloatGoogle(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bd::to_bid_d64(googleFromFloat(value));
+    return sum;
+}
+
+static uint64_t fromFloatDragonbox(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bd::to_bid_d64(dragonboxFromFloat(value));
+    return sum;
+}
+
+static float toFloatIntel(const DecimalInputs& in)
+{
+    float sum = 0;
+    for (uint64_t value : in.intelLhs)
+        sum += intelToFloat(value);
+    return sum;
+}
+
+static float toFloatBoost(const DecimalInputs& in)
+{
+    float sum = 0;
+    for (bd::decimal64_t value : in.boostLhs)
+        sum += boostToFloat(value);
+    return sum;
+}
+
 template <IntelBinaryOp op>
 static uint64_t arithmeticIntel(const DecimalInputs& in)
 {
@@ -392,6 +503,18 @@ static void compareFromDouble(const DecimalInputs& in)
               [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
 }
 
+static void compareFromFloat(const DecimalInputs& in)
+{
+    ankerl::nanobench::Bench bench;
+    configure(bench, "float to decimal");
+    bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatIntel(in)); });
+    bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBoost(in)); });
+    bench.run("double-conversion digits, decimal64_t encoding",
+              [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
+    bench.run("Dragonbox digits, decimal64_t encoding",
+              [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
+}
+
 int main()
 {
     const int differ = checkValues();
@@ -403,6 +526,9 @@ int main()
     compareFromDouble(in);
     compareSpeed("decimal to double", [&] { ankerl::nanobench::doNotOptimizeAway(toDoubleIntel(in)); },
                  [&] { ankerl::nanobench::doNotOptimizeAway(toDoubleBoost(in)); });
+    compareFromFloat(in);
+    compareSpeed("decimal to float", [&] { ankerl::nanobench::doNotOptimizeAway(toFloatIntel(in)); },
+                 [&] { ankerl::nanobench::doNotOptimizeAway(toFloatBoost(in)); });
     compareSpeed("+", [&] { ankerl::nanobench::doNotOptimizeAway(arithmeticIntel<__bid64_add>(in)); },
                  [&] { ankerl::nanobench::doNotOptimizeAway(arithmeticBoost<boostAdd>(in)); });
     compareSpeed("-", [&] { ankerl::nanobench::doNotOptimizeAway(arithmeticIntel<__bid64_sub>(in)); },
