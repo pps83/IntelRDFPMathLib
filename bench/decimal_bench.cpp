@@ -3,6 +3,7 @@
 #include <boost/decimal/bid_conversion.hpp>
 #include <boost/decimal/charconv.hpp>
 #include <boost/decimal/decimal64_t.hpp>
+#include <double-conversion/double-to-string.h>
 #include <algorithm>
 #include <random>
 #include <string>
@@ -94,6 +95,22 @@ static NOINLINE bd::decimal64_t boostFromDouble(double value)
     return bd::decimal64_t(value);
 }
 
+// boost's conversion done differently: double-conversion finds the shortest digits, boost only encodes them.
+static NOINLINE bd::decimal64_t googleFromDouble(double value)
+{
+    using double_conversion::DoubleToStringConverter;
+    char digits[DoubleToStringConverter::kBase10MaximalLength + 1];
+    bool negative = false;
+    int length = 0;
+    int point = 0;
+    DoubleToStringConverter::DoubleToAscii(value, DoubleToStringConverter::SHORTEST, 0, digits,
+                                           static_cast<int>(sizeof(digits)), &negative, &length, &point);
+    uint64_t coefficient = 0;
+    for (int i = 0; i < length; ++i)
+        coefficient = coefficient * 10 + static_cast<uint64_t>(digits[i] - '0');
+    return bd::decimal64_t(coefficient, point - length, negative);
+}
+
 static NOINLINE double boostToDouble(bd::decimal64_t value)
 {
     return static_cast<double>(value);
@@ -175,6 +192,9 @@ static int checkValues()
         // Intel rounds the double's exact value to 16 digits, boost takes the shortest decimal reading back as it.
         if (!sameValue(intelFromDouble(value), bd::decimal64_t(value), count))
             fromDoubleDiffers += std::string(" ") + str;
+        char what[64];
+        snprintf(what, sizeof(what), "double-conversion of %s", str);
+        expectSameValue(bd::to_bid_d64(googleFromDouble(value)), bd::decimal64_t(value), count, what);
 
         for (const char* rhs : kWireSizes)
         {
@@ -282,6 +302,14 @@ static uint64_t fromDoubleBoost(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromDoubleGoogle(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (double value : in.doubles)
+        sum += bd::to_bid_d64(googleFromDouble(value));
+    return sum;
+}
+
 static double toDoubleIntel(const DecimalInputs& in)
 {
     double sum = 0;
@@ -317,14 +345,29 @@ static uint64_t arithmeticBoost(const DecimalInputs& in)
     return sum;
 }
 
-// One table per operation, Intel first: nanobench's relative column is boost's speed as a share of Intel's.
+// One table per operation, Intel first: nanobench's relative column is each speed as a share of Intel's.
+static void configure(ankerl::nanobench::Bench& bench, const char* what)
+{
+    bench.title(what).unit("value").batch(kBatch).relative(true).warmup(20).minEpochIterations(200);
+}
+
 template <typename IntelFn, typename BoostFn>
 static void compareSpeed(const char* what, IntelFn&& intelFn, BoostFn&& boostFn)
 {
     ankerl::nanobench::Bench bench;
-    bench.title(what).unit("value").batch(kBatch).relative(true).warmup(20).minEpochIterations(200);
+    configure(bench, what);
     bench.run("Intel BID64", intelFn);
     bench.run("boost::decimal decimal64_t", boostFn);
+}
+
+static void compareFromDouble(const DecimalInputs& in)
+{
+    ankerl::nanobench::Bench bench;
+    configure(bench, "double to decimal");
+    bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleIntel(in)); });
+    bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
+    bench.run("double-conversion digits, decimal64_t encoding",
+              [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
 }
 
 int main()
@@ -335,8 +378,7 @@ int main()
                  [&] { ankerl::nanobench::doNotOptimizeAway(parseBoost(in)); });
     compareSpeed("decimal to string", [&] { ankerl::nanobench::doNotOptimizeAway(toStringIntel(in)); },
                  [&] { ankerl::nanobench::doNotOptimizeAway(toStringBoost(in)); });
-    compareSpeed("double to decimal", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleIntel(in)); },
-                 [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
+    compareFromDouble(in);
     compareSpeed("decimal to double", [&] { ankerl::nanobench::doNotOptimizeAway(toDoubleIntel(in)); },
                  [&] { ankerl::nanobench::doNotOptimizeAway(toDoubleBoost(in)); });
     compareSpeed("+", [&] { ankerl::nanobench::doNotOptimizeAway(arithmeticIntel<__bid64_add>(in)); },

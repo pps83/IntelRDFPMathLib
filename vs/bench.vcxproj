@@ -71,7 +71,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>../bench/nanobench/src/include;../bench/decimal/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../bench/nanobench/src/include;../bench/decimal/include;../bench/double-conversion;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
@@ -86,6 +86,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\bench\decimal_bench.cpp" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\bignum-dtoa.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\bignum.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\cached-powers.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\double-to-string.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\fast-dtoa.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\fixed-dtoa.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\string-to-double.cc" />
+    <ClCompile Include="..\bench\double-conversion\double-conversion\strtod.cc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="IntelRDFPMathLib.vcxproj">
