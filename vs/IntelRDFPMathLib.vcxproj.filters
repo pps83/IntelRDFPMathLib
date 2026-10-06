@@ -886,6 +886,9 @@
     <ClInclude Include="..\LIBRARY\src\bid128_2_str_macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\LIBRARY\src\ctz_clz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\LIBRARY\src\dfp754.h">
       <Filter>Header Files</Filter>
     </ClInclude>

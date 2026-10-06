@@ -318,6 +318,7 @@
     <ClInclude Include="..\LIBRARY\src\bid_strtod.h" />
     <ClInclude Include="..\LIBRARY\src\bid_trans.h" />
     <ClInclude Include="..\LIBRARY\src\bid_wrap_names.h" />
+    <ClInclude Include="..\LIBRARY\src\ctz_clz.h" />
     <ClInclude Include="..\LIBRARY\src\dfp754.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
