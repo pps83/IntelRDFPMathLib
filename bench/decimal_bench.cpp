@@ -176,18 +176,58 @@ static NOINLINE bd::decimal64_t dragonboxFromFloat(float value)
     return dragonboxShortest(value);
 }
 
+// BDE's restoreDecimalDigits: the value printed with the given significant digits, parsed by Intel's library.
+static uint64_t bdePrinted(double value, int digits)
+{
+    char buffer[42];
+    snprintf(buffer, sizeof(buffer), "%1.*g", digits, value);
+    return intelParse(buffer);
+}
+
 // BDE's DecimalConvertUtil::decimal64FromDouble(x, -1) (shortestDecimalFromBinary in bdldfp_decimalconvertutil.cpp):
-// x printed with 15, then 16 significant digits, parsed by Intel's library, kept once it reads back as x.
+// x printed with 15, then 16 significant digits, kept once it reads back as x.
 static NOINLINE uint64_t bdeShortestFromDouble(double value)
 {
     for (int digits = 15;; ++digits)
     {
-        char buffer[42];
-        snprintf(buffer, sizeof(buffer), "%1.*g", digits, value);
-        const uint64_t result = intelParse(buffer);
+        const uint64_t result = bdePrinted(value, digits);
         if (digits == 16 || intelToDouble(result) == value)
             return result;
     }
+}
+
+// The same for float: 6 to 9 significant digits.
+static NOINLINE uint64_t bdeShortestFromFloat(float value)
+{
+    for (int digits = 6;; ++digits)
+    {
+        const uint64_t result = bdePrinted(value, digits);
+        if (digits == 9 || intelToFloat(result) == value)
+            return result;
+    }
+}
+
+// BDE's reduce(): drops the powers of ten the scaling brought in, so .001 gives 1e-3 and not 1000e-6.
+template <typename Integer>
+static void bdeReduce(Integer& significand, int& exponent)
+{
+    while ((significand & 7) == 0 && significand % 1000 == 0 && exponent <= -3)
+    {
+        significand /= 1000;
+        exponent += 3;
+    }
+    while ((significand & 1) == 0 && significand % 10 == 0 && exponent <= -1)
+    {
+        significand /= 10;
+        ++exponent;
+    }
+}
+
+// BDE's DecimalUtil::makeDecimalRaw64 on Intel's library.
+static uint64_t bdeMakeDecimal(long long significand, int exponent)
+{
+    unsigned flags = 0;
+    return __bid64_scalbn(__bid64_from_int64(significand, 0, &flags), exponent, 0, &flags);
 }
 
 // BDE's DecimalConvertUtil::decimal64FromDouble(x) (quickDecimalFromDouble in bdldfp_decimalconvertutil.cpp): x times
@@ -199,29 +239,44 @@ static NOINLINE uint64_t bdeDefaultFromDouble(double value)
         const double scaled = value * 1e9;
         long long significand = static_cast<long long>(scaled + copysign(.5, scaled));
         int exponent = -9;
-        while ((significand & 7) == 0 && significand % 1000 == 0 && exponent <= -3)
-        {
-            significand /= 1000;
-            exponent += 3;
-        }
-        while ((significand & 1) == 0 && significand % 10 == 0 && exponent <= -1)
-        {
-            significand /= 10;
-            ++exponent;
-        }
+        bdeReduce(significand, exponent);
         if (significand < 1000000000000000LL && significand > -1000000000000000LL)
         {
-            unsigned flags = 0;
-            const uint64_t result = __bid64_scalbn(__bid64_from_int64(significand, 0, &flags), exponent, 0, &flags);
+            const uint64_t result = bdeMakeDecimal(significand, exponent);
             double whole = 0;
             const double fraction = modf(scaled, &whole);
             if ((whole != 0 && fraction / whole < 1e-17) || fraction == 0 || intelToDouble(result) == value)
                 return result;
         }
     }
-    char buffer[42];
-    snprintf(buffer, sizeof(buffer), "%1.15g", value);
-    return intelParse(buffer);
+    return bdePrinted(value, 15);
+}
+
+// BDE's decimal64FromFloat(x) (quickDecimalFromFloat): x scaled by its decade to 6 or 7 digits and rounded the same
+// way; else 7 digits printed and parsed in about [1e-3, 8.6e9], where 7-digit decimals give distinct floats, 6 outside.
+static NOINLINE uint64_t bdeDefaultFromFloat(float value)
+{
+    const float magnitude = fabsf(value);
+    if (value != 0 && -1e06f < value && value < 1e06f)
+    {
+        static const float kDecadeEnds[] = {1e0f, 1e1f, 1e2f, 1e3f, 1e4f, 1e5f};
+        static const float kScales[] = {1e6f, 1e5f, 1e4f, 1e3f, 1e2f, 1e1f, 1e0f};
+        int decade = 0;
+        while (decade < 6 && magnitude >= kDecadeEnds[decade])
+            ++decade;
+        const float scaled = value * kScales[decade];
+        int significand = static_cast<int>(scaled + copysignf(.5f, scaled));
+        const float diff = scaled - static_cast<float>(significand);
+        int exponent = decade - 6;
+        bdeReduce(significand, exponent);
+        if (significand < 10000000 && significand > -10000000)
+        {
+            const uint64_t result = bdeMakeDecimal(significand, exponent);
+            if (fabsf(diff / scaled) < 1e-8f || intelToFloat(result) == value)
+                return result;
+        }
+    }
+    return bdePrinted(value, magnitude >= 9.999995e-4f && magnitude <= 8.589972e+9f ? 7 : 6);
 }
 
 static NOINLINE double boostToDouble(bd::decimal64_t value)
@@ -294,6 +349,27 @@ static void expectSameBits(uint64_t intel, bd::decimal64_t boostValue, SameValue
     printf("different bits: %s\n", what);
 }
 
+// The digits of a number as typed without its leading and trailing zeros: "0.0100" has one.
+static int significantDigits(const char* str)
+{
+    int first = -1;
+    int last = -1;
+    int index = 0;
+    for (const char* c = str; *c != '\0'; ++c)
+    {
+        if (*c < '0' || *c > '9')
+            continue;
+        if (*c != '0')
+        {
+            if (first < 0)
+                first = index;
+            last = index;
+        }
+        ++index;
+    }
+    return first < 0 ? 0 : last - first + 1;
+}
+
 static void checkBinary(const char* lhs, char op, const char* rhs, uint64_t intel, bd::decimal64_t boostValue,
                         SameValueCount& count)
 {
@@ -350,6 +426,14 @@ static int checkValues()
         expectSameValue(bd::to_bid_d64(dragonboxFromFloat(single)), bd::decimal64_t(single), count, what);
         snprintf(what, sizeof(what), "from_binary of float %s", str);
         expectSameBits(intelFromFloat(single), exactFromFloat(single), count, what);
+        snprintf(what, sizeof(what), "BDE shortest of float %s", str);
+        expectSameValue(bdeShortestFromFloat(single), bd::decimal64_t(single), count, what);
+        // BDE's default restores the number the float was made from when it has 6 digits or fewer
+        if (significantDigits(str) <= 6)
+        {
+            snprintf(what, sizeof(what), "BDE default of float %s", str);
+            expectSameValue(bdeDefaultFromFloat(single), x, count, what);
+        }
 
         for (const char* rhs : kWireSizes)
         {
@@ -557,6 +641,22 @@ static uint64_t fromFloatDragonbox(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromFloatBde(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bdeShortestFromFloat(value);
+    return sum;
+}
+
+static uint64_t fromFloatBdeDefault(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bdeDefaultFromFloat(value);
+    return sum;
+}
+
 static float toFloatIntel(const DecimalInputs& in)
 {
     float sum = 0;
@@ -630,6 +730,8 @@ static void compareFromFloat(const DecimalInputs& in)
     bench.run("from_binary", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatExact(in)); });
     // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
     bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
+    bench.run("BDE shortest", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBde(in)); });
+    bench.run("BDE default", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBdeDefault(in)); });
 }
 
 int main()
