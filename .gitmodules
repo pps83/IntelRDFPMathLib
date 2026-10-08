@@ -3,7 +3,7 @@
 	url = ../nanobench.git
 [submodule "bench/decimal"]
 	path = bench/decimal
-	url = https://github.com/boostorg/decimal.git
+	url = ../decimal.git
 [submodule "bench/double-conversion"]
 	path = bench/double-conversion
 	url = https://github.com/google/double-conversion.git
