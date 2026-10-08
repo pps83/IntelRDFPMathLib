@@ -5,5 +5,6 @@
   </Configurations>
   <Project Path="bench.vcxproj" Id="a9860d24-cbb8-49f9-9ec3-8e51421be131" />
   <Project Path="IntelRDFPMathLib.vcxproj" Id="a7415ea6-8990-45f2-a2a4-9ad215bbe39b" />
+  <Project Path="parse_check.vcxproj" Id="1b13896e-7c30-4ba9-823d-1674eda03bd2" />
   <Project Path="test.vcxproj" Id="2cf291ce-4693-4300-a2c6-9bea656533cc" />
 </Solution>
