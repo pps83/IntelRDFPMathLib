@@ -488,7 +488,7 @@ static void compareSpeed(const char* what, IntelFn&& intelFn, BoostFn&& boostFn)
     ankerl::nanobench::Bench bench;
     configure(bench, what);
     bench.run("Intel BID64", intelFn);
-    bench.run("boost::decimal decimal64_t", boostFn);
+    bench.run("boost::decimal64_t", boostFn);
 }
 
 static void compareFromDouble(const DecimalInputs& in)
@@ -496,12 +496,10 @@ static void compareFromDouble(const DecimalInputs& in)
     ankerl::nanobench::Bench bench;
     configure(bench, "double to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleIntel(in)); });
-    bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
+    bench.run("boost::decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
     // boost::decimal finds its digits with Dragonbox now, so double-conversion's row tells nothing new
-    // bench.run("double-conversion digits, decimal64_t encoding",
-    //           [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
-    bench.run("Dragonbox digits, decimal64_t encoding",
-              [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
+    // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
+    bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
 }
 
 static void compareFromFloat(const DecimalInputs& in)
@@ -509,11 +507,9 @@ static void compareFromFloat(const DecimalInputs& in)
     ankerl::nanobench::Bench bench;
     configure(bench, "float to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatIntel(in)); });
-    bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBoost(in)); });
-    // bench.run("double-conversion digits, decimal64_t encoding",
-    //           [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
-    bench.run("Dragonbox digits, decimal64_t encoding",
-              [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
+    bench.run("boost::decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBoost(in)); });
+    // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
+    bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
 }
 
 int main()
