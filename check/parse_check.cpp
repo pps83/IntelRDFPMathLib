@@ -1,5 +1,5 @@
-// Checks parsing into integers, float, double and decimal32/64/128, decimal to binary and printing the parsed values,
-// against exact results. Usage: parse_check [random inputs] [seed] [examples per check]
+// Checks parsing into integers, float, double and decimal32/64/128, decimal to binary, printing and decimal arithmetic
+// against exact results. Usage: parse_check [random inputs and pairs] [seed] [examples per check]
 #include <boost/decimal.hpp>
 #include <double-conversion/double-to-string.h>
 #include <double-conversion/string-to-double.h>
@@ -46,6 +46,18 @@ float __bid128_to_binary32(Bid128, unsigned int, unsigned int*);
 void __bid32_to_string(char*, uint32_t, unsigned int*);
 void __bid64_to_string(char*, uint64_t, unsigned int*);
 void __bid128_to_string(char*, Bid128, unsigned int*);
+uint32_t __bid32_add(uint32_t, uint32_t, unsigned int, unsigned int*);
+uint32_t __bid32_sub(uint32_t, uint32_t, unsigned int, unsigned int*);
+uint32_t __bid32_mul(uint32_t, uint32_t, unsigned int, unsigned int*);
+uint32_t __bid32_div(uint32_t, uint32_t, unsigned int, unsigned int*);
+uint64_t __bid64_add(uint64_t, uint64_t, unsigned int, unsigned int*);
+uint64_t __bid64_sub(uint64_t, uint64_t, unsigned int, unsigned int*);
+uint64_t __bid64_mul(uint64_t, uint64_t, unsigned int, unsigned int*);
+uint64_t __bid64_div(uint64_t, uint64_t, unsigned int, unsigned int*);
+Bid128 __bid128_add(Bid128, Bid128, unsigned int, unsigned int*);
+Bid128 __bid128_sub(Bid128, Bid128, unsigned int, unsigned int*);
+Bid128 __bid128_mul(Bid128, Bid128, unsigned int, unsigned int*);
+Bid128 __bid128_div(Bid128, Bid128, unsigned int, unsigned int*);
 }
 
 namespace bd = boost::decimal;
@@ -158,6 +170,77 @@ public:
             const int64_t difference = int64_t(limbs[i]) - (i < other.limbs.size() ? other.limbs[i] : 0) - borrow;
             borrow = difference < 0 ? 1 : 0;
             limbs[i] = uint32_t(difference + (borrow << 32));
+        }
+        trim();
+    }
+
+    void add(const BigUint& other)
+    {
+        if (limbs.size() < other.limbs.size())
+            limbs.resize(other.limbs.size(), 0);
+        uint64_t carry = 0;
+        for (size_t i = 0; i < limbs.size(); ++i)
+        {
+            carry += uint64_t(limbs[i]) + (i < other.limbs.size() ? other.limbs[i] : 0);
+            limbs[i] = uint32_t(carry);
+            carry >>= 32;
+        }
+        if (carry != 0)
+            limbs.push_back(uint32_t(carry));
+    }
+
+    friend BigUint multiply(const BigUint& a, const BigUint& b)
+    {
+        BigUint result;
+        if (a.limbs.empty() || b.limbs.empty())
+            return result;
+        result.limbs.assign(a.limbs.size() + b.limbs.size(), 0);
+        for (size_t i = 0; i < a.limbs.size(); ++i)
+        {
+            uint64_t carry = 0;
+            for (size_t j = 0; j < b.limbs.size(); ++j)
+            {
+                carry += uint64_t(a.limbs[i]) * b.limbs[j] + result.limbs[i + j];
+                result.limbs[i + j] = uint32_t(carry);
+                carry >>= 32;
+            }
+            result.limbs[i + b.limbs.size()] = uint32_t(carry);
+        }
+        result.trim();
+        return result;
+    }
+
+    // num / den; num is left holding the remainder.
+    friend BigUint divide(BigUint& num, const BigUint& den)
+    {
+        BigUint quotient;
+        const int top = num.bitLength() - den.bitLength();
+        if (top < 0)
+            return quotient;
+        quotient.limbs.assign(size_t(top / 32) + 1, 0);
+        BigUint shifted = den;
+        shifted.shiftLeft(top);
+        for (int bit = top; bit >= 0; --bit)
+        {
+            if (compare(num, shifted) >= 0)
+            {
+                num.subtract(shifted);
+                quotient.limbs[size_t(bit / 32)] |= uint32_t(1) << (bit % 32);
+            }
+            shifted.shiftRightOne();
+        }
+        quotient.trim();
+        return quotient;
+    }
+
+    void shiftRightOne()
+    {
+        uint32_t carry = 0;
+        for (size_t i = limbs.size(); i-- > 0;)
+        {
+            const uint32_t next = limbs[i] << 31;
+            limbs[i] = (limbs[i] >> 1) | carry;
+            carry = next;
         }
         trim();
     }
@@ -320,23 +403,6 @@ struct BinaryFormat
 static const BinaryFormat kDouble {"double", 53, -1074, 971, UINT64_C(0x7FF0000000000000), 63, 310, -330};
 static const BinaryFormat kFloat {"float", 24, -149, 104, 0x7F800000, 31, 40, -50};
 
-// The quotient num / den when it is below 2^maxBits; num is left holding the remainder.
-static uint64_t divideToBits(BigUint& num, const BigUint& den, int maxBits)
-{
-    uint64_t quotient = 0;
-    for (int bit = maxBits - 1; bit >= 0; --bit)
-    {
-        BigUint shifted = den;
-        shifted.shiftLeft(bit);
-        if (compare(num, shifted) >= 0)
-        {
-            num.subtract(shifted);
-            quotient |= UINT64_C(1) << bit;
-        }
-    }
-    return quotient;
-}
-
 // The bits of coefficient * 10^exponent rounded to nearest, ties to even.
 static uint64_t roundBinary(bool negative, std::string_view coefficient, int exponent, const BinaryFormat& f)
 {
@@ -364,7 +430,7 @@ static uint64_t roundBinary(bool negative, std::string_view coefficient, int exp
             scaledNum.shiftLeft(-e);
         else
             scaledDen.shiftLeft(e);
-        uint64_t q = divideToBits(scaledNum, scaledDen, f.precision + 2);
+        uint64_t q = divide(scaledNum, scaledDen).word64(0);
         if (q >= 2 * hiddenBit)
         {
             ++e;
@@ -519,6 +585,132 @@ static DecimalValue roundDecimal(const Exact& x, const DecimalFormat& f, int mod
     v.coefficient = digits;
     v.exponent = exponent;
     return v;
+}
+
+static constexpr int kOperationCount = 4;
+static const char* const kOperationNames[kOperationCount] = {"+", "-", "*", "/"};
+
+static bool isZero(const DecimalValue& v)
+{
+    return v.coefficient == "0";
+}
+
+static BigUint scaledCoefficient(const std::string& coefficient, int zeros)
+{
+    BigUint result = BigUint::fromDigits(coefficient);
+    result.mulPow10(zeros);
+    return result;
+}
+
+// a + b exactly at exponent min(qa, qb), unsigned when zero; a far smaller operand becomes one sticky digit.
+static Exact exactSum(const DecimalValue& a, const DecimalValue& b, int precision)
+{
+    Exact x;
+    x.exponent = std::min(a.exponent, b.exponent);
+    if (isZero(a) || isZero(b))
+    {
+        if (isZero(a) && isZero(b))
+            return x;
+        const DecimalValue& other = isZero(a) ? b : a;
+        x.negative = other.negative;
+        x.coefficient = other.coefficient + std::string(size_t(other.exponent - x.exponent), '0');
+        return x;
+    }
+
+    DecimalValue big = a;
+    DecimalValue small = b;
+    if (b.exponent + int(b.coefficient.size()) > a.exponent + int(a.coefficient.size()))
+        std::swap(big, small);
+    const int top = big.exponent + int(big.coefficient.size());
+    if (small.exponent + int(small.coefficient.size()) <= top - precision - 3)
+    {
+        small.coefficient = "1";
+        small.exponent = top - precision - 4;
+    }
+    x.exponent = std::min(big.exponent, small.exponent);
+    BigUint sum = scaledCoefficient(big.coefficient, big.exponent - x.exponent);
+    BigUint other = scaledCoefficient(small.coefficient, small.exponent - x.exponent);
+    x.negative = big.negative;
+    if (big.negative == small.negative)
+    {
+        sum.add(other);
+    }
+    else
+    {
+        const int order = compare(sum, other);
+        if (order == 0)
+            return x;
+        if (order < 0)
+        {
+            std::swap(sum, other);
+            x.negative = small.negative;
+        }
+        sum.subtract(other);
+    }
+    x.coefficient = sum.toDigits();
+    return x;
+}
+
+// a / b, b nonzero: exact at the exponent nearest qa - qb when it terminates, else its first digits and a sticky one.
+static Exact exactQuotient(const DecimalValue& a, const DecimalValue& b, int precision)
+{
+    Exact x;
+    x.negative = a.negative != b.negative;
+    x.exponent = a.exponent - b.exponent;
+    if (isZero(a))
+        return x;
+
+    const int scale = std::max(0, precision + 1 + int(b.coefficient.size()) - int(a.coefficient.size()));
+    BigUint remainder = scaledCoefficient(a.coefficient, scale);
+    const BigUint quotient = divide(remainder, BigUint::fromDigits(b.coefficient));
+    std::string digits = quotient.toDigits();
+    int exponent = x.exponent - scale;
+    if (remainder.bitLength() != 0)
+    {
+        digits += '1';
+        --exponent;
+    }
+    else
+    {
+        for (; exponent < x.exponent && digits.back() == '0'; ++exponent)
+            digits.pop_back();
+    }
+    x.coefficient = digits;
+    x.exponent = exponent;
+    return x;
+}
+
+// IEEE 754 addition, subtraction, multiplication and division of finite decimals, with their preferred exponents.
+static DecimalValue referenceOperation(int operation, const DecimalValue& a, const DecimalValue& b,
+                                       const DecimalFormat& f, int mode)
+{
+    if (operation <= 1)
+    {
+        DecimalValue addend = b;
+        addend.negative = operation == 1 ? !b.negative : b.negative;
+        Exact x = exactSum(a, addend, f.precision);
+        if (x.coefficient.empty())
+            x.negative = a.negative == addend.negative ? a.negative : mode == 1;
+        return roundDecimal(x, f, mode);
+    }
+    if (operation == 2)
+    {
+        Exact x;
+        x.negative = a.negative != b.negative;
+        x.exponent = a.exponent + b.exponent;
+        if (!isZero(a) && !isZero(b))
+            x.coefficient = multiply(BigUint::fromDigits(a.coefficient), BigUint::fromDigits(b.coefficient)).toDigits();
+        return roundDecimal(x, f, mode);
+    }
+    if (isZero(b))
+    {
+        DecimalValue v;
+        v.negative = a.negative != b.negative;
+        v.nan = isZero(a);
+        v.infinite = !isZero(a);
+        return v;
+    }
+    return roundDecimal(exactQuotient(a, b, f.precision), f, mode);
 }
 
 static Bits128 encodeDecimal(const DecimalValue& v, const DecimalFormat& f)
@@ -749,6 +941,9 @@ struct DecimalChecks
     Check* printIntel;
     Check* boostRoundTrip;
     Check* intelRoundTrip;
+    Check* intelOperation[kOperationCount];
+    Check* boostOperation[kOperationCount];
+    Check* boostOperationCohort[kOperationCount];
 };
 
 static BinaryChecks gDoubleChecks;
@@ -796,6 +991,12 @@ static DecimalChecks addDecimalChecks(const DecimalFormat& f, const char* strtod
     checks.printIntel = addCheck(prefix + "print Intel to_string");
     checks.boostRoundTrip = addCheck(prefix + "boost to_chars then from_chars");
     checks.intelRoundTrip = addCheck(prefix + "Intel to_string then from_string");
+    for (int operation = 0; operation < kOperationCount; ++operation)
+        checks.intelOperation[operation] = addCheck(prefix + "Intel " + kOperationNames[operation]);
+    for (int operation = 0; operation < kOperationCount; ++operation)
+        checks.boostOperation[operation] = addCheck(prefix + "boost " + kOperationNames[operation]);
+    for (int operation = 0; operation < kOperationCount; ++operation)
+        checks.boostOperationCohort[operation] = addCheck(prefix + "boost " + kOperationNames[operation] + " cohort");
     return checks;
 }
 
@@ -1013,6 +1214,44 @@ static float intelToFloat(const DecimalFormat& f, Bits128 bits)
     return __bid128_to_binary32(Bid128 {{bits.low, bits.high}}, 0, &flags);
 }
 
+using Intel32Operation = uint32_t (*)(uint32_t, uint32_t, unsigned int, unsigned int*);
+using Intel64Operation = uint64_t (*)(uint64_t, uint64_t, unsigned int, unsigned int*);
+using Intel128Operation = Bid128 (*)(Bid128, Bid128, unsigned int, unsigned int*);
+static const Intel32Operation kIntel32Operations[kOperationCount] = {__bid32_add, __bid32_sub, __bid32_mul,
+                                                                     __bid32_div};
+static const Intel64Operation kIntel64Operations[kOperationCount] = {__bid64_add, __bid64_sub, __bid64_mul,
+                                                                     __bid64_div};
+static const Intel128Operation kIntel128Operations[kOperationCount] = {__bid128_add, __bid128_sub, __bid128_mul,
+                                                                       __bid128_div};
+
+static Bits128 intelOperation(const DecimalFormat& f, int operation, Bits128 a, Bits128 b, int mode)
+{
+    unsigned flags = 0;
+    if (f.precision == 7)
+        return {0, kIntel32Operations[operation](uint32_t(a.low), uint32_t(b.low), unsigned(mode), &flags)};
+    if (f.precision == 16)
+        return {0, kIntel64Operations[operation](a.low, b.low, unsigned(mode), &flags)};
+    const Bid128 r = kIntel128Operations[operation](Bid128 {{a.low, a.high}}, Bid128 {{b.low, b.high}}, unsigned(mode),
+                                                     &flags);
+    return {r.w[1], r.w[0]};
+}
+
+template <typename Decimal>
+static Decimal boostOperation(int operation, Decimal a, Decimal b)
+{
+    switch (operation)
+    {
+        case 0:
+            return a + b;
+        case 1:
+            return a - b;
+        case 2:
+            return a * b;
+        default:
+            return a / b;
+    }
+}
+
 static Bits128 toBits(bd::decimal32_t value)
 {
     return {0, bd::to_bid_d32(value)};
@@ -1206,6 +1445,66 @@ static void checkDecimal(const DecimalChecks& checks, size_t index, const std::s
     checkPrintDecimal<Decimal>(checks, index, expected, expectedBits);
 }
 
+static std::string operationLabel(const DecimalValue& a, int operation, const DecimalValue& b, int mode)
+{
+    return describeDecimal(a) + " " + kOperationNames[operation] + " " + describeDecimal(b) + " " + kModeNames[mode];
+}
+
+// NaN results match by being NaN; Intel's results also by their bits, cohort included, and boost's by value first.
+template <typename Decimal>
+static void checkArithmetic(const DecimalChecks& checks, size_t index, const DecimalValue& a, const DecimalValue& b,
+                            int mode)
+{
+    const DecimalFormat& f = *checks.format;
+    const Bits128 aBits = encodeDecimal(a, f);
+    const Bits128 bBits = encodeDecimal(b, f);
+    Decimal x {};
+    Decimal y {};
+    fromBits(aBits, x);
+    fromBits(bBits, y);
+
+    for (int operation = 0; operation < kOperationCount; ++operation)
+    {
+        const DecimalValue expected = referenceOperation(operation, a, b, f, mode);
+        const Bits128 expectedBits = expected.nan ? Bits128 {} : encodeDecimal(expected, f);
+
+        const Bits128 intel = intelOperation(f, operation, aBits, bBits, mode);
+        const DecimalValue intelValue = decodeDecimal(intel, f);
+        const bool intelOk = expected.nan ? intelValue.nan : intel == expectedBits;
+        if (failed(checks.intelOperation[operation], index, intelOk))
+        {
+            addExample(checks.intelOperation[operation], index, operationLabel(a, operation, b, mode),
+                       describeDecimal(intelValue), describeDecimal(expected));
+        }
+
+        const Bits128 boost = toBits(boostOperation(operation, x, y));
+        const DecimalValue boostValue = decodeDecimal(boost, f);
+        const bool boostOk = expected.nan ? boostValue.nan : sameValue(boostValue, expected);
+        if (failed(checks.boostOperation[operation], index, boostOk))
+        {
+            addExample(checks.boostOperation[operation], index, operationLabel(a, operation, b, mode),
+                       describeDecimal(boostValue), describeDecimal(expected));
+        }
+        if (boostOk && !expected.nan && failed(checks.boostOperationCohort[operation], index, boost == expectedBits))
+        {
+            addExample(checks.boostOperationCohort[operation], index, operationLabel(a, operation, b, mode),
+                       describeDecimal(boostValue), describeDecimal(expected));
+        }
+    }
+}
+
+static std::vector<std::pair<size_t, size_t>> gPairs;
+
+// Both operands are the inputs parsed to nearest; pairs with an infinite operand are left out.
+template <typename Decimal>
+static void checkPair(const DecimalChecks& checks, size_t index, const Exact& x, const Exact& y, int mode)
+{
+    const DecimalValue a = roundDecimal(x, *checks.format, 0);
+    const DecimalValue b = roundDecimal(y, *checks.format, 0);
+    if (!a.infinite && !b.infinite)
+        checkArithmetic<Decimal>(checks, index, a, b, mode);
+}
+
 static void checkInput(size_t index, int mode)
 {
     const std::string& text = gInputs[index];
@@ -1233,6 +1532,14 @@ static void checkSlice(unsigned slice, unsigned slices, int mode)
 {
     for (size_t i = slice; i < gInputs.size(); i += slices)
         checkInput(i, mode);
+    for (size_t i = slice; i < gPairs.size(); i += slices)
+    {
+        const Exact x = parseExact(gInputs[gPairs[i].first]);
+        const Exact y = parseExact(gInputs[gPairs[i].second]);
+        checkPair<bd::decimal32_t>(gDecimal32Checks, i, x, y, mode);
+        checkPair<bd::decimal64_t>(gDecimal64Checks, i, x, y, mode);
+        checkPair<bd::decimal128_t>(gDecimal128Checks, i, x, y, mode);
+    }
 }
 
 // Digit counts around the decimal precisions, 2^24, 2^53, 2^64 and neighbors, halves, 9s that carry, trailing zeros.
@@ -1411,6 +1718,19 @@ static void addRandomInputs(std::mt19937_64& rng, size_t count)
     }
 }
 
+// An input with itself, with the next input (the curated ones next to each other differ in one part) or with any.
+static void addPairs(std::mt19937_64& rng, size_t count)
+{
+    const size_t inputs = gInputs.size();
+    for (size_t i = 0; i < count; ++i)
+    {
+        const size_t first = size_t(rng() % inputs);
+        const uint64_t kind = rng() % 4;
+        const size_t second = kind == 0 ? first : kind == 1 ? (first + 1) % inputs : size_t(rng() % inputs);
+        gPairs.emplace_back(first, second);
+    }
+}
+
 int main(int argc, char** argv)
 {
     const size_t randomCount = argc > 1 ? size_t(strtoull(argv[1], nullptr, 10)) : 200000;
@@ -1426,6 +1746,7 @@ int main(int argc, char** argv)
     addDecimalTies(kDecimal64, rng, 3000);
     addDecimalTies(kDecimal128, rng, 3000);
     addRandomInputs(rng, randomCount);
+    addPairs(rng, randomCount);
 
     gDoubleChecks = addBinaryChecks("double", "strtod", "%.17g");
     gFloatChecks = addBinaryChecks("float", "strtof", "%.9g");
@@ -1459,7 +1780,7 @@ int main(int argc, char** argv)
         failing += failures != 0 ? 1 : 0;
     }
     const double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
-    printf("%zu inputs, seed %llu, %d of %zu checks failing, %.1f s\n", gInputs.size(), (unsigned long long)seed,
-           failing, gChecks.size(), seconds);
+    printf("%zu inputs, %zu pairs, seed %llu, %d of %zu checks failing, %.1f s\n", gInputs.size(), gPairs.size(),
+           (unsigned long long)seed, failing, gChecks.size(), seconds);
     return failing != 0 ? 1 : 0;
 }
