@@ -173,6 +173,20 @@ static NOINLINE bd::decimal64_t dragonboxFromFloat(float value)
     return dragonboxShortest(value);
 }
 
+// BDE's DecimalConvertUtil::decimal64FromDouble(x, -1) (shortestDecimalFromBinary in bdldfp_decimalconvertutil.cpp):
+// x printed with 15, then 16 significant digits, parsed by Intel's library, kept once it reads back as x.
+static NOINLINE uint64_t bdeShortestFromDouble(double value)
+{
+    for (int digits = 15;; ++digits)
+    {
+        char buffer[42];
+        snprintf(buffer, sizeof(buffer), "%1.*g", digits, value);
+        const uint64_t result = intelParse(buffer);
+        if (digits == 16 || intelToDouble(result) == value)
+            return result;
+    }
+}
+
 static NOINLINE double boostToDouble(bd::decimal64_t value)
 {
     return static_cast<double>(value);
@@ -277,6 +291,8 @@ static int checkValues()
         expectSameValue(bd::to_bid_d64(googleFromDouble(value)), bd::decimal64_t(value), count, what);
         snprintf(what, sizeof(what), "Dragonbox of %s", str);
         expectSameValue(bd::to_bid_d64(dragonboxFromDouble(value)), bd::decimal64_t(value), count, what);
+        snprintf(what, sizeof(what), "BDE shortest of %s", str);
+        expectSameValue(bdeShortestFromDouble(value), bd::decimal64_t(value), count, what);
         snprintf(what, sizeof(what), "from_binary of %s", str);
         expectSameBits(intelFromDouble(value), exactFromDouble(value), count, what);
 
@@ -429,6 +445,14 @@ static uint64_t fromDoubleDragonbox(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromDoubleBde(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (double value : in.doubles)
+        sum += bdeShortestFromDouble(value);
+    return sum;
+}
+
 static double toDoubleIntel(const DecimalInputs& in)
 {
     double sum = 0;
@@ -545,6 +569,7 @@ static void compareFromDouble(const DecimalInputs& in)
     // boost::decimal finds its digits with Dragonbox now, so double-conversion's row tells nothing new
     // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
     bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
+    bench.run("BDE shortest", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBde(in)); });
 }
 
 static void compareFromFloat(const DecimalInputs& in)
