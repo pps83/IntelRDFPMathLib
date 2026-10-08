@@ -3,6 +3,7 @@
 #include <boost/decimal/bid_conversion.hpp>
 #include <boost/decimal/charconv.hpp>
 #include <boost/decimal/decimal64_t.hpp>
+#include <boost/decimal/float_conversion.hpp>
 #include <double-conversion/double-to-string.h>
 #include <dragonbox/dragonbox.h>
 #include <algorithm>
@@ -115,6 +116,17 @@ static NOINLINE bd::decimal64_t boostFromFloat(float value)
     return bd::decimal64_t(value);
 }
 
+// Intel's conversion in boost::decimal (IEEE 754 convertFormat): the exact binary value rounded to 16 digits.
+static NOINLINE bd::decimal64_t exactFromDouble(double value)
+{
+    return bd::from_binary<bd::decimal64_t>(value);
+}
+
+static NOINLINE bd::decimal64_t exactFromFloat(float value)
+{
+    return bd::from_binary<bd::decimal64_t>(value);
+}
+
 // boost's conversion done differently: double-conversion finds the shortest digits, boost only encodes them.
 static bd::decimal64_t googleShortest(double value, double_conversion::DoubleToStringConverter::DtoaMode mode)
 {
@@ -219,6 +231,18 @@ static void expectSameValue(uint64_t intel, bd::decimal64_t boostValue, SameValu
     printf("different value: %s\n", what);
 }
 
+static void expectSameBits(uint64_t intel, bd::decimal64_t boostValue, SameValueCount& count, const char* what)
+{
+    ++count.compared;
+    if (intel == bd::to_bid_d64(boostValue))
+    {
+        ++count.bitIdentical;
+        return;
+    }
+    ++count.differ;
+    printf("different bits: %s\n", what);
+}
+
 static void checkBinary(const char* lhs, char op, const char* rhs, uint64_t intel, bd::decimal64_t boostValue,
                         SameValueCount& count)
 {
@@ -253,6 +277,8 @@ static int checkValues()
         expectSameValue(bd::to_bid_d64(googleFromDouble(value)), bd::decimal64_t(value), count, what);
         snprintf(what, sizeof(what), "Dragonbox of %s", str);
         expectSameValue(bd::to_bid_d64(dragonboxFromDouble(value)), bd::decimal64_t(value), count, what);
+        snprintf(what, sizeof(what), "from_binary of %s", str);
+        expectSameBits(intelFromDouble(value), exactFromDouble(value), count, what);
 
         const float single = intelToFloat(a);
         if (single != static_cast<float>(x))
@@ -266,6 +292,8 @@ static int checkValues()
         expectSameValue(bd::to_bid_d64(googleFromFloat(single)), bd::decimal64_t(single), count, what);
         snprintf(what, sizeof(what), "Dragonbox of float %s", str);
         expectSameValue(bd::to_bid_d64(dragonboxFromFloat(single)), bd::decimal64_t(single), count, what);
+        snprintf(what, sizeof(what), "from_binary of float %s", str);
+        expectSameBits(intelFromFloat(single), exactFromFloat(single), count, what);
 
         for (const char* rhs : kWireSizes)
         {
@@ -377,6 +405,14 @@ static uint64_t fromDoubleBoost(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromDoubleExact(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (double value : in.doubles)
+        sum += bd::to_bid_d64(exactFromDouble(value));
+    return sum;
+}
+
 // static uint64_t fromDoubleGoogle(const DecimalInputs& in)
 // {
 //     uint64_t sum = 0;
@@ -422,6 +458,14 @@ static uint64_t fromFloatBoost(const DecimalInputs& in)
     uint64_t sum = 0;
     for (float value : in.floats)
         sum += bd::to_bid_d64(boostFromFloat(value));
+    return sum;
+}
+
+static uint64_t fromFloatExact(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (float value : in.floats)
+        sum += bd::to_bid_d64(exactFromFloat(value));
     return sum;
 }
 
@@ -497,6 +541,7 @@ static void compareFromDouble(const DecimalInputs& in)
     configure(bench, "double to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleIntel(in)); });
     bench.run("boost::decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
+    bench.run("from_binary", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleExact(in)); });
     // boost::decimal finds its digits with Dragonbox now, so double-conversion's row tells nothing new
     // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
     bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
@@ -508,6 +553,7 @@ static void compareFromFloat(const DecimalInputs& in)
     configure(bench, "float to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatIntel(in)); });
     bench.run("boost::decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBoost(in)); });
+    bench.run("from_binary", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatExact(in)); });
     // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
     bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
 }
