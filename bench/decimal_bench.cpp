@@ -11,6 +11,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,6 +35,8 @@ double __bid64_to_binary64(unsigned long long, unsigned int, unsigned int*);
 unsigned long long __binary64_to_bid64(double, unsigned int, unsigned int*);
 float __bid64_to_binary32(unsigned long long, unsigned int, unsigned int*);
 unsigned long long __binary32_to_bid64(float, unsigned int, unsigned int*);
+unsigned long long __bid64_from_int64(long long, unsigned int, unsigned int*);
+unsigned long long __bid64_scalbn(unsigned long long, int, unsigned int, unsigned int*);
 }
 
 namespace bd = boost::decimal;
@@ -187,6 +190,40 @@ static NOINLINE uint64_t bdeShortestFromDouble(double value)
     }
 }
 
+// BDE's DecimalConvertUtil::decimal64FromDouble(x) (quickDecimalFromDouble in bdldfp_decimalconvertutil.cpp): x times
+// 1e9 rounded to an integer, kept if the rounding was tiny or it reads back as x; else 15 digits printed and parsed.
+static NOINLINE uint64_t bdeDefaultFromDouble(double value)
+{
+    if (value != 0 && -1e6 < value && value < 1e6)
+    {
+        const double scaled = value * 1e9;
+        long long significand = static_cast<long long>(scaled + copysign(.5, scaled));
+        int exponent = -9;
+        while ((significand & 7) == 0 && significand % 1000 == 0 && exponent <= -3)
+        {
+            significand /= 1000;
+            exponent += 3;
+        }
+        while ((significand & 1) == 0 && significand % 10 == 0 && exponent <= -1)
+        {
+            significand /= 10;
+            ++exponent;
+        }
+        if (significand < 1000000000000000LL && significand > -1000000000000000LL)
+        {
+            unsigned flags = 0;
+            const uint64_t result = __bid64_scalbn(__bid64_from_int64(significand, 0, &flags), exponent, 0, &flags);
+            double whole = 0;
+            const double fraction = modf(scaled, &whole);
+            if ((whole != 0 && fraction / whole < 1e-17) || fraction == 0 || intelToDouble(result) == value)
+                return result;
+        }
+    }
+    char buffer[42];
+    snprintf(buffer, sizeof(buffer), "%1.15g", value);
+    return intelParse(buffer);
+}
+
 static NOINLINE double boostToDouble(bd::decimal64_t value)
 {
     return static_cast<double>(value);
@@ -293,6 +330,9 @@ static int checkValues()
         expectSameValue(bd::to_bid_d64(dragonboxFromDouble(value)), bd::decimal64_t(value), count, what);
         snprintf(what, sizeof(what), "BDE shortest of %s", str);
         expectSameValue(bdeShortestFromDouble(value), bd::decimal64_t(value), count, what);
+        // BDE's default restores the number the double was made from when it has 15 digits or fewer
+        snprintf(what, sizeof(what), "BDE default of %s", str);
+        expectSameValue(bdeDefaultFromDouble(value), x, count, what);
         snprintf(what, sizeof(what), "from_binary of %s", str);
         expectSameBits(intelFromDouble(value), exactFromDouble(value), count, what);
 
@@ -453,6 +493,14 @@ static uint64_t fromDoubleBde(const DecimalInputs& in)
     return sum;
 }
 
+static uint64_t fromDoubleBdeDefault(const DecimalInputs& in)
+{
+    uint64_t sum = 0;
+    for (double value : in.doubles)
+        sum += bdeDefaultFromDouble(value);
+    return sum;
+}
+
 static double toDoubleIntel(const DecimalInputs& in)
 {
     double sum = 0;
@@ -570,6 +618,7 @@ static void compareFromDouble(const DecimalInputs& in)
     // bench.run("double-conversion", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
     bench.run("Dragonbox", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
     bench.run("BDE shortest", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBde(in)); });
+    bench.run("BDE default", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBdeDefault(in)); });
 }
 
 static void compareFromFloat(const DecimalInputs& in)
