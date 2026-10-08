@@ -1,6 +1,7 @@
-// Checks parsing into integers, float, double and decimal32/64/128, and decimal to binary, against exact results.
-// Usage: parse_check [random inputs] [seed] [examples per check]
+// Checks parsing into integers, float, double and decimal32/64/128, decimal to binary and printing the parsed values,
+// against exact results. Usage: parse_check [random inputs] [seed] [examples per check]
 #include <boost/decimal.hpp>
+#include <double-conversion/double-to-string.h>
 #include <double-conversion/string-to-double.h>
 #include <algorithm>
 #include <atomic>
@@ -17,6 +18,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#include <ctype.h>
 #include <errno.h>
 #include <math.h>
 #include <stdint.h>
@@ -41,6 +43,9 @@ double __bid128_to_binary64(Bid128, unsigned int, unsigned int*);
 float __bid32_to_binary32(uint32_t, unsigned int, unsigned int*);
 float __bid64_to_binary32(uint64_t, unsigned int, unsigned int*);
 float __bid128_to_binary32(Bid128, unsigned int, unsigned int*);
+void __bid32_to_string(char*, uint32_t, unsigned int*);
+void __bid64_to_string(char*, uint64_t, unsigned int*);
+void __bid128_to_string(char*, Bid128, unsigned int*);
 }
 
 namespace bd = boost::decimal;
@@ -217,14 +222,14 @@ struct Exact
     int exponent = 0;
 };
 
-// Inputs are generated, so they always match [-]digits[.digits][e[+-]digits] with at least one digit.
+// The text must be wellFormed.
 static Exact parseExact(std::string_view text)
 {
     Exact x;
     size_t i = 0;
-    if (text[i] == '-')
+    if (text[i] == '-' || text[i] == '+')
     {
-        x.negative = true;
+        x.negative = text[i] == '-';
         ++i;
     }
     int fractionDigits = 0;
@@ -253,6 +258,51 @@ static Exact parseExact(std::string_view text)
     x.exponent = exponent - fractionDigits;
     x.coefficient.erase(0, std::min(x.coefficient.find_first_not_of('0'), x.coefficient.size()));
     return x;
+}
+
+static bool isDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+// [+-]digits[.digits][(e|E)[+-]digits], with at least one digit before the exponent.
+static bool wellFormed(std::string_view text)
+{
+    size_t i = 0;
+    if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+        ++i;
+    size_t digits = 0;
+    bool dot = false;
+    for (; i < text.size() && (isDigit(text[i]) || (text[i] == '.' && !dot)); ++i)
+    {
+        dot = dot || text[i] == '.';
+        digits += isDigit(text[i]) ? 1 : 0;
+    }
+    if (digits == 0)
+        return false;
+    if (i == text.size())
+        return true;
+    if (text[i] != 'e' && text[i] != 'E')
+        return false;
+    ++i;
+    if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+        ++i;
+    const size_t exponentStart = i;
+    while (i < text.size() && isDigit(text[i]))
+        ++i;
+    return i == text.size() && i > exponentStart && i - exponentStart < 9;
+}
+
+// "inf", "-Inf", "+Inf", "infinity": the spellings the printers use.
+static bool isInfinity(std::string_view text, bool& negative)
+{
+    negative = !text.empty() && text[0] == '-';
+    if (!text.empty() && (text[0] == '-' || text[0] == '+'))
+        text.remove_prefix(1);
+    std::string lower(text);
+    for (char& c : lower)
+        c = char(tolower((unsigned char)c));
+    return lower == "inf" || lower == "infinity";
 }
 
 struct BinaryFormat
@@ -584,6 +634,36 @@ static uint64_t binaryOfDecimal(const DecimalValue& v, const BinaryFormat& f)
     return roundBinary(v.negative, coefficient, v.exponent, f);
 }
 
+// What a printed value reads back as, by the exact reference; false when the text is no number.
+static bool readBinary(std::string_view text, const BinaryFormat& f, uint64_t& bits)
+{
+    bool negative = false;
+    if (isInfinity(text, negative))
+    {
+        bits = (negative ? UINT64_C(1) << f.signShift : 0) | f.infinity;
+        return true;
+    }
+    if (!wellFormed(text))
+        return false;
+    const Exact x = parseExact(text);
+    bits = roundBinary(x.negative, x.coefficient, x.exponent, f);
+    return true;
+}
+
+static bool readDecimal(std::string_view text, const DecimalFormat& f, DecimalValue& v)
+{
+    v = DecimalValue {};
+    if (isInfinity(text, v.negative))
+    {
+        v.infinite = true;
+        return true;
+    }
+    if (!wellFormed(text))
+        return false;
+    v = roundDecimal(parseExact(text), f, 0);
+    return true;
+}
+
 struct Check
 {
     explicit Check(std::string checkName) : name(std::move(checkName))
@@ -634,6 +714,11 @@ struct BinaryChecks
     Check* fromChars;
     Check* strtod;
     Check* doubleConversion;
+    Check* printShortest;
+    Check* printMaxDigits;
+    Check* printPrintf;
+    Check* printDoubleConversion;
+    Check* roundTrip;
 };
 
 struct IntegerChecks
@@ -657,6 +742,13 @@ struct DecimalChecks
     Check* boostToFloat;
     Check* intelToDouble;
     Check* intelToFloat;
+    Check* printGeneral;
+    Check* printScientific;
+    Check* printFixed;
+    Check* printCohort;
+    Check* printIntel;
+    Check* boostRoundTrip;
+    Check* intelRoundTrip;
 };
 
 static BinaryChecks gDoubleChecks;
@@ -666,11 +758,19 @@ static DecimalChecks gDecimal32Checks;
 static DecimalChecks gDecimal64Checks;
 static DecimalChecks gDecimal128Checks;
 
-static BinaryChecks addBinaryChecks(const char* type, const char* strtodName)
+static BinaryChecks addBinaryChecks(const char* type, const char* strtodName, const char* printfFormat)
 {
     const std::string prefix = std::string(type) + " ";
-    return {addCheck(prefix + "std::from_chars"), addCheck(prefix + strtodName),
-            addCheck(prefix + "double-conversion")};
+    BinaryChecks checks {};
+    checks.fromChars = addCheck(prefix + "std::from_chars");
+    checks.strtod = addCheck(prefix + strtodName);
+    checks.doubleConversion = addCheck(prefix + "double-conversion");
+    checks.printShortest = addCheck(prefix + "print std::to_chars");
+    checks.printMaxDigits = addCheck(prefix + "print std::to_chars max_digits10");
+    checks.printPrintf = addCheck(prefix + "print printf " + printfFormat);
+    checks.printDoubleConversion = addCheck(prefix + "print double-conversion");
+    checks.roundTrip = addCheck(prefix + "std::to_chars then std::from_chars");
+    return checks;
 }
 
 static DecimalChecks addDecimalChecks(const DecimalFormat& f, const char* strtodName)
@@ -689,6 +789,13 @@ static DecimalChecks addDecimalChecks(const DecimalFormat& f, const char* strtod
     checks.intelToDouble = addCheck(prefix + "to double Intel");
     checks.boostToFloat = addCheck(prefix + "to float boost");
     checks.intelToFloat = addCheck(prefix + "to float Intel");
+    checks.printGeneral = addCheck(prefix + "print boost to_chars general");
+    checks.printScientific = addCheck(prefix + "print boost to_chars scientific");
+    checks.printFixed = addCheck(prefix + "print boost to_chars fixed");
+    checks.printCohort = addCheck(prefix + "print boost to_chars cohort");
+    checks.printIntel = addCheck(prefix + "print Intel to_string");
+    checks.boostRoundTrip = addCheck(prefix + "boost to_chars then from_chars");
+    checks.intelRoundTrip = addCheck(prefix + "Intel to_string then from_string");
     return checks;
 }
 
@@ -709,6 +816,60 @@ static bool outOfRange(uint64_t expected, const BinaryFormat& f, const Exact& x)
 {
     const uint64_t magnitude = expected & ~(UINT64_C(1) << f.signShift);
     return magnitude == f.infinity || (magnitude == 0 && !x.coefficient.empty());
+}
+
+static const double_conversion::DoubleToStringConverter kShortest(
+    double_conversion::DoubleToStringConverter::NO_FLAGS, "inf", "nan", 'e', -6, 21, 0, 0);
+
+static void checkPrinted(Check* check, size_t index, std::string_view printed, uint64_t bits, const BinaryFormat& f)
+{
+    uint64_t read = 0;
+    const bool readable = readBinary(printed, f, read);
+    if (failed(check, index, readable && read == bits))
+    {
+        const std::string readAs = readable ? describeBinary(read, f) : "?";
+        addExample(check, index, describeBinary(bits, f), "\"" + std::string(printed) + "\" reads as " + readAs,
+                   describeBinary(bits, f));
+    }
+}
+
+// Each printer's output, read back exactly, must give the same bits.
+template <typename T>
+static void checkPrintBinary(const BinaryChecks& checks, const BinaryFormat& f, size_t index, uint64_t bits)
+{
+    T value;
+    if constexpr (sizeof(T) == 8)
+        value = std::bit_cast<double>(bits);
+    else
+        value = std::bit_cast<float>(uint32_t(bits));
+    constexpr int maxDigits = std::numeric_limits<T>::max_digits10;
+    char buf[64];
+
+    auto r = std::to_chars(buf, buf + sizeof(buf), value);
+    const std::string shortest(buf, r.ptr);
+    checkPrinted(checks.printShortest, index, shortest, bits, f);
+
+    r = std::to_chars(buf, buf + sizeof(buf), value, std::chars_format::general, maxDigits);
+    checkPrinted(checks.printMaxDigits, index, std::string_view(buf, size_t(r.ptr - buf)), bits, f);
+
+    snprintf(buf, sizeof(buf), "%.*g", maxDigits, double(value));
+    checkPrinted(checks.printPrintf, index, buf, bits, f);
+
+    double_conversion::StringBuilder builder(buf, int(sizeof(buf)));
+    if constexpr (sizeof(T) == 8)
+        kShortest.ToShortest(value, &builder);
+    else
+        kShortest.ToShortestSingle(value, &builder);
+    checkPrinted(checks.printDoubleConversion, index, builder.Finalize(), bits, f);
+
+    T read {};
+    const char* end = shortest.data() + shortest.size();
+    const auto parsed = std::from_chars(shortest.data(), end, read);
+    if (failed(checks.roundTrip, index, parsed.ec == std::errc() && parsed.ptr == end && bitsOf(read) == bits))
+    {
+        const std::string got = "\"" + shortest + "\" reads as " + describeBinary(bitsOf(read), f);
+        addExample(checks.roundTrip, index, describeBinary(bits, f), got, describeBinary(bits, f));
+    }
 }
 
 template <typename T>
@@ -746,6 +907,8 @@ static void checkBinary(const BinaryChecks& checks, const BinaryFormat& f, size_
         addExample(checks.doubleConversion, index, text, describeBinary(bitsOf(value), f),
                    describeBinary(expected, f));
     }
+
+    checkPrintBinary<T>(checks, f, index, expected);
 }
 
 template <typename T>
@@ -815,6 +978,19 @@ static Bits128 intelParse(const DecimalFormat& f, const std::string& text, int m
         return {0, __bid64_from_string(str, unsigned(mode), &flags)};
     const Bid128 r = __bid128_from_string(str, unsigned(mode), &flags);
     return {r.w[1], r.w[0]};
+}
+
+static std::string intelToString(const DecimalFormat& f, Bits128 bits)
+{
+    unsigned flags = 0;
+    char buf[128];
+    if (f.precision == 7)
+        __bid32_to_string(buf, uint32_t(bits.low), &flags);
+    else if (f.precision == 16)
+        __bid64_to_string(buf, bits.low, &flags);
+    else
+        __bid128_to_string(buf, Bid128 {{bits.low, bits.high}}, &flags);
+    return buf;
 }
 
 static double intelToDouble(const DecimalFormat& f, Bits128 bits)
@@ -920,6 +1096,62 @@ static void checkToBinary(const DecimalChecks& checks, size_t index, const Decim
     }
 }
 
+// The text read back exactly must give the value, or with withCohort the very bits.
+static void checkPrintedDecimal(Check* check, size_t index, const std::string& printed, const DecimalValue& v,
+                                Bits128 bits, const DecimalFormat& f, bool withCohort)
+{
+    DecimalValue read;
+    const bool readable = readDecimal(printed, f, read);
+    const bool ok = readable && (withCohort ? encodeDecimal(read, f) == bits : sameValue(read, v));
+    if (failed(check, index, ok))
+    {
+        const std::string got = "\"" + printed + "\" reads as " + (readable ? describeDecimal(read) : "?");
+        addExample(check, index, describeDecimal(v), got, describeDecimal(v));
+    }
+}
+
+template <typename Decimal>
+static void checkPrintDecimal(const DecimalChecks& checks, size_t index, const DecimalValue& v, Bits128 bits)
+{
+    const DecimalFormat& f = *checks.format;
+    Decimal value {};
+    fromBits(bits, value);
+    char buf[7000];
+
+    const std::pair<Check*, bd::chars_format> printers[] = {{checks.printGeneral, bd::chars_format::general},
+        {checks.printScientific, bd::chars_format::scientific}, {checks.printFixed, bd::chars_format::fixed},
+        {checks.printCohort, bd::chars_format::cohort_preserving_scientific}};
+    std::string general;
+    for (const auto& [check, format] : printers)
+    {
+        const auto r = bd::to_chars(buf, buf + sizeof(buf), value, format);
+        const std::string printed = r.ec == std::errc() ? std::string(buf, r.ptr) : "error";
+        const bool withCohort = format == bd::chars_format::cohort_preserving_scientific;
+        checkPrintedDecimal(check, index, printed, v, bits, f, withCohort);
+        if (format == bd::chars_format::general)
+            general = printed;
+    }
+
+    const std::string intel = intelToString(f, bits);
+    checkPrintedDecimal(checks.printIntel, index, intel, v, bits, f, true);
+
+    Decimal read {};
+    const auto r = bd::from_chars(general.data(), general.data() + general.size(), read);
+    const DecimalValue boostRead = decodeDecimal(toBits(read), f);
+    if (failed(checks.boostRoundTrip, index, r.ec == std::errc() && sameValue(boostRead, v)))
+    {
+        const std::string got = "\"" + general + "\" reads as " + describeDecimal(boostRead);
+        addExample(checks.boostRoundTrip, index, describeDecimal(v), got, describeDecimal(v));
+    }
+
+    const Bits128 intelRead = intelParse(f, intel, 0);
+    if (failed(checks.intelRoundTrip, index, intelRead == bits))
+    {
+        const std::string got = "\"" + intel + "\" reads as " + describeDecimal(decodeDecimal(intelRead, f));
+        addExample(checks.intelRoundTrip, index, describeDecimal(v), got, describeDecimal(v));
+    }
+}
+
 // boost's from_chars keeps the cohort only in its cohort preserving formats; the others are checked by value.
 template <typename Decimal>
 static void checkDecimal(const DecimalChecks& checks, size_t index, const std::string& text, const Exact& x, int mode)
@@ -971,6 +1203,7 @@ static void checkDecimal(const DecimalChecks& checks, size_t index, const std::s
         }
     }
     checkToBinary<Decimal>(checks, index, expected, expectedBits);
+    checkPrintDecimal<Decimal>(checks, index, expected, expectedBits);
 }
 
 static void checkInput(size_t index, int mode)
@@ -1194,8 +1427,8 @@ int main(int argc, char** argv)
     addDecimalTies(kDecimal128, rng, 3000);
     addRandomInputs(rng, randomCount);
 
-    gDoubleChecks = addBinaryChecks("double", "strtod");
-    gFloatChecks = addBinaryChecks("float", "strtof");
+    gDoubleChecks = addBinaryChecks("double", "strtod", "%.17g");
+    gFloatChecks = addBinaryChecks("float", "strtof", "%.9g");
     gIntegerChecks = {addCheck("int32 std::from_chars"), addCheck("int64 std::from_chars"),
                       addCheck("uint64 std::from_chars"), addCheck("long strtol"), addCheck("long long strtoll"),
                       addCheck("unsigned long long strtoull")};

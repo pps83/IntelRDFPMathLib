@@ -13,10 +13,22 @@
     <ClCompile Include="..\check\parse_check.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\bench\double-conversion\double-conversion\bignum-dtoa.cc">
+      <Filter>double-conversion</Filter>
+    </ClCompile>
     <ClCompile Include="..\bench\double-conversion\double-conversion\bignum.cc">
       <Filter>double-conversion</Filter>
     </ClCompile>
     <ClCompile Include="..\bench\double-conversion\double-conversion\cached-powers.cc">
+      <Filter>double-conversion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bench\double-conversion\double-conversion\double-to-string.cc">
+      <Filter>double-conversion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bench\double-conversion\double-conversion\fast-dtoa.cc">
+      <Filter>double-conversion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bench\double-conversion\double-conversion\fixed-dtoa.cc">
       <Filter>double-conversion</Filter>
     </ClCompile>
     <ClCompile Include="..\bench\double-conversion\double-conversion\string-to-double.cc">
