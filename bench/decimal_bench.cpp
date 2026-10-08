@@ -377,13 +377,13 @@ static uint64_t fromDoubleBoost(const DecimalInputs& in)
     return sum;
 }
 
-static uint64_t fromDoubleGoogle(const DecimalInputs& in)
-{
-    uint64_t sum = 0;
-    for (double value : in.doubles)
-        sum += bd::to_bid_d64(googleFromDouble(value));
-    return sum;
-}
+// static uint64_t fromDoubleGoogle(const DecimalInputs& in)
+// {
+//     uint64_t sum = 0;
+//     for (double value : in.doubles)
+//         sum += bd::to_bid_d64(googleFromDouble(value));
+//     return sum;
+// }
 
 static uint64_t fromDoubleDragonbox(const DecimalInputs& in)
 {
@@ -425,13 +425,13 @@ static uint64_t fromFloatBoost(const DecimalInputs& in)
     return sum;
 }
 
-static uint64_t fromFloatGoogle(const DecimalInputs& in)
-{
-    uint64_t sum = 0;
-    for (float value : in.floats)
-        sum += bd::to_bid_d64(googleFromFloat(value));
-    return sum;
-}
+// static uint64_t fromFloatGoogle(const DecimalInputs& in)
+// {
+//     uint64_t sum = 0;
+//     for (float value : in.floats)
+//         sum += bd::to_bid_d64(googleFromFloat(value));
+//     return sum;
+// }
 
 static uint64_t fromFloatDragonbox(const DecimalInputs& in)
 {
@@ -497,8 +497,9 @@ static void compareFromDouble(const DecimalInputs& in)
     configure(bench, "double to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleIntel(in)); });
     bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleBoost(in)); });
-    bench.run("double-conversion digits, decimal64_t encoding",
-              [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
+    // boost::decimal finds its digits with Dragonbox now, so double-conversion's row tells nothing new
+    // bench.run("double-conversion digits, decimal64_t encoding",
+    //           [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleGoogle(in)); });
     bench.run("Dragonbox digits, decimal64_t encoding",
               [&] { ankerl::nanobench::doNotOptimizeAway(fromDoubleDragonbox(in)); });
 }
@@ -509,8 +510,8 @@ static void compareFromFloat(const DecimalInputs& in)
     configure(bench, "float to decimal");
     bench.run("Intel BID64", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatIntel(in)); });
     bench.run("boost::decimal decimal64_t", [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatBoost(in)); });
-    bench.run("double-conversion digits, decimal64_t encoding",
-              [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
+    // bench.run("double-conversion digits, decimal64_t encoding",
+    //           [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatGoogle(in)); });
     bench.run("Dragonbox digits, decimal64_t encoding",
               [&] { ankerl::nanobench::doNotOptimizeAway(fromFloatDragonbox(in)); });
 }
